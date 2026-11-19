@@ -28,8 +28,27 @@ TEST_RESULTS = pa.schema([
     ('stdout',  pa.string()),      # output gốc, đã cắt; chấm lại được không cần chạy lại
 ])
 
+# Cờ chất lượng / lọc cho dữ liệu thật (Bước 1.7). Một dòng / phiên bản.
+SUB_FLAGS = pa.schema([
+    ('sub_id',           pa.string()),
+    ('problem',          pa.string()),
+    ('repo',             pa.string()),     # sinh viên (1 repo = 1 sinh viên)
+    ('compiled',         pa.bool_()),
+    ('n_tests',          pa.int32()),
+    ('n_fail_strict',    pa.int32()),
+    ('n_fail_sem',       pa.int32()),
+    ('fails_all_sem',    pa.bool_()),      # fail toàn bộ test (semantic) → thường lỗi I/O
+    ('format_only_any',  pa.bool_()),      # có ≥ 1 test strict FAIL & semantic PASS
+    ('nondet_dataset',   pa.bool_()),      # cờ nondeterministic của metadata.json
+    ('uninit_dependent', pa.bool_()),      # output đổi giữa auto-var-init=zero/pattern
+    ('code_hash',        pa.string()),     # ast_utils.code_hash (bỏ comment + định dạng)
+    ('dup_of',           pa.string()),     # sub_id đại diện của nhóm trùng code (chính nó nếu là đại diện)
+    ('n_dups',           pa.int32()),      # kích thước nhóm trùng
+    ('keep',             pa.bool_()),      # compiled & n_fail_sem ≥ 1 & là đại diện
+])
+
 _ENUMS = {'status': STATUS, 'status_sem': STATUS, 'source': SOURCES}
-_INT_COLS = {'returncode'}         # int nullable → pandas Int32
+_INT_COLS = {'returncode', 'n_tests', 'n_fail_strict', 'n_fail_sem', 'n_dups'}         # int nullable → pandas Int32
 
 
 def validate(df: pd.DataFrame, schema: pa.Schema) -> None:
@@ -41,7 +60,7 @@ def validate(df: pd.DataFrame, schema: pa.Schema) -> None:
             bad = set(df[col].dropna().unique()) - set(allowed)
             if bad:
                 raise ValueError(f'Giá trị không hợp lệ ở cột {col!r}: {sorted(bad)}')
-    if schema is SUBMISSIONS and df['sub_id'].duplicated().any():
+    if schema in (SUBMISSIONS, SUB_FLAGS) and df['sub_id'].duplicated().any():
         raise ValueError('sub_id bị trùng trong submissions')
 
 

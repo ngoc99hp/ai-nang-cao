@@ -1,0 +1,7 @@
+problem,versions,students,compiled,correct_sem,buggy_strict,buggy_sem,format_only_versions,buggy_unique_dataset,kept,kept_students,kept_fails_all,kept_uninit,kept_nondet_dataset,distinct_fail_patterns
+checksum,69,21,69,17,52,52,0,30,29,21,1,2,17,9
+digits,236,55,236,40,204,196,8,110,108,54,0,3,18,24
+grade,268,50,268,163,228,105,123,38,38,22,1,1,13,14
+median,232,44,232,29,203,203,1,70,69,44,2,9,16,24
+smallest,177,45,177,22,163,155,8,64,64,42,0,12,10,14
+syllables,161,44,161,38,123,123,0,38,38,28,1,6,23,11

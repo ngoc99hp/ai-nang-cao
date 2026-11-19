@@ -32,7 +32,7 @@
 | Phase | Trạng thái |
 |---|---|
 | Phase 0 — Setup, runner, schema | ✅ Hoàn tất trên server (phương án A — Docker). `docker exec aai-lab pytest -q` → **9 passed** (~12 s; 6 test plan + 3 test môi trường `tests/test_env.py`) |
-| Phase 1 — Dữ liệu IntroClass | 🟡 Xong 1.1–1.6 (runner khớp metadata ≥ 98.2%). **Tiếp tục Bước 1.7** |
+| Phase 1 — Dữ liệu IntroClass | 🟡 Xong 1.1–1.7. **Chờ DP1** (mục 6, Bước 1.7) |
 | Phase 2–6 | ⬜ Chưa bắt đầu |
 
 ---
@@ -863,6 +863,19 @@ Runner thêm tham số `extra_flags` cho `compile_c`/`run_batch` (mặc định 
 - Xử lý phiên bản nondeterministic: loại hoặc tách riêng (hỏi người dùng).
 - Xuất `results/tables/p1_stats.csv`: số bài sai theo problem sau từng bước lọc.
 - → Trình bày cho **DP1**.
+
+✅ **Xong** (`scripts/p1_7_filter.py`; bảng `results/tables/p1_stats.csv`; ghi `data/interim/{submissions,flags}/<problem>.parquet`, schema `SUB_FLAGS` mới). Khử trùng bằng `ast_utils.code_hash` (chuỗi token tree-sitter, bỏ comment + định dạng) — số giữ lại ≈ `uniqueDefects` của dataset.
+
+| problem | versions | SV | buggy strict | buggy semantic | chỉ lỗi định dạng | **giữ (unique)** | SV giữ | fail toàn bộ | uninit | nondet (dataset) | mẫu test khác nhau |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| checksum | 69 | 21 | 52 | 52 | 0 | **29** | 21 | 1 | 2 | 17 | 9 |
+| digits | 236 | 55 | 204 | 196 | 8 | **108** | 54 | 0 | 3 | 18 | 24 |
+| grade | 268 | 50 | 228 | 105 | **123** | **38** | 22 | 1 | 1 | 13 | 14 |
+| median | 232 | 44 | 203 | 203 | 1 | **69** | 44 | 2 | 9 | 16 | 24 |
+| smallest | 177 | 45 | 163 | 155 | 8 | **64** | 42 | 0 | 12 | 10 | 14 |
+| syllables | 161 | 44 | 123 | 123 | 0 | **38** | 28 | 1 | 6 | 23 | 11 |
+
+Nhận xét: (1) grade: 123/228 bài "sai" theo dataset thực ra chỉ sai định dạng (`Stdent`, `F grade`...) → DP0 semantic loại nhiễu lớn. (2) Mỗi sinh viên đóng góp nhiều phiên bản (digits: 108 bản / 54 SV). (3) Số mẫu kết quả test khác nhau chỉ 9–24 / bài → nhóm thuộc tính Test thô, cần Output-diff + AST.
 
 ### Bước 1.8 (tùy chọn) — ITSP
 

@@ -33,7 +33,8 @@
 |---|---|
 | Phase 0 — Setup, runner, schema | ✅ Hoàn tất trên server (phương án A — Docker). `docker exec aai-lab pytest -q` → **9 passed** (~12 s; 6 test plan + 3 test môi trường `tests/test_env.py`) |
 | Phase 1 — Dữ liệu IntroClass | ✅ Xong 1.1–1.7, DP0 + DP1 đã chốt. (1.8 ITSP tùy chọn — chưa làm) |
-| Phase 2 — Mutation | 🟡 DP2 đã chốt, đang làm |
+| Phase 2 — Mutation | ✅ Xong (479 mutant có nhãn, mục 8) |
+| Phase 3 — OAV | 🟡 Đang làm |
 | Phase 3–6 | ⬜ Chưa bắt đầu |
 
 ---
@@ -931,11 +932,11 @@ Mutant đơn được chọn (valid = compile + fail ≥ 1 test semantic + khác
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | digits | 24 | 5 | 50 | 0 | 4 | 50 | 29 | 48 | 37 | 247 |
 | grade | 4 | 2 | 8 | 0 | 0 | 3 | 50 | 0 | 12 | 79 |
-| median | 4 | 6 | 13 | 0 | 1 | 4 | **0** | 3 | 5 | 36 |
-| smallest | 4 | 1 | 0 | 0 | 4 | 8 | **0** | 0 | 3 | 20 |
+| median | 16 | 12 | 13 | 0 | 4 | 17 | 5 | 3 | 12 | 82 |
+| smallest | 9 | 9 | 1 | 0 | 6 | 18 | 0 | 0 | 8 | 51 |
 | average | 5 | 2 | 0 | 3 | 3 | 5 | 0 | 0 | 3 | 21 |
 
-Tỷ lệ hợp lệ: M7 thấp nhất (26%) — ở median/smallest **mọi** mutant `>`↔`>=` đều tương đương (khi hai giá trị bằng nhau, chọn bên nào cũng ra cùng kết quả) → 0 mutant M7. M2/M4 ít vì chỉ có trong lời giải tự viết.
+Tỷ lệ hợp lệ: M7 thấp nhất (26%) — ở median/smallest **mọi** mutant `>`↔`>=` đều tương đương (khi hai giá trị bằng nhau, chọn bên nào cũng ra cùng kết quả) → 0 mutant M7. M2/M4 ít vì chỉ có trong lời giải tự viết. **Bổ sung (người dùng chọn):** thêm 8 lời giải tự viết cho median/smallest (vòng lặp, mảng, hàm con trỏ) → median 36 → 82, smallest 20 → 51 mutant. Tổng `bench/`: 19 lời giải.
 
 ---
 

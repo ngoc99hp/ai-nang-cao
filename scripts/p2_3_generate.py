@@ -163,9 +163,9 @@ def main(problems):
 
     if summary:
         f = config.TABLES / 'p2_mutants.csv'
-        old = pd.read_csv(f) if f.exists() else pd.DataFrame()
-        pd.concat([old, pd.DataFrame(summary)]).drop_duplicates(['problem', 'label'], keep='last') \
-            .to_csv(f, index=False)
+        new = pd.DataFrame(summary)
+        old = pd.read_csv(f) if f.exists() else new.iloc[:0]
+        pd.concat([old[~old.problem.isin(new.problem)], new]).to_csv(f, index=False)
     print('DONE', flush=True)
 
 

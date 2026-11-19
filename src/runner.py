@@ -17,6 +17,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import config
+import normalize
 
 MAX_OUTPUT_BYTES = 1 << 20          # 1 MB
 MAX_MEMORY_KB    = 256 * 1024       # 256 MB
@@ -42,9 +43,10 @@ def compile_c(src, exe) -> tuple[bool, str]:
 
 @dataclass
 class RunResult:
-    status: str
+    status: str                      # chế độ strict (DP0)
     stdout: str
     returncode: int | None
+    status_sem: str | None = None    # chế độ semantic (DP0)
 
 
 def run_once(exe, input_path, cpu_limit: float | None = None) -> RunResult:
@@ -71,25 +73,34 @@ def run_once(exe, input_path, cpu_limit: float | None = None) -> RunResult:
     return RunResult('OK', out, rc)
 
 
-def normalize_output(s: str) -> list[str]:
-    """Chuẩn hóa tối thiểu. Sẽ được thay bằng src/normalize.py ở Phase 1 (theo DP0)."""
-    return s.split()
+def judge(exe, input_path, expected_path, cpu_limit: float | None = None,
+          problem: str | None = None) -> RunResult:
+    """Chấm theo DP0: status = strict, status_sem = semantic (xem src/normalize.py).
 
-
-def judge(exe, input_path, expected_path, cpu_limit: float | None = None) -> RunResult:
+    problem=None (bench/synthetic tự viết): so token cho cả hai, bỏ qua exit code.
+    problem IntroClass: strict còn tính exit code ≠ 0 là FAIL (như check_output của dataset).
+    """
     r = run_once(exe, input_path, cpu_limit)
     if r.status != 'OK':
+        r.status_sem = r.status
         return r
     expected = Path(expected_path).read_text(errors='replace')
-    r.status = 'PASS' if normalize_output(r.stdout) == normalize_output(expected) else 'FAIL'
+    inp = Path(input_path).read_text(errors='replace')
+    verdict = {m: 'PASS' if normalize.check(problem, r.stdout, expected, inp, m) else 'FAIL'
+               for m in normalize.MODES}
+    r.status, r.status_sem = verdict['strict'], verdict['semantic']
+    if problem is not None and r.returncode != 0:
+        r.status = 'FAIL'
     return r
 
 
-def run_batch(subs, tests, workdir, max_workers: int | None = None) -> list[dict]:
+def run_batch(subs, tests, workdir, max_workers: int | None = None,
+              problem: str | None = None) -> list[dict]:
     """
     subs : [(sub_id, src_path), ...]   sub_id phải hợp lệ làm tên file
     tests: [(test_id, in_path, out_path), ...]
-    Trả về list dict khớp schema test_results: sub_id, test_id, status, stdout.
+    Trả về list dict khớp schema test_results (trừ cột problem):
+    sub_id, test_id, status, status_sem, returncode, stdout.
     Song song hóa ở mức (bài × test) để cân bằng tải.
     """
     workdir = Path(workdir)
@@ -108,14 +119,16 @@ def run_batch(subs, tests, workdir, max_workers: int | None = None) -> list[dict
     rows, jobs = [], []
     for sub_id, exe, err in compiled:
         if exe is None:
-            rows.append(dict(sub_id=sub_id, test_id=None, status='COMPILE_ERROR', stdout=err))
+            rows.append(dict(sub_id=sub_id, test_id=None, status='COMPILE_ERROR',
+                             status_sem='COMPILE_ERROR', returncode=None, stdout=err))
         else:
             jobs.extend((sub_id, exe, t) for t in tests)
 
     def _run(job):
         sub_id, exe, (tid, inp, exp) = job
-        r = judge(exe, inp, exp)
-        return dict(sub_id=sub_id, test_id=tid, status=r.status, stdout=r.stdout[:2000])
+        r = judge(exe, inp, exp, problem=problem)
+        return dict(sub_id=sub_id, test_id=tid, status=r.status, status_sem=r.status_sem,
+                    returncode=r.returncode, stdout=r.stdout[:2000])
 
     with ThreadPoolExecutor(max_workers) as ex:
         rows.extend(ex.map(_run, jobs))

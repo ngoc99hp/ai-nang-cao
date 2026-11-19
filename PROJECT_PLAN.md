@@ -32,7 +32,7 @@
 | Phase | Trạng thái |
 |---|---|
 | Phase 0 — Setup, runner, schema | ✅ Hoàn tất trên server (phương án A — Docker). `docker exec aai-lab pytest -q` → **9 passed** (~12 s; 6 test plan + 3 test môi trường `tests/test_env.py`) |
-| Phase 1 — Dữ liệu IntroClass | 🟡 Xong 1.1–1.3 + 1.5 (parser `src/introclass.py`, 22 tests pass). **Chờ DP0** → Bước 1.4 (mục 5.7, 6) |
+| Phase 1 — Dữ liệu IntroClass | 🟡 Xong 1.1–1.5 (DP0 đã chốt). **Tiếp tục Bước 1.6** |
 | Phase 2–6 | ⬜ Chưa bắt đầu |
 
 ---
@@ -824,6 +824,8 @@ for p in problems:
 
 ### Bước 1.4 — `src/normalize.py` (sau khi người dùng chốt DP0)
 
+✅ **Xong.** `src/normalize.py` (`check(problem, out, expected, input, mode)`), runner `judge/run_batch(..., problem=)`, schema `TEST_RESULTS` thêm `status_sem`, `returncode` (Int32). Kiểm định offline trên output đã ghi trong metadata (`scripts/p1_4_validate_checkers.py`): strict khớp metadata 100% (checksum/digits/grade), 99.8% (median/smallest), 99.1% (syllables). Số test `format_only`: grade 252, digits 14, smallest 11, median 2. Semantic chặt hơn strict chỉ ở các ca bug checker gốc (in nhiều đáp án mâu thuẫn, `18` khớp nhầm `1`) — metadata cũng đánh FAIL các ca này.
+
 - Hiện thực đúng logic so sánh của `genprog_tests.py` (hoặc phiên bản người dùng chọn).
 - Thay `runner.normalize_output` bằng hàm từ module này (truyền `problem` vào `judge`).
 - Viết unit test với các cặp output mẫu từ `metadata.json`.
@@ -859,7 +861,8 @@ Tương tự cho ITSP (`dataset/Lab-*/<problem_id>/*_buggy.c`, `*_correct.c`, te
 
 | DP | Câu hỏi | Thời điểm |
 |---|---|---|
-| **DP0** | Lỗi định dạng (sai câu nhắc, khoảng trắng) có tính là misconception không? Mô phỏng đúng cách chấm của dataset hay chuẩn hóa mạnh hơn? | Sau Bước 1.3 |
+| **DP0** | Lỗi định dạng (sai câu nhắc, khoảng trắng) có tính là misconception không? Mô phỏng đúng cách chấm của dataset hay chuẩn hóa mạnh hơn? | Sau Bước 1.3|
+| | ✅ **Đã chốt (2026-11-19): hai chế độ.** `status` = strict (port nguyên văn `genprog_tests.py`, exit code ≠ 0 → FAIL) dùng kiểm định runner; `status_sem` = semantic (trích đáp án lỏng, sửa bug checker, bỏ qua rc) dùng cho clustering; OAV `format_only` = strict FAIL & semantic PASS. Lỗi định dạng không phải misconception nhưng được ghi nhận. Runner/schema lưu `returncode` | |
 | **DP1** | Chọn 3–5 bài trọng tâm (≥ ~50 bài sai, misconception rõ ràng) | Sau Bước 1.7 |
 | **DP2** | Taxonomy misconception cho mutation | Đầu Phase 2 |
 | **DP3** | Trọng số nhóm thuộc tính (Test / Output-diff / AST) | Phase 3, tinh chỉnh sau ablation E3 |

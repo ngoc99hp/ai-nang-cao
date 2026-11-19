@@ -6,7 +6,8 @@ import schema
 def _tr():
     return pd.DataFrame({
         'sub_id': ['a', 'a', 'b'], 'problem': 'p', 'test_id': ['t0', 't1', None],
-        'status': ['PASS', 'FAIL', 'COMPILE_ERROR'], 'stdout': ['6', '5', 'err'],
+        'status': ['PASS', 'FAIL', 'COMPILE_ERROR'], 'status_sem': ['PASS', 'PASS', 'COMPILE_ERROR'],
+        'returncode': pd.array([0, 3, None], dtype='Int32'), 'stdout': ['6', '5', 'err'],
     })
 
 
@@ -20,6 +21,7 @@ def test_round_trip(tmp_path):
 @pytest.mark.parametrize('bad, sch, msg', [
     (_tr().assign(status='PASSED'), schema.TEST_RESULTS, 'không hợp lệ'),
     (_tr().drop(columns='stdout'),  schema.TEST_RESULTS, 'Thiếu cột'),
+    (_tr().assign(status_sem='OK'), schema.TEST_RESULTS, 'không hợp lệ'),
 ])
 def test_validate_rejects(bad, sch, msg):
     with pytest.raises(ValueError, match=msg):

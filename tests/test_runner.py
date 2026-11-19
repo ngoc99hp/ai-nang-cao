@@ -50,3 +50,23 @@ def test_no_false_timeout_under_load(io_files):
     for r in rows:
         expected = 'TIMEOUT' if r['sub_id'].endswith('infinite_loop') else 'PASS'
         assert r['status'] == expected, r
+
+
+MEDIAN = '#include <stdio.h>\nint main(){int a,b,c;scanf("%d%d%d",&a,&b,&c);printf(FMT);return RC;}'
+MED_OUT = '"Please enter 3 numbers separated by spaces > %d is the median\\n",b'
+
+
+@pytest.mark.parametrize('fmt, rc, strict, sem', [
+    (MED_OUT, 0, 'PASS', 'PASS'),
+    (MED_OUT, 3, 'FAIL', 'PASS'),                                  # DP0: exit ≠ 0 → strict FAIL
+    (MED_OUT.replace('is the', 'IS the'), 0, 'FAIL', 'PASS'),      # format_only
+    (MED_OUT.replace(',b', ',a'), 0, 'FAIL', 'FAIL'),              # sai ngữ nghĩa
+])
+def test_problem_mode(tmp_path, fmt, rc, strict, sem):
+    (tmp_path / 'in.txt').write_text('1 2 3\n')
+    (tmp_path / 'out.txt').write_text('Please enter 3 numbers separated by spaces > 2 is the median\n')
+    src = tmp_path / 'm.c'
+    src.write_text(MEDIAN.replace('FMT', fmt).replace('RC', str(rc)))
+    [row] = runner.run_batch([('m', src)], [('t0', tmp_path / 'in.txt', tmp_path / 'out.txt')],
+                             tmp_path / 'bin', problem='median')
+    assert (row['status'], row['status_sem'], row['returncode']) == (strict, sem, rc)

@@ -36,7 +36,8 @@
 | Phase 2 — Mutation | ✅ Xong (480 mutant có nhãn, mục 8) |
 | Phase 3 — OAV | ✅ Xong (mục 9) |
 | Phase 4 — Clustering | ✅ Xong (DP3, DP4 đã chốt) |
-| Phase 5 — Luật + đánh giá | 🟡 E1–E5 xong. **Chờ DP5** (đặt tên cụm) |
+| Phase 5 — Luật + đánh giá | ✅ Xong (DP5 tạm chốt) |
+| Phase 6 — Trực quan + báo cáo | 🟡 Đang làm |
 | Phase 3–6 | ⬜ Chưa bắt đầu |
 
 ---
@@ -903,6 +904,7 @@ Tương tự cho ITSP (`dataset/Lab-*/<problem_id>/*_buggy.c`, `*_correct.c`, te
 | **DP4** | Số cụm k cho từng bài | Phase 4 |
 | | ✅ **Đã chốt (2026-11-19):** dữ liệu thật K-modes **digits 5, grade 4, median 5, smallest 4** (`config.K_REAL`; k lớn nhất trong 3–6 có silhouette gần tối đa và cụm nhỏ nhất ≥ 2–3). Dữ liệu sinh: k = số nhãn đơn (E1) | |
 | **DP5** | Đặt tên misconception cho từng cụm từ luật sinh ra | Phase 5 |
+| | ✅ **Tạm chốt (2026-11-19):** dùng tên đề xuất trong `results/tables/p5_cluster_names.csv` (cột `name_draft`); người dùng sẽ sửa sau — Phase 6 đọc tên từ file này | |
 
 ---
 

@@ -33,7 +33,7 @@
 |---|---|
 | Phase 0 — Setup, runner, schema | ✅ Hoàn tất trên server (phương án A — Docker). `docker exec aai-lab pytest -q` → **9 passed** (~12 s; 6 test plan + 3 test môi trường `tests/test_env.py`) |
 | Phase 1 — Dữ liệu IntroClass | ✅ Xong 1.1–1.7, DP0 + DP1 đã chốt. (1.8 ITSP tùy chọn — chưa làm) |
-| Phase 2 — Mutation | ⬜ **Chờ DP2** (taxonomy) |
+| Phase 2 — Mutation | 🟡 DP2 đã chốt, đang làm |
 | Phase 3–6 | ⬜ Chưa bắt đầu |
 
 ---
@@ -894,6 +894,7 @@ Tương tự cho ITSP (`dataset/Lab-*/<problem_id>/*_buggy.c`, `*_correct.c`, te
 | **DP1** | Chọn 3–5 bài trọng tâm (≥ ~50 bài sai, misconception rõ ràng) | Sau Bước 1.7 |
 | | ✅ **Đã chốt (2026-11-19): `digits, grade, median, smallest`** (`config.PROBLEMS`; 108/38/69/64 bài sai unique). Bỏ syllables, checksum. **Theo SV:** giữ mọi phiên bản unique khi gom cụm; macro-feedback đếm **số SV distinct** mỗi cụm (cột `repo` trong `SUB_FLAGS`) | |
 | **DP2** | Taxonomy misconception cho mutation | Đầu Phase 2 |
+| | ✅ **Đã chốt (2026-11-19): M1–M6 + M7 (biên so sánh trong chuỗi if) + M8 (số âm với `%`, `/`)** — xem mục 8. M2/M4 cấy vào lời giải tự viết. ITSP (1.8) để sau Phase 4 | |
 | **DP3** | Trọng số nhóm thuộc tính (Test / Output-diff / AST) | Phase 3, tinh chỉnh sau ablation E3 |
 | **DP4** | Số cụm k cho từng bài | Phase 4 |
 | **DP5** | Đặt tên misconception cho từng cụm từ luật sinh ra | Phase 5 |
@@ -902,7 +903,7 @@ Tương tự cho ITSP (`dataset/Lab-*/<problem_id>/*_buggy.c`, `*_correct.c`, te
 
 ## 8. Phase 2 — Sinh dữ liệu mutation có nhãn
 
-**Taxonomy khởi điểm (chờ DP2):**
+**Taxonomy (DP2 đã chốt):**
 
 | Mã | Misconception | Toán tử đột biến |
 |---|---|---|
@@ -912,6 +913,8 @@ Tương tự cho ITSP (`dataset/Lab-*/<problem_id>/*_buggy.c`, `*_correct.c`, te
 | M4 | Chia nguyên | bỏ ép kiểu `(float)` |
 | M5 | Khởi tạo biến tích lũy | bỏ `sum=0`; `max=a[0]` → `max=0` |
 | M6 | Phạm vi `return`/`break` | đưa `return` vào trong vòng lặp |
+| M7 | Biên so sánh trong chuỗi `if` | `>` ↔ `>=`, `<` ↔ `<=` trong điều kiện `if` (không phải vòng lặp) — grade, ca bằng nhau ở median/smallest |
+| M8 | Số âm với `%` và `/` | bỏ `abs()`, bỏ lệnh đổi dấu `n = -n`, bỏ dấu `-` khi in — digits |
 
 **Yêu cầu:**
 - `src/mutators.py`: sửa theo **byte offset từ AST tree-sitter**, không dùng regex. Duyệt cây đệ quy (không dùng `Query`).

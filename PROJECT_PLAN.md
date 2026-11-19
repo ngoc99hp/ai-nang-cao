@@ -31,7 +31,7 @@
 
 | Phase | Trạng thái |
 |---|---|
-| Phase 0 — Setup, runner, schema | ✅ Hoàn tất và kiểm chứng trên Colab. Đã khảo sát server, chốt **phương án A (Docker)**. **Tiếp tục: dựng container (3.5) → tạo file mục 4 → `pytest` trong container** |
+| Phase 0 — Setup, runner, schema | ✅ Hoàn tất trên server (phương án A — Docker). `docker exec aai-lab pytest -q` → **9 passed** (~12 s; 6 test plan + 3 test môi trường `tests/test_env.py`) |
 | Phase 1 — Dữ liệu IntroClass | 🟡 Đã khảo sát cấu trúc (Bước 1.1–1.2). **Tiếp tục từ Bước 1.3** (mục 6) |
 | Phase 2–6 | ⬜ Chưa bắt đầu |
 
@@ -157,6 +157,14 @@ services:
     security_opt: ["no-new-privileges:true"]
     restart: "no"
 ```
+
+**`pytest.ini`** — `/tmp` trong container là tmpfs **`noexec`** (cố ý giữ: binary chỉ được chạy trong `work/`), nên thư mục tạm của pytest phải nằm trong `work/`:
+```ini
+[pytest]
+testpaths = tests
+addopts = --basetemp=work/pytest
+```
+Mọi binary/file tạm cần thực thi phải đặt trong `config.WORK`, **không** dùng `tempfile.mkdtemp()` mặc định (rơi vào `/tmp` → `Permission denied`, rc 126 → runner báo FAIL giả). `tempfile.TemporaryFile()` cho output trong runner thì vẫn dùng được (không cần exec).
 
 **`.dockerignore`** — build context chỉ cần `requirements.txt`:
 ```

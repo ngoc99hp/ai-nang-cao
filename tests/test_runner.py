@@ -58,7 +58,7 @@ MED_OUT = '"Please enter 3 numbers separated by spaces > %d is the median\\n",b'
 
 @pytest.mark.parametrize('fmt, rc, strict, sem', [
     (MED_OUT, 0, 'PASS', 'PASS'),
-    (MED_OUT, 3, 'FAIL', 'PASS'),                                  # DP0: exit ≠ 0 → strict FAIL
+    (MED_OUT, 3, 'PASS', 'PASS'),                                  # exit code không tính (P1.6)
     (MED_OUT.replace('is the', 'IS the'), 0, 'FAIL', 'PASS'),      # format_only
     (MED_OUT.replace(',b', ',a'), 0, 'FAIL', 'FAIL'),              # sai ngữ nghĩa
 ])
@@ -70,3 +70,13 @@ def test_problem_mode(tmp_path, fmt, rc, strict, sem):
     [row] = runner.run_batch([('m', src)], [('t0', tmp_path / 'in.txt', tmp_path / 'out.txt')],
                              tmp_path / 'bin', problem='median')
     assert (row['status'], row['status_sem'], row['returncode']) == (strict, sem, rc)
+
+
+def test_uninit_reproducible(tmp_path):
+    """GCC_FLAGS có -ftrivial-auto-var-init=zero → biến chưa khởi tạo luôn = 0."""
+    (tmp_path / 'in.txt').write_text('')
+    (tmp_path / 'out.txt').write_text('0\n')
+    src = tmp_path / 'u.c'
+    src.write_text('#include <stdio.h>\nint main(){int s; for(int i=0;i<0;i++) s=i; printf("%d\\n", s);}')
+    rows = runner.run_batch([('u', src)], [('t0', tmp_path / 'in.txt', tmp_path / 'out.txt')], tmp_path / 'bin')
+    assert rows[0]['status'] == 'PASS', rows

@@ -17,7 +17,8 @@ SEED = 42
 # --- Runner ---
 COMPILE_TIMEOUT = 10   # giây (wall)
 RUN_TIMEOUT     = 2    # giây CPU / test case
-GCC_FLAGS       = ['-O0', '-w', '-std=gnu99']
+GCC_FLAGS       = ['-O0', '-w', '-std=gnu99',
+                   '-ftrivial-auto-var-init=zero']   # biến cục bộ chưa khởi tạo = 0 → tái lập được (P1.6)
 GCC_LIBS        = ['-lm']
 
 # --- Quyết định domain (điền theo DP, mục 7) ---

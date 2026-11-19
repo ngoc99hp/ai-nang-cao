@@ -77,8 +77,8 @@ def judge(exe, input_path, expected_path, cpu_limit: float | None = None,
           problem: str | None = None) -> RunResult:
     """Chấm theo DP0: status = strict, status_sem = semantic (xem src/normalize.py).
 
-    problem=None (bench/synthetic tự viết): so token cho cả hai, bỏ qua exit code.
-    problem IntroClass: strict còn tính exit code ≠ 0 là FAIL (như check_output của dataset).
+    Exit code không ảnh hưởng PASS/FAIL ở cả hai chế độ (metadata IntroClass ghi PASS cho
+    bài rc ≠ 0 có output đúng — 90/90 ca, P1.6); returncode chỉ được lưu làm thuộc tính.
     """
     r = run_once(exe, input_path, cpu_limit)
     if r.status != 'OK':
@@ -89,8 +89,6 @@ def judge(exe, input_path, expected_path, cpu_limit: float | None = None,
     verdict = {m: 'PASS' if normalize.check(problem, r.stdout, expected, inp, m) else 'FAIL'
                for m in normalize.MODES}
     r.status, r.status_sem = verdict['strict'], verdict['semantic']
-    if problem is not None and r.returncode != 0:
-        r.status = 'FAIL'
     return r
 
 

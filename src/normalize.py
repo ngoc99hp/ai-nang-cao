@@ -2,7 +2,7 @@
 
 strict   : port nguyên văn bin/genprog_tests.py của IntroClass (kể cả bug của nó).
            Dùng để kiểm định runner với metadata.json. Exception trong checker → FAIL
-           (script gốc crash → exit ≠ 0 → test fail). rc ≠ 0 → FAIL được xử lý ở runner.
+           (script gốc crash → exit ≠ 0 → test fail). Exit code của bài KHÔNG tính (khớp metadata).
 semantic : trích đáp án lỏng — không phân biệt hoa/thường, chịu sai chính tả từ khóa
            và câu nhắc, bỏ qua khoảng trắng/xuống dòng, sửa bug checker gốc.
            Status dùng cho clustering. format_only = strict FAIL & semantic PASS.

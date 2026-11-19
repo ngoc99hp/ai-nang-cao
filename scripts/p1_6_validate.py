@@ -27,17 +27,23 @@ for p in ic.problems():
     # COMPILE_ERROR → mọi test coi như FAIL
     ce_rows = meta[meta.sub_id.isin(ce.sub_id)].assign(status='COMPILE_ERROR', status_sem='COMPILE_ERROR', returncode=pd.NA)
     j = meta.merge(tr[tr.test_id.notna()], on=['sub_id', 'test_id'], how='inner')
-    j = pd.concat([j, ce_rows], ignore_index=True)
+    if len(ce_rows):
+        j = pd.concat([j, ce_rows], ignore_index=True)
     j['nondet'] = j.sub_id.map(nd)
     j['ok'] = (j.status == 'PASS') == (j.meta == 'PASS')
+    ubf = config.INTERIM / 'uninit' / f'{p}.parquet'          # từ scripts/p1_6b_uninit_probe.py
+    ub = pd.read_parquet(ubf).groupby('sub_id').differs.any() if ubf.exists() else pd.Series(dtype=bool)
+    j['ub'] = j.sub_id.map(ub).fillna(False).astype(bool)
     d = j[~j.nondet]
+    c = d[~d.ub]
     summ.append(dict(problem=p, versions=len(v), compile_error=ce.sub_id.nunique(),
-                     det_tests=len(d), match_det=d.ok.mean(), match_all=j.ok.mean(),
-                     mism_det=int((~d.ok).sum()),
+                     det_tests=len(d), match_det=d.ok.mean(), match_det_noUB=c.ok.mean(),
+                     match_all=j.ok.mean(), ub_versions=int(ub.sum()),
+                     mism_det=int((~d.ok).sum()), mism_det_noUB=int((~c.ok).sum()),
                      rc_nonzero_det=int(((d.returncode.fillna(0) != 0) & d.status.isin(['PASS', 'FAIL'])).sum()),
                      sem_pass=float((tr.status_sem == 'PASS').mean()),
                      format_only=int(((tr.status != 'PASS') & (tr.status_sem == 'PASS')).sum())))
-    mm = d[~d.ok].merge(tr[['sub_id', 'test_id', 'stdout']], on=['sub_id', 'test_id'], how='left')
+    mm = d[~d.ok].drop(columns='stdout', errors='ignore').merge(tr[['sub_id', 'test_id', 'stdout']], on=['sub_id', 'test_id'], how='left')
     mism.append(mm.assign(problem=p))
 
 S = pd.DataFrame(summ)

@@ -32,7 +32,7 @@
 | Phase | Trạng thái |
 |---|---|
 | Phase 0 — Setup, runner, schema | ✅ Hoàn tất trên server (phương án A — Docker). `docker exec aai-lab pytest -q` → **9 passed** (~12 s; 6 test plan + 3 test môi trường `tests/test_env.py`) |
-| Phase 1 — Dữ liệu IntroClass | 🟡 Xong 1.1–1.5 (DP0 đã chốt). **Tiếp tục Bước 1.6** |
+| Phase 1 — Dữ liệu IntroClass | 🟡 Xong 1.1–1.6 (runner khớp metadata ≥ 98.2%). **Tiếp tục Bước 1.7** |
 | Phase 2–6 | ⬜ Chưa bắt đầu |
 
 ---
@@ -842,6 +842,19 @@ for p in problems:
 - **Kiểm định:** so kết quả PASS/FAIL của runner với `metadata.json` cho các phiên bản *deterministic*. Báo cáo tỷ lệ khớp theo problem. Tiêu chí: ≥ 95% khớp; liệt kê và phân tích các trường hợp lệch trước khi đi tiếp.
 - Ghi chú: gợi ý `make` của dataset có thể dùng flag khác — nếu lệch nhiều do compile, so với `<problem>/Makefile`.
 
+✅ **Xong.** `scripts/p1_6_run_tests.py` (~6 phút, 18.144 lượt chạy, 0 COMPILE_ERROR; container ở đúng 1.5 CPU, hpstin không bị ảnh hưởng). Kiểm định `scripts/p1_6_validate.py` → `results/tables/p1_6_validation.csv`:
+
+| problem | khớp (deterministic) | lệch |
+|---|---:|---:|
+| checksum / digits / grade | 100% | 0 |
+| median | 99.81% | 5 |
+| smallest | 99.81% | 5 |
+| syllables | 98.20% | 21 |
+
+Quá trình: lần chạy đầu smallest chỉ 90.4%. Nguyên nhân: (1) luật rc ≠ 0 → FAIL sai với metadata (đã bỏ, xem DP0); (2) biến chưa khởi tạo — `scripts/p1_6b_uninit_probe.py` compile với `-ftrivial-auto-var-init=zero` vs `=pattern`, **79/1143 phiên bản phụ thuộc giá trị rác** (median 26, smallest 33, syllables 11, digits 5, checksum 4, grade 2; bảng `data/interim/uninit/`). Build `=zero` khớp metadata gần tuyệt đối → môi trường gốc 2014 cũng nhận 0. 31 ca lệch còn lại đều là meta FAIL / runner PASS, output trùng output metadata đã ghi (nhiễu nhãn của dataset) hoặc output ghi nhận rỗng.
+
+Runner thêm tham số `extra_flags` cho `compile_c`/`run_batch` (mặc định rỗng).
+
 ### Bước 1.7 — Lọc + dedup + thống kê
 
 - Giữ bài sai ngữ nghĩa: compile được + fail ≥ 1 test.
@@ -862,7 +875,8 @@ Tương tự cho ITSP (`dataset/Lab-*/<problem_id>/*_buggy.c`, `*_correct.c`, te
 | DP | Câu hỏi | Thời điểm |
 |---|---|---|
 | **DP0** | Lỗi định dạng (sai câu nhắc, khoảng trắng) có tính là misconception không? Mô phỏng đúng cách chấm của dataset hay chuẩn hóa mạnh hơn? | Sau Bước 1.3|
-| | ✅ **Đã chốt (2026-11-19): hai chế độ.** `status` = strict (port nguyên văn `genprog_tests.py`, exit code ≠ 0 → FAIL) dùng kiểm định runner; `status_sem` = semantic (trích đáp án lỏng, sửa bug checker, bỏ qua rc) dùng cho clustering; OAV `format_only` = strict FAIL & semantic PASS. Lỗi định dạng không phải misconception nhưng được ghi nhận. Runner/schema lưu `returncode` | |
+| | ✅ **Đã chốt (2026-11-19): hai chế độ.** `status` = strict (port nguyên văn `genprog_tests.py`; **exit code không tính** — đính chính sau P1.6: metadata ghi PASS cho 90/90 test rc ≠ 0 có output đúng) dùng kiểm định runner; `status_sem` = semantic (trích đáp án lỏng, sửa bug checker, bỏ qua rc) dùng cho clustering; OAV `format_only` = strict FAIL & semantic PASS. Lỗi định dạng không phải misconception nhưng được ghi nhận. Runner/schema lưu `returncode` (chỉ làm thuộc tính OAV) | |
+| | ✅ **Biến chưa khởi tạo (2026-11-19):** giữ các phiên bản phụ thuộc UB, gắn cờ `uninit_dependent` (thuộc tính OAV); build chuẩn dùng `-ftrivial-auto-var-init=zero` (trong `config.GCC_FLAGS`) để tái lập. Bản nondeterministic của dataset xử lý tương tự | |
 | **DP1** | Chọn 3–5 bài trọng tâm (≥ ~50 bài sai, misconception rõ ràng) | Sau Bước 1.7 |
 | **DP2** | Taxonomy misconception cho mutation | Đầu Phase 2 |
 | **DP3** | Trọng số nhóm thuộc tính (Test / Output-diff / AST) | Phase 3, tinh chỉnh sau ablation E3 |

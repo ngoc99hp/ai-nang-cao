@@ -13,7 +13,7 @@ from collections import defaultdict
 import ast_utils as au
 import normalize as nz
 
-GROUPS = ('T', 'O', 'A')
+GROUPS = ('T', 'O', 'A', 'D')     # D: src/diff_features.py
 LOOPS = ('for_statement', 'while_statement', 'do_statement')
 CMP = ('<', '<=', '>', '>=')
 EXTREMUM = re.compile(r'(?i)(min|max|mn|mx|small|large|big|least|great|low|high|med)')
@@ -171,7 +171,16 @@ def _opset(ops):
     return ','.join(sorted(ops)) if ops else 'none'
 
 
+# Thuộc tính chỉ mô tả phong cách lời giải (gom theo chương trình gốc, không theo misconception — P4)
+STYLE = {('A', 'loop', 'count'), ('A', 'condition', 'n_if'), ('A', 'function', 'n_user_funcs'),
+         ('A', 'function', 'addr_arg_user_call')}
+
+
 def ast_features(code: bytes) -> dict:
+    return {k: v for k, v in _ast_all(code).items() if k not in STYLE}
+
+
+def _ast_all(code: bytes) -> dict:
     root = au.parse(code).root_node
     nodes = list(au.walk(root))
     loops = [n for n in nodes if n.type in LOOPS]

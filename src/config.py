@@ -27,4 +27,5 @@ FEATURE_WEIGHTS = {    # DP3 — giá trị khởi điểm
     'test': 1.0,
     'outdiff': 1.5,
     'ast': 0.5,
+    'diff': 1.5,       # nhóm D (khác biệt với bản đúng gần nhất) — giá trị khởi điểm
 }

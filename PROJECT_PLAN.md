@@ -960,6 +960,9 @@ Tỷ lệ hợp lệ: M7 thấp nhất (26%) — ở median/smallest **mọi** m
 
 Kiểm tra định tính (synthetic): M8 → `sign_error` 60%, M6 → `missing_items/missing_last`, M4 → `truncated_decimal` 100%.
 
+**Bổ sung nhóm D (người dùng chọn sau chẩn đoán P4)** — `src/diff_features.py`: so bài sai với **bản đúng gần nhất** (dữ liệu thật: bản đúng sớm nhất về sau của chính SV nếu có — digits 64/108, grade 35/38, median 44/69, smallest 18/64; còn lại: gần nhất theo token trong kho IntroClass đúng + bench). Dữ liệu sinh dùng cùng quy trình (không dùng `parent_id`) → tìm đúng chương trình gốc 100% ⇒ **trên synthetic, D gần như "oracle" của phép đột biến; phép thử thật của D là dữ liệu thật (E4)**. 24 thuộc tính `D:diff.*`: `cmp_loop, cmp_if, cmp_kind (strictness/reversed), eq_assign, logic_op, loop_init, init_value, literal_other, ptr_missing/extra, cast_missing, neg_missing/extra, moved_into/out_of_loop, extra/missing_break, extra/missing_output, var_changed, arith_changed, stmt_missing/extra, size`. Bảng tham chiếu: `data/processed/refs/`.
+Bỏ 4 thuộc tính A chỉ mô tả phong cách: `loop.count, condition.n_if, function.n_user_funcs, function.addr_arg_user_call`.
+
 ---
 
 ## 10. Phase 4 — Clustering
@@ -996,6 +999,8 @@ Output: `data/processed/clusters.parquet` (`sub_id, method, k, cluster_id`), hì
 - **Synthetic ARI thấp**: digits 0.14, median 0.12, smallest 0.11, average 0.15 (K-modes, k = số nhãn đơn); grade 0.88 (do M7 chiếm 50/79).
 - **Ablation chẩn đoán**: nhóm A gom theo **chương trình gốc** (ARI vs `parent_id` 0.47–0.64 ở median/smallest/average) chứ không theo misconception; T/O cũng chỉ đạt ARI 0.06–0.25 → cùng một misconception biểu hiện khác nhau tùy chương trình gốc.
 - Khả thi của đặc trưng "khác biệt so với lời giải đúng gần nhất": bài sai thật có bản đúng về sau của chính SV: digits 59%, grade 92%, median 64%, smallest 28%.
+
+**Sau khi thêm D** (agglomerative, k = số nhãn đơn): D riêng lẻ ARI digits 0.49, grade 0.60, median 0.61, smallest 0.34, average 0.34 (T+O: 0.06–0.17). Ghép với trọng số khởi điểm (T1, O1.5, A0.5, D1.5) → D bị pha loãng, ARI TB 0.31. Lưới trọng số (`results/tables/p4_weight_grid.csv`): D = 3 → ARI TB 0.55–0.59; silhouette dữ liệu thật (k = 6) 0.32–0.42 gần như không đổi. ⚠ Chọn trọng số theo ARI synthetic rồi báo cáo ARI synthetic là tối ưu trên chính tập đánh giá → báo cáo E1/E3 cần ghi rõ hoặc dùng leave-one-problem-out.
 
 ---
 

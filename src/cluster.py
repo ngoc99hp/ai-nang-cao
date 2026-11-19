@@ -14,10 +14,10 @@ from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score, s
 import config
 import schema
 
-GROUP_KEY = {'T': 'test', 'O': 'outdiff', 'A': 'ast'}
+GROUP_KEY = {'T': 'test', 'O': 'outdiff', 'A': 'ast', 'D': 'diff'}
 
 
-def feature_matrix(W: pd.DataFrame, groups=('T', 'O', 'A'), weights=None, normalize_groups=True):
+def feature_matrix(W: pd.DataFrame, groups=('T', 'O', 'A', 'D'), weights=None, normalize_groups=True):
     """→ (X_codes int[n, d], w float[d], cols). Bỏ cột hằng."""
     weights = weights or config.FEATURE_WEIGHTS
     cols = [c for c in W.columns if c not in schema.WIDE_KEYS and c[0] in groups and W[c].nunique() > 1]

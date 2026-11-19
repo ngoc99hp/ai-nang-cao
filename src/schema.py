@@ -68,13 +68,13 @@ OAV_LONG = pa.schema([
     ('sub_id',    pa.string()),
     ('problem',   pa.string()),
     ('source',    pa.string()),
-    ('group',     pa.string()),     # T / O / A
+    ('group',     pa.string()),     # T / O / A / D
     ('object',    pa.string()),
     ('attribute', pa.string()),
     ('value',     pa.string()),
 ])
 WIDE_KEYS = ('sub_id', 'problem', 'source', 'label_true', 'repo')   # cột khóa của oav_wide
-GROUPS = ('T', 'O', 'A')
+GROUPS = ('T', 'O', 'A', 'D')
 
 _ENUMS = {'status': STATUS, 'status_sem': STATUS, 'source': SOURCES, 'group': GROUPS}
 _INT_COLS = {'returncode', 'n_tests', 'n_fail_strict', 'n_fail_sem', 'n_dups', 'line'}         # int nullable → pandas Int32

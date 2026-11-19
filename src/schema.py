@@ -47,8 +47,24 @@ SUB_FLAGS = pa.schema([
     ('keep',             pa.bool_()),      # compiled & n_fail_sem ≥ 1 & là đại diện
 ])
 
+# Nhật ký mutant (Phase 2): mọi ứng viên, kể cả bị loại.
+MUTANTS = pa.schema([
+    ('sub_id',     pa.string()),
+    ('problem',    pa.string()),
+    ('parent_id',  pa.string()),     # sub_id lời giải đúng gốc
+    ('label_true', pa.string()),     # 'M1' hoặc 'M1+M7'
+    ('ops',        pa.string()),     # tên toán tử, nối bằng '+'
+    ('desc',       pa.string()),
+    ('line',       pa.int32()),
+    ('compiled',   pa.bool_()),
+    ('n_fail_sem', pa.int32()),
+    ('differs',    pa.bool_()),      # hành vi khác bản gốc ở ≥ 1 test (loại equivalent mutant)
+    ('valid',      pa.bool_()),      # compiled & n_fail_sem ≥ 1 & differs
+    ('selected',   pa.bool_()),
+])
+
 _ENUMS = {'status': STATUS, 'status_sem': STATUS, 'source': SOURCES}
-_INT_COLS = {'returncode', 'n_tests', 'n_fail_strict', 'n_fail_sem', 'n_dups'}         # int nullable → pandas Int32
+_INT_COLS = {'returncode', 'n_tests', 'n_fail_strict', 'n_fail_sem', 'n_dups', 'line'}         # int nullable → pandas Int32
 
 
 def validate(df: pd.DataFrame, schema: pa.Schema) -> None:
@@ -60,7 +76,7 @@ def validate(df: pd.DataFrame, schema: pa.Schema) -> None:
             bad = set(df[col].dropna().unique()) - set(allowed)
             if bad:
                 raise ValueError(f'Giá trị không hợp lệ ở cột {col!r}: {sorted(bad)}')
-    if schema in (SUBMISSIONS, SUB_FLAGS) and df['sub_id'].duplicated().any():
+    if schema in (SUBMISSIONS, SUB_FLAGS, MUTANTS) and df['sub_id'].duplicated().any():
         raise ValueError('sub_id bị trùng trong submissions')
 
 

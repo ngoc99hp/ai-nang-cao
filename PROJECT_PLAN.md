@@ -923,6 +923,20 @@ Tương tự cho ITSP (`dataset/Lab-*/<problem_id>/*_buggy.c`, `*_correct.c`, te
 - 30–50 mutant / misconception / bài; ~15% mutant kết hợp 2 lỗi (nhãn đa trị — ghi rõ trong `label_true`, ví dụ `M1+M4`).
 - `source='synthetic'`, `label_true` bắt buộc.
 
+**Tiến độ (2026-11-19):** P2.1 `src/mutators.py` (M1–M8, sửa theo byte offset AST, 17 unit test) · P2.2 `bench/` 11 lời giải tự viết (+ bài phụ `average` có 8 test riêng cho M4) · P2.3 `scripts/p2_3_generate.py` → `data/interim/synthetic/`, bảng `results/tables/p2_mutants.csv`.
+
+Mutant đơn được chọn (valid = compile + fail ≥ 1 test semantic + khác hành vi bản gốc):
+
+| problem | M1 | M2 | M3 | M4 | M5 | M6 | M7 | M8 | kép | tổng |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| digits | 24 | 5 | 50 | 0 | 4 | 50 | 29 | 48 | 37 | 247 |
+| grade | 4 | 2 | 8 | 0 | 0 | 3 | 50 | 0 | 12 | 79 |
+| median | 4 | 6 | 13 | 0 | 1 | 4 | **0** | 3 | 5 | 36 |
+| smallest | 4 | 1 | 0 | 0 | 4 | 8 | **0** | 0 | 3 | 20 |
+| average | 5 | 2 | 0 | 3 | 3 | 5 | 0 | 0 | 3 | 21 |
+
+Tỷ lệ hợp lệ: M7 thấp nhất (26%) — ở median/smallest **mọi** mutant `>`↔`>=` đều tương đương (khi hai giá trị bằng nhau, chọn bên nào cũng ra cùng kết quả) → 0 mutant M7. M2/M4 ít vì chỉ có trong lời giải tự viết.
+
 ---
 
 ## 9. Phase 3 — Trích xuất OAV

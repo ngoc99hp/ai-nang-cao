@@ -32,8 +32,9 @@
 | Phase | Trạng thái |
 |---|---|
 | Phase 0 — Setup, runner, schema | ✅ Hoàn tất trên server (phương án A — Docker). `docker exec aai-lab pytest -q` → **9 passed** (~12 s; 6 test plan + 3 test môi trường `tests/test_env.py`) |
-| Phase 1 — Dữ liệu IntroClass | 🟡 Xong 1.1–1.7. **Chờ DP1** (mục 6, Bước 1.7) |
-| Phase 2–6 | ⬜ Chưa bắt đầu |
+| Phase 1 — Dữ liệu IntroClass | ✅ Xong 1.1–1.7, DP0 + DP1 đã chốt. (1.8 ITSP tùy chọn — chưa làm) |
+| Phase 2 — Mutation | ⬜ **Chờ DP2** (taxonomy) |
+| Phase 3–6 | ⬜ Chưa bắt đầu |
 
 ---
 
@@ -891,6 +892,7 @@ Tương tự cho ITSP (`dataset/Lab-*/<problem_id>/*_buggy.c`, `*_correct.c`, te
 | | ✅ **Đã chốt (2026-11-19): hai chế độ.** `status` = strict (port nguyên văn `genprog_tests.py`; **exit code không tính** — đính chính sau P1.6: metadata ghi PASS cho 90/90 test rc ≠ 0 có output đúng) dùng kiểm định runner; `status_sem` = semantic (trích đáp án lỏng, sửa bug checker, bỏ qua rc) dùng cho clustering; OAV `format_only` = strict FAIL & semantic PASS. Lỗi định dạng không phải misconception nhưng được ghi nhận. Runner/schema lưu `returncode` (chỉ làm thuộc tính OAV) | |
 | | ✅ **Biến chưa khởi tạo (2026-11-19):** giữ các phiên bản phụ thuộc UB, gắn cờ `uninit_dependent` (thuộc tính OAV); build chuẩn dùng `-ftrivial-auto-var-init=zero` (trong `config.GCC_FLAGS`) để tái lập. Bản nondeterministic của dataset xử lý tương tự | |
 | **DP1** | Chọn 3–5 bài trọng tâm (≥ ~50 bài sai, misconception rõ ràng) | Sau Bước 1.7 |
+| | ✅ **Đã chốt (2026-11-19): `digits, grade, median, smallest`** (`config.PROBLEMS`; 108/38/69/64 bài sai unique). Bỏ syllables, checksum. **Theo SV:** giữ mọi phiên bản unique khi gom cụm; macro-feedback đếm **số SV distinct** mỗi cụm (cột `repo` trong `SUB_FLAGS`) | |
 | **DP2** | Taxonomy misconception cho mutation | Đầu Phase 2 |
 | **DP3** | Trọng số nhóm thuộc tính (Test / Output-diff / AST) | Phase 3, tinh chỉnh sau ablation E3 |
 | **DP4** | Số cụm k cho từng bài | Phase 4 |

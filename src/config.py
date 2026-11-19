@@ -22,7 +22,7 @@ GCC_FLAGS       = ['-O0', '-w', '-std=gnu99',
 GCC_LIBS        = ['-lm']
 
 # --- Quyết định domain (điền theo DP, mục 7) ---
-PROBLEMS = []          # DP1
+PROBLEMS = ['digits', 'grade', 'median', 'smallest']   # DP1 (2026-11-19)
 FEATURE_WEIGHTS = {    # DP3 — giá trị khởi điểm
     'test': 1.0,
     'outdiff': 1.5,

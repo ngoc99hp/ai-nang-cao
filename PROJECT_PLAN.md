@@ -32,7 +32,7 @@
 | Phase | Trạng thái |
 |---|---|
 | Phase 0 — Setup, runner, schema | ✅ Hoàn tất trên server (phương án A — Docker). `docker exec aai-lab pytest -q` → **9 passed** (~12 s; 6 test plan + 3 test môi trường `tests/test_env.py`) |
-| Phase 1 — Dữ liệu IntroClass | 🟡 Đã khảo sát cấu trúc (Bước 1.1–1.2). **Tiếp tục từ Bước 1.3** (mục 6) |
+| Phase 1 — Dữ liệu IntroClass | 🟡 Xong 1.1–1.3 + 1.5 (parser `src/introclass.py`, 22 tests pass). **Chờ DP0** → Bước 1.4 (mục 5.7, 6) |
 | Phase 2–6 | ⬜ Chưa bắt đầu |
 
 ---
@@ -719,6 +719,42 @@ OUT: 'Enter an abitrarily long string, ending with carriage return > Check sum i
 → So sánh token thô sẽ đánh FAIL cả bài chỉ khác chữ trong câu nhắc. Quy tắc chuẩn hóa phụ thuộc **DP0** và logic trong `genprog_tests.py`.
 
 ---
+
+### 5.7. Kết quả Bước 1.3 (log: `work/logs/p1_3_survey.log`, `p1_3b_survey.log`)
+
+Dataset: commit `897fd9c` (2016-02-24), 2.0 GB.
+
+**Logic chấm `genprog_tests.py`** — mỗi bài một hàm `check_<problem>`, **trích đáp án bằng regex, bỏ qua câu nhắc**; ngoài ra có "negative match" (không được in thêm đáp án sai):
+
+| problem | Điều kiện PASS | Ghi chú / lỗi của checker gốc |
+|---|---|---|
+| checksum | `Check[ ]?sum is X` đúng ký tự X; không có `Check sum is [^X]` | IGNORECASE |
+| digits | `findall('[-]?\d\n')` bằng nhau (mỗi chữ số kết thúc bằng `\n`) | chữ số in cùng dòng với text khác vẫn bắt được nếu ngay trước `\n` |
+| grade | `Student has an X grade` / `Student has failed the course`; không in grade khác | IGNORECASE; **sai chính tả** (`Studetn`) → FAIL |
+| median | `(-?\d+) is the median` bằng giá trị đúng; không in "N is the median" với N khác | **phân biệt hoa thường** |
+| smallest | `(-?\d+) is the smallest` bằng giá trị đúng | **bug: negative check tìm trong `test_input` thay vì output → không bao giờ có tác dụng** |
+| syllables | `syllables is X`; không có `syllables is [^X]` | `[^X]` là lớp ký tự → sai với X nhiều chữ số |
+
+Khác biệt cần lưu ý khi đối chiếu runner ↔ metadata (Bước 1.6): dataset dùng `subprocess.check_output` → **exit code ≠ 0 làm test FAIL** (exception), timeout 2 s **wall-clock**; runner của ta coi exit code ≥ 0 là bình thường và dùng CPU time.
+
+**`metadata.json`**: `pass`/`fail` là **số file test** (`'5'` ↔ `tests/blackbox/5.*`), đầy đủ cho mọi phiên bản (đã kiểm chứng bằng `tests/test_introclass.py`, khớp ánh xạ `pN/nN` trong `*_test.sh`).
+
+**`defect-classification.json`**: revision dạng `N_<sha>` ↔ thư mục `{N:03d}` (sha = `metadata['revision']`, khớp 1143/1143). `bugclasses` gồm `output mismatch` (4317), `human fix - not a defect` (135 — đúng bằng các phiên bản pass toàn bộ), `other` (113), `nondeterminism` (26), `timeout` (4); 1000/1143 phiên bản có `len(bugclasses) == số test fail` → **nhãn theo triệu chứng từng test, không phải misconception → không dùng làm nhãn tham chiếu cho E4** (chỉ dùng để lọc). `isReferenceDefect` không tương ứng với pass/fail (438 True vẫn fail) — chưa rõ ngữ nghĩa, không dùng.
+
+**Số bài sai** (theo metadata của dataset):
+
+| problem | versions | pass all | fail ≥ 1 | & deterministic | & unique | fail toàn bộ & det |
+|---|---:|---:|---:|---:|---:|---:|
+| checksum | 69 | 17 | 52 | 22 | **12** | 0 |
+| digits | 236 | 32 | 204 | 180 | **92** | 0 |
+| grade | 268 | 40 | 228 | 159 | **63** | 0 |
+| median | 232 | 26 | 206 | 178 | **57** | 0 |
+| smallest | 177 | 10 | 167 | 155 | **66** | 0 |
+| syllables | 161 | 10 | 151 | 63 | **39** | 0 |
+
+Nondeterministic: 251/1143 (syllables 88/161 — thường do biến đếm chưa khởi tạo, chính là một misconception). checksum quá ít bài → gần như chắc bị loại ở DP1.
+
+**Ví dụ output fail** (minh họa cho DP0): grade `Studetn has an C grade` (sai chính tả, đáp án đúng) và `Student has an F grade` (thay vì `failed the course`); median `seperated` trong câu nhắc (không ảnh hưởng checker); smallest không in gì sau câu nhắc.
 
 ## 6. Phase 1 — Các bước tiếp theo
 

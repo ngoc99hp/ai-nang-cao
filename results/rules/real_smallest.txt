@@ -1,0 +1,10 @@
+# real/smallest: 64 bài, 4 cụm, 26 thuộc tính (O/A/D)
+# uncovered: {}
+R1: NẾU [D:diff.cmp_if = T] THÌ Cụm 0 [coverage 48/48, accuracy 1.00]
+R2: NẾU [D:diff.size = 1] THÌ Cụm 1 [coverage 2/2, accuracy 1.00]
+R3: NẾU [A:condition.if_cmp = nonstrict] VÀ [D:diff.size = 21+] THÌ Cụm 2 [coverage 5/7, accuracy 1.00]
+R4: NẾU [D:diff.cmp_if = F] VÀ [D:diff.stmt_extra = T] THÌ Cụm 2 [coverage 4/7, accuracy 1.00]
+R5: NẾU [O:tests_zero.fail = none] VÀ [D:diff.cmp_if = F] THÌ Cụm 3 [coverage 4/7, accuracy 1.00]
+R6: NẾU [O:tests_negative.fail = none] VÀ [O:tests_sorted.fail = some] VÀ [D:diff.cmp_if = F] THÌ Cụm 3 [coverage 3/7, accuracy 1.00]
+R7: NẾU [O:tests_tie.fail = none] THÌ Cụm 3 [coverage 2/7, accuracy 1.00]
+R8: NẾU [O:output.output_zero = T] VÀ [D:diff.size = 2-5] THÌ Cụm 3 [coverage 2/7, accuracy 1.00]

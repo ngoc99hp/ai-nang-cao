@@ -36,7 +36,7 @@
 | Phase 2 — Mutation | ✅ Xong (480 mutant có nhãn, mục 8) |
 | Phase 3 — OAV | ✅ Xong (mục 9) |
 | Phase 4 — Clustering | ✅ Xong (DP3, DP4 đã chốt) |
-| Phase 5 — Luật + đánh giá | 🟡 Đang làm |
+| Phase 5 — Luật + đánh giá | 🟡 E1–E5 xong. **Chờ DP5** (đặt tên cụm) |
 | Phase 3–6 | ⬜ Chưa bắt đầu |
 
 ---
@@ -1026,6 +1026,14 @@ Output: `data/processed/clusters.parquet` (`sub_id, method, k, cluster_id`), hì
 | E5 | Chất lượng luật | cả hai | coverage, accuracy, số điều kiện/luật; ILA vs ID3 |
 
 Xuất `results/tables/E*.csv`.
+
+**Kết quả (2026-11-19)** — `src/ila.py` (tự cài, kiểm chứng trên ví dụ của bài báo gốc), `scripts/p5_experiments.py`; luật: `results/rules/<dataset>_<problem>.txt`; cụm chính: `data/processed/clusters_main.parquet`.
+
+- **E1/E2** (synthetic, ARI, k = số nhãn đơn): K-modes 0.48–0.73 (avg 0.54, digits 0.66, grade 0.73, median 0.48, smallest 0.67); K-means one-hot 0.47–0.98; Agglomerative 0.51–0.67. Không có phương pháp thắng tuyệt đối.
+- **E1b — leave-one-problem-out cho trọng số**: ARI held-out digits 0.28, grade 0.67, median 0.51, smallest 0.15, average 0.34 (so với DP3: 0.64/0.67/0.51/0.56/0.54) → trọng số tối ưu **nhạy theo bài**; ARI với DP3 có phần lạc quan, phải nêu trong báo cáo.
+- **E3 — ablation** (K-modes ARI): D là nhóm quyết định (A+D, O+D, O+A+D ≫ O, A, O+A); O+A+D tốt nhất cho digits (0.66) và smallest (0.67); T+O+A+D (bật T) giảm ở 3/5 bài.
+- **E4 — dữ liệu thật** (K_REAL): silhouette digits 0.30, grade 0.50, median 0.25, smallest 0.45; cụm lệch cỡ (digits 60/4/19/15/10; smallest 48/2/7/7). Không có nhãn tham chiếu (bugclasses theo triệu chứng; ITSP để sau).
+- **E5 — luật**: ILA luật ngắn hơn (1.5–2.0 điều kiện/luật vs ID3 2.8–4.6), nhiều luật hơn (8–46 vs 6–18); CV accuracy ILA 0.70–0.92, ID3 0.72–0.97.
 
 ---
 

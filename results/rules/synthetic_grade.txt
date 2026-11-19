@@ -1,0 +1,15 @@
+# synthetic/grade: 79 bài, 5 cụm, 26 thuộc tính (O/A/D)
+# uncovered: {}
+R1: NẾU [O:tests_failing.fail = none] VÀ [D:diff.cmp_if = T] THÌ Cụm 0 [coverage 57/57, accuracy 1.00]
+R2: NẾU [O:tests_top.fail = some] THÌ Cụm 0 [coverage 15/57, accuracy 1.00]
+R3: NẾU [O:output.multiple_answers = T] THÌ Cụm 0 [coverage 3/57, accuracy 1.00]
+R4: NẾU [O:output.missing_answer = F] VÀ [D:diff.moved_into_loop = T] THÌ Cụm 1 [coverage 2/3, accuracy 1.00]
+R5: NẾU [O:tests_boundary.fail = some] VÀ [O:tests.fail_frac = mid] THÌ Cụm 1 [coverage 2/3, accuracy 1.00]
+R6: NẾU [D:diff.ptr_missing = T] THÌ Cụm 2 [coverage 3/3, accuracy 1.00]
+R7: NẾU [A:loop.cmp_op = <,<=] THÌ Cụm 3 [coverage 2/6, accuracy 1.00]
+R8: NẾU [D:diff.loop_init = T] THÌ Cụm 3 [coverage 2/6, accuracy 1.00]
+R9: NẾU [O:output.missing_answer = F] VÀ [O:tests_failing.fail = all] THÌ Cụm 3 [coverage 2/6, accuracy 1.00]
+R10: NẾU [O:tests_top.fail = all] VÀ [A:loop.cmp_op = <] VÀ [D:diff.size = 1] THÌ Cụm 3 [coverage 2/6, accuracy 1.00]
+R11: NẾU [O:tests_boundary.fail = all] VÀ [A:loop.cmp_op = none] VÀ [D:diff.size = 1] THÌ Cụm 4 [coverage 7/10, accuracy 1.00]
+R12: NẾU [O:tests_failing.fail = all] VÀ [A:condition.assign_in_cond = T] THÌ Cụm 4 [coverage 6/10, accuracy 1.00]
+R13: NẾU [A:condition.if_cmp = mixed] VÀ [D:diff.cmp_if = F] THÌ Cụm 4 [coverage 3/10, accuracy 1.00]

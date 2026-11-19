@@ -990,6 +990,13 @@ Chọn k: quét 2–12, silhouette (precomputed) + cost K-modes (elbow) + dendro
 
 Output: `data/processed/clusters.parquet` (`sub_id, method, k, cluster_id`), hình silhouette/elbow/dendrogram.
 
+**Lần chạy đầu (2026-11-19)** — `src/cluster.py`, `scripts/p4_cluster.py` → `results/tables/p4_k_sweep.csv`, `data/processed/clusters.parquet` (mọi k). Trọng số khởi điểm, chuẩn hóa theo nhóm (cột trọng số = W_nhóm / số cột nhóm). Hình để Phase 6 (image chưa có matplotlib).
+
+- Silhouette không cho k rõ ràng: tăng dần theo k ở real median/smallest (nhiều hàng trùng hệt nhau).
+- **Synthetic ARI thấp**: digits 0.14, median 0.12, smallest 0.11, average 0.15 (K-modes, k = số nhãn đơn); grade 0.88 (do M7 chiếm 50/79).
+- **Ablation chẩn đoán**: nhóm A gom theo **chương trình gốc** (ARI vs `parent_id` 0.47–0.64 ở median/smallest/average) chứ không theo misconception; T/O cũng chỉ đạt ARI 0.06–0.25 → cùng một misconception biểu hiện khác nhau tùy chương trình gốc.
+- Khả thi của đặc trưng "khác biệt so với lời giải đúng gần nhất": bài sai thật có bản đúng về sau của chính SV: digits 59%, grade 92%, median 64%, smallest 28%.
+
 ---
 
 ## 11. Phase 5 — Quy nạp luật + Đánh giá

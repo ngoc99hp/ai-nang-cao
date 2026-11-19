@@ -1,0 +1,41 @@
+# Macro-feedback cho giảng viên — IntroClass (dữ liệu thật)
+
+Số SV = số sinh viên khác nhau trong cụm (một SV có thể nộp nhiều phiên bản). Tên misconception: bản đề xuất (DP5), sửa trong `results/tables/p5_cluster_names.csv`.
+
+## digits
+
+| Cụm | Misconception | Taxonomy | SV | Bài | Luật tiêu biểu (ILA) | Bài minh họa |
+|---|---|---|---:|---:|---|---|
+| C0 | Bỏ sót trường hợp biên n = 0 (thiếu nhánh xử lý đặc biệt) | - | 35 | 60 | `NẾU [D:diff.neg_extra = F] VÀ [D:diff.var_changed = F] THÌ Cụm 0 [coverage 47/60, accuracy 1.00]` | `ic_digits_1b31fa5c50f7_000` |
+| C2 | Thuật toán tách chữ số sai với số chứa chữ số 0 (dùng lũy thừa/hằng số) | - | 12 | 19 | `NẾU [D:diff.literal_other = T] VÀ [D:diff.stmt_extra = T] THÌ Cụm 2 [coverage 13/19, accuracy 1.00]` | `ic_digits_387be36eafae_000` |
+| C3 | Đặt dấu âm sai chỗ (in dấu cho mọi chữ số / in thêm) | M8 | 11 | 15 | `NẾU [O:tests_inner_zero.fail = some] VÀ [D:diff.extra_output = T] THÌ Cụm 3 [coverage 7/15, accuracy 1.00]` | `ic_digits_ca94e3756cbf_002` |
+| C4 | Thoát vòng lặp sớm (break/return sai phạm vi) | M6 | 7 | 10 | `NẾU [A:condition.if_cmp = strict] VÀ [D:diff.extra_break = T] THÌ Cụm 4 [coverage 4/10, accuracy 1.00]` | `ic_digits_f2997e14a460_002` |
+| C1 | Xử lý số âm sai trong điều kiện vòng lặp | M8+M1 | 3 | 4 | `NẾU [O:output.missing_answer = F] VÀ [D:diff.cmp_loop = T] THÌ Cụm 1 [coverage 3/4, accuracy 1.00]` | `ic_digits_90a14c1ac8f5_004` |
+
+## grade
+
+| Cụm | Misconception | Taxonomy | SV | Bài | Luật tiêu biểu (ILA) | Bài minh họa |
+|---|---|---|---:|---:|---|---|
+| C0 | Thiếu nhánh 'failed' cho điểm dưới ngưỡng D | - | 12 | 15 | `NẾU [O:tests_top.fail = none] VÀ [D:diff.size = 6-20] THÌ Cụm 0 [coverage 10/15, accuracy 1.00]` | `ic_grade_48b82975576f_000` |
+| C3 | Biên so sánh ngưỡng: dùng > thay vì >= | M7 | 7 | 12 | `NẾU [D:diff.cmp_kind = strictness] THÌ Cụm 3 [coverage 11/12, accuracy 1.00]` | `ic_grade_e23b96b6bab2_001` |
+| C1 | Nhầm biến/ngưỡng trong chuỗi if lồng nhau | - | 5 | 7 | `NẾU [O:tests_top.fail = none] VÀ [D:diff.var_changed = T] THÌ Cụm 1 [coverage 6/7, accuracy 1.00]` | `ic_grade_b1924d63a2e2_001` |
+| C2 | Hiểu sai đề (tính trung bình ngưỡng thay vì so điểm) — 1 SV | - | 1 | 4 | `NẾU [O:tests.fail_frac = high] THÌ Cụm 2 [coverage 4/4, accuracy 1.00]` | `ic_grade_af81ffd4bc47_000` |
+
+## median
+
+| Cụm | Misconception | Taxonomy | SV | Bài | Luật tiêu biểu (ILA) | Bài minh họa |
+|---|---|---|---:|---:|---|---|
+| C0 | So sánh nghiêm ngặt (<, >) bỏ sót trường hợp bằng nhau | M7 | 19 | 27 | `NẾU [D:diff.cmp_if = T] VÀ [D:diff.stmt_missing = F] THÌ Cụm 0 [coverage 21/27, accuracy 1.00]` | `ic_median_1b31fa5c50f7_000` |
+| C1 | Nhầm biến khi so sánh/hoán đổi | - | 13 | 19 | `NẾU [D:diff.cmp_if = F] VÀ [D:diff.missing_output = F] VÀ [D:diff.var_changed = T] THÌ Cụm 1 [coverage 12/19, accuracy 1.00]` | `ic_median_0cdfa335eea3_002` |
+| C3 | Chuỗi if độc lập thiếu nhánh còn lại (không in kết quả) | M6 | 12 | 16 | `NẾU [D:diff.var_changed = F] VÀ [D:diff.stmt_missing = F] VÀ [D:diff.cmp_kind = none] THÌ Cụm 3 [coverage 14/16, accuracy 1.00]` | `ic_median_c716ee619761_000` |
+| C4 | Khởi tạo biến trung gian sai (lệch 1) | M5 | 3 | 4 | `NẾU [O:tests_sorted.fail = some] VÀ [D:diff.init_value = T] THÌ Cụm 4 [coverage 4/4, accuracy 1.00]` | `ic_median_1bf73a9ca02e_000` |
+| C2 | Khởi tạo sai / lỗi chạy (crash) | M5 | 2 | 3 | `NẾU [O:tests_sorted.fail = all] THÌ Cụm 2 [coverage 2/3, accuracy 1.00]` | `ic_median_d6364e6e98a5_005` |
+
+## smallest
+
+| Cụm | Misconception | Taxonomy | SV | Bài | Luật tiêu biểu (ILA) | Bài minh họa |
+|---|---|---|---:|---:|---|---|
+| C0 | So sánh nghiêm ngặt không xử lý giá trị bằng nhau | M7 | 36 | 48 | `NẾU [D:diff.cmp_if = T] THÌ Cụm 0 [coverage 48/48, accuracy 1.00]` | `ic_smallest_90a14c1ac8f5_001` |
+| C3 | Dùng else-if làm mất các phép so sánh tiếp theo | - | 5 | 7 | `NẾU [O:tests_zero.fail = none] VÀ [D:diff.cmp_if = F] THÌ Cụm 3 [coverage 4/7, accuracy 1.00]` | `ic_smallest_6aaeaf2ffb62_000` |
+| C2 | Cập nhật min sai biến (so với phần tử thay vì min hiện tại) | - | 4 | 7 | `NẾU [A:condition.if_cmp = nonstrict] VÀ [D:diff.size = 21+] THÌ Cụm 2 [coverage 5/7, accuracy 1.00]` | `ic_smallest_88394fc00b70_006` |
+| C1 | Biên vòng lặp sai (duyệt thiếu phần tử) | M1 | 2 | 2 | `NẾU [D:diff.size = 1] THÌ Cụm 1 [coverage 2/2, accuracy 1.00]` | `ic_smallest_c868b30a4ade_000` |

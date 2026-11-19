@@ -7,3 +7,4 @@ scikit-learn==1.6.1
 scipy==1.16.3
 pytest
 jupyterlab
+matplotlib==3.10.1

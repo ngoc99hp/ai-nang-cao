@@ -37,7 +37,7 @@
 | Phase 3 — OAV | ✅ Xong (mục 9) |
 | Phase 4 — Clustering | ✅ Xong (DP3, DP4 đã chốt) |
 | Phase 5 — Luật + đánh giá | ✅ Xong (DP5 tạm chốt) |
-| Phase 6 — Trực quan + báo cáo | 🟡 Đang làm |
+| Phase 6 — Trực quan + báo cáo | ✅ Hình + bảng xong; còn viết báo cáo, ITSP (E4, tùy chọn) |
 | Phase 3–6 | ⬜ Chưa bắt đầu |
 
 ---
@@ -1055,6 +1055,10 @@ Xuất `results/tables/E*.csv`.
 | Phương pháp | Phase 3–4 |
 | Thực nghiệm | Phase 5 (E1–E5) |
 | Ứng dụng: macro-feedback | Phase 6 |
+
+**Kết quả (2026-11-19)** — `scripts/p6_figures.py` (matplotlib 3.10.1 thêm vào image; bảng màu theo dataviz skill: thang xanh tuần tự cho heatmap, MDS dạng small multiples vì scatter > 3 màu không đạt ngưỡng CVD):
+- `results/figures/heatmap_real_<p>.png` (hình chính), `confusion_syn_<p>.png`, `mds_{real,synthetic}_<p>.png`, `ksweep_real.png`, `ablation_E3.png`.
+- `results/tables/macro_feedback.{csv,md}`: cụm → tên (DP5), taxonomy, số SV, số bài, luật ILA tiêu biểu, bài minh họa (medoid). Sửa tên trong `p5_cluster_names.csv` rồi chạy lại script là cập nhật.
 
 **Hướng mở rộng (bài báo):** kết hợp embedding mã nguồn (CodeBERT/UniXcoder) với vector OAV (hybrid clustering), dùng LLM đặt tên + giải thích cụm; so sánh OAV-only vs hybrid.
 

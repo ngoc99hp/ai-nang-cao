@@ -1,0 +1,22 @@
+name: aai
+services:
+  lab:
+    build: { context: ., dockerfile: docker/Dockerfile }
+    image: aai-lab:1
+    container_name: aai-lab
+    command: sleep infinity
+    init: true
+    network_mode: none
+    working_dir: /home/aai/aai_misconception
+    volumes:
+      - .:/home/aai/aai_misconception
+      - ./data/raw:/home/aai/aai_misconception/data/raw:ro
+    tmpfs: ["/tmp:size=512m"]
+    cpus: 1.5
+    cpu_shares: 256
+    mem_limit: 3g
+    memswap_limit: 3g
+    pids_limit: 512
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: "no"

@@ -1,0 +1,9 @@
+tree-sitter==0.26.1
+tree-sitter-c==0.24.2
+kmodes==0.12.2
+pyarrow==23.0.1
+pandas==2.2.3
+scikit-learn==1.6.1
+scipy==1.16.3
+pytest
+jupyterlab

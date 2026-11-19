@@ -1,0 +1,10 @@
+dataset,problem,n,n_T,n_O,n_A,n_const,n_triples
+real,digits,108,16,16,17,1,4577
+real,grade,38,18,13,17,13,1674
+real,median,69,13,14,17,8,2659
+real,smallest,64,16,14,17,11,2754
+synthetic,digits,247,16,15,17,0,9700
+synthetic,grade,79,18,10,17,6,3235
+synthetic,median,82,13,12,17,3,3019
+synthetic,smallest,51,16,11,17,6,2083
+synthetic,average,21,8,7,17,14,630

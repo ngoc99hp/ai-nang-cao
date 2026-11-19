@@ -33,8 +33,9 @@
 |---|---|
 | Phase 0 — Setup, runner, schema | ✅ Hoàn tất trên server (phương án A — Docker). `docker exec aai-lab pytest -q` → **9 passed** (~12 s; 6 test plan + 3 test môi trường `tests/test_env.py`) |
 | Phase 1 — Dữ liệu IntroClass | ✅ Xong 1.1–1.7, DP0 + DP1 đã chốt. (1.8 ITSP tùy chọn — chưa làm) |
-| Phase 2 — Mutation | ✅ Xong (479 mutant có nhãn, mục 8) |
-| Phase 3 — OAV | 🟡 Đang làm |
+| Phase 2 — Mutation | ✅ Xong (480 mutant có nhãn, mục 8) |
+| Phase 3 — OAV | ✅ Xong (mục 9) |
+| Phase 4 — Clustering | 🟡 Đang làm |
 | Phase 3–6 | ⬜ Chưa bắt đầu |
 
 ---
@@ -951,6 +952,13 @@ Tỷ lệ hợp lệ: M7 thấp nhất (26%) — ở median/smallest **mọi** m
 - Lưu `oav_long.parquet` và `oav_wide.parquet` (thêm schema tương ứng vào `schema.py`).
 - **Cảnh báo data leakage:** đặc trưng AST mô tả cấu trúc, nhưng có thể trùng 1-1 với toán tử mutation (ví dụ `assign_in_cond` ↔ M3) → ARI trên dữ liệu sinh đẹp giả tạo. Ưu tiên nhóm Test + Output-diff; chứng minh bằng ablation E3.
 - Trọng số theo `config.FEATURE_WEIGHTS` (DP3).
+
+✅ **Xong (2026-11-19).** `src/features.py`, `scripts/p3_extract.py` → `data/processed/oav_{long,wide}/<real|synthetic>_<problem>.parquet`, bảng `results/tables/p3_features.csv`. Cột wide: `<G>:<object>.<attribute>` (G ∈ T/O/A). Thuộc tính thực tế:
+- **T** — `T:<test_id>.status` (13–18 cột/bài).
+- **O** — `O:output.<kiểu sai>` (bool, trên các test fail: `missing_answer, multiple_answers, off_by_one, output_zero, wrong_input_elem, not_input_elem, sign_error, truncated_decimal, digits_reversed, missing_last, missing_items, extra_items, wrong_digit, adjacent_grade, far_grade, grade_too_low/high, timeout, crash, output_limit`); `O:tests_<prop>.fail` ∈ none/some/all với prop = `tie, negative, zero, sorted` (median/smallest), `negative, zero, single_digit, inner_zero` (digits), `boundary, failing, top` (grade); `O:tests.fail_frac` ∈ low/mid/high/all; dữ liệu thật thêm `O:run.{uninit_dependent, nondet_dataset, format_only_any}`.
+- **A** — 17 cột: `loop.{count, cmp_op, output_in_loop, return_in_loop, break_in_loop}`, `condition.{assign_in_cond, if_cmp, n_if}`, `function.{n_user_funcs, has_ptr_param, addr_arg_user_call}`, `extremum.init`, `accumulator.init`, `division.{int_div_float_ctx, has_cast}`, `negation.{uses_abs, unary_minus}`.
+
+Kiểm tra định tính (synthetic): M8 → `sign_error` 60%, M6 → `missing_items/missing_last`, M4 → `truncated_decimal` 100%.
 
 ---
 

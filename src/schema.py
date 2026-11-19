@@ -63,7 +63,20 @@ MUTANTS = pa.schema([
     ('selected',   pa.bool_()),
 ])
 
-_ENUMS = {'status': STATUS, 'status_sem': STATUS, 'source': SOURCES}
+# OAV dạng dài — đúng hình thức Đối tượng–Thuộc tính–Giá trị cho báo cáo (Phase 3)
+OAV_LONG = pa.schema([
+    ('sub_id',    pa.string()),
+    ('problem',   pa.string()),
+    ('source',    pa.string()),
+    ('group',     pa.string()),     # T / O / A
+    ('object',    pa.string()),
+    ('attribute', pa.string()),
+    ('value',     pa.string()),
+])
+WIDE_KEYS = ('sub_id', 'problem', 'source', 'label_true', 'repo')   # cột khóa của oav_wide
+GROUPS = ('T', 'O', 'A')
+
+_ENUMS = {'status': STATUS, 'status_sem': STATUS, 'source': SOURCES, 'group': GROUPS}
 _INT_COLS = {'returncode', 'n_tests', 'n_fail_strict', 'n_fail_sem', 'n_dups', 'line'}         # int nullable → pandas Int32
 
 
@@ -96,3 +109,30 @@ def save(df: pd.DataFrame, schema: pa.Schema, path) -> Path:
 def load(path, schema: pa.Schema) -> pd.DataFrame:
     return pq.read_table(path, schema=schema).to_pandas(
         types_mapper={pa.int32(): pd.Int32Dtype()}.get)
+
+
+def save_wide(df: pd.DataFrame, path) -> Path:
+    """oav_wide: cột khóa WIDE_KEYS + cột thuộc tính '<G>:<object>.<attribute>' (chuỗi, không null)."""
+    missing = set(WIDE_KEYS) - set(df.columns)
+    if missing:
+        raise ValueError(f'Thiếu cột: {sorted(missing)}')
+    feats = [c for c in df.columns if c not in WIDE_KEYS]
+    bad = [c for c in feats if c[:2] not in {f'{g}:' for g in GROUPS}]
+    if bad:
+        raise ValueError(f'Tên cột thuộc tính không hợp lệ: {bad[:5]}')
+    if df[feats].isna().any().any():
+        raise ValueError('oav_wide có giá trị null')
+    if df['sub_id'].duplicated().any():
+        raise ValueError('sub_id bị trùng trong oav_wide')
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix('.tmp')
+    pq.write_table(pa.Table.from_pandas(df.astype(str).replace('None', pd.NA)[list(WIDE_KEYS) + feats]
+                                        .astype({c: 'string' for c in feats}), preserve_index=False),
+                   tmp, compression='zstd')
+    os.replace(tmp, path)
+    return path
+
+
+def load_wide(path) -> pd.DataFrame:
+    return pq.read_table(path).to_pandas()

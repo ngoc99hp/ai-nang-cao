@@ -130,6 +130,19 @@ def _semantic(problem, out, ref, inp):
     return bool(got) and set(got) == set(truth)
 
 
+def answers(problem: str, text: str) -> list:
+    """Các "đáp án" trích từ output theo kiểu semantic (dùng cho thuộc tính Output-diff).
+
+    digits → list chữ số có dấu (int); grade → list 'A'..'D'/'failed';
+    median/smallest → list int; average → list float.
+    """
+    if problem == 'digits':
+        return [int(x) for x in re.findall(r'-?\d', text)]
+    if problem == 'average':
+        return [float(x) for x in re.findall(r'(?i)average\D{0,10}?(-?\d+(?:\.\d+)?)', text)]
+    return _SEM_ANS[problem](text)
+
+
 _STRICT = {'checksum': _strict_checksum, 'digits': _strict_digits, 'grade': _strict_grade,
            'median': _strict_median, 'smallest': _strict_smallest, 'syllables': _strict_syllables}
 

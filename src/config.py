@@ -23,6 +23,8 @@ GCC_LIBS        = ['-lm']
 
 # --- Quyết định domain (điền theo DP, mục 7) ---
 PROBLEMS = ['digits', 'grade', 'median', 'smallest']   # DP1 (2026-11-19)
+K_REAL = {'digits': 5, 'grade': 4, 'median': 5, 'smallest': 4}   # DP4 (2026-11-19), K-modes
+MAIN_METHOD = 'kmodes'
 FEATURE_WEIGHTS = {    # DP3 — chốt 2026-11-19 sau lưới trọng số (results/tables/p4_weight_grid.csv)
     'test': 0.0,       # bảng pass/fail thô phụ thuộc chương trình gốc → bỏ (O đã tóm tắt)
     'outdiff': 0.5,

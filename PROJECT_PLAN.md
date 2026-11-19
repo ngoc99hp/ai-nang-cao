@@ -35,7 +35,8 @@
 | Phase 1 — Dữ liệu IntroClass | ✅ Xong 1.1–1.7, DP0 + DP1 đã chốt. (1.8 ITSP tùy chọn — chưa làm) |
 | Phase 2 — Mutation | ✅ Xong (480 mutant có nhãn, mục 8) |
 | Phase 3 — OAV | ✅ Xong (mục 9) |
-| Phase 4 — Clustering | 🟡 Đang làm |
+| Phase 4 — Clustering | ✅ Xong (DP3, DP4 đã chốt) |
+| Phase 5 — Luật + đánh giá | 🟡 Đang làm |
 | Phase 3–6 | ⬜ Chưa bắt đầu |
 
 ---
@@ -900,6 +901,7 @@ Tương tự cho ITSP (`dataset/Lab-*/<problem_id>/*_buggy.c`, `*_correct.c`, te
 | **DP3** | Trọng số nhóm thuộc tính (Test / Output-diff / AST) | Phase 3, tinh chỉnh sau ablation E3 |
 | | ✅ **Đã chốt (2026-11-19): T 0, O 0.5, A 0.5, D 3** (thêm nhóm D; trọng số chuẩn hóa theo nhóm). ARI synthetic TB 0.58, thấp nhất 0.51 (agglomerative, k = số nhãn đơn) | |
 | **DP4** | Số cụm k cho từng bài | Phase 4 |
+| | ✅ **Đã chốt (2026-11-19):** dữ liệu thật K-modes **digits 5, grade 4, median 5, smallest 4** (`config.K_REAL`; k lớn nhất trong 3–6 có silhouette gần tối đa và cụm nhỏ nhất ≥ 2–3). Dữ liệu sinh: k = số nhãn đơn (E1) | |
 | **DP5** | Đặt tên misconception cho từng cụm từ luật sinh ra | Phase 5 |
 
 ---

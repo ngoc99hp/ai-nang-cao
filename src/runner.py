@@ -30,9 +30,9 @@ _LIMIT_SH = 'ulimit -t {cpu} -f {fsize} -v {mem} -c 0; exec "$0"'
 _TIMEOUT_SIGNALS = {-signal.SIGXCPU, -signal.SIGKILL}
 
 
-def compile_c(src, exe) -> tuple[bool, str]:
-    """Trả về (thành_công, stderr rút gọn)."""
-    cmd = ['gcc', *config.GCC_FLAGS, str(src), '-o', str(exe), *config.GCC_LIBS]
+def compile_c(src, exe, extra_flags=()) -> tuple[bool, str]:
+    """Trả về (thành_công, stderr rút gọn). extra_flags: thêm vào sau GCC_FLAGS (mặc định không có)."""
+    cmd = ['gcc', *config.GCC_FLAGS, *extra_flags, str(src), '-o', str(exe), *config.GCC_LIBS]
     try:
         r = subprocess.run(cmd, capture_output=True, text=True,
                            timeout=config.COMPILE_TIMEOUT)
@@ -95,7 +95,7 @@ def judge(exe, input_path, expected_path, cpu_limit: float | None = None,
 
 
 def run_batch(subs, tests, workdir, max_workers: int | None = None,
-              problem: str | None = None) -> list[dict]:
+              problem: str | None = None, extra_flags=()) -> list[dict]:
     """
     subs : [(sub_id, src_path), ...]   sub_id phải hợp lệ làm tên file
     tests: [(test_id, in_path, out_path), ...]
@@ -110,7 +110,7 @@ def run_batch(subs, tests, workdir, max_workers: int | None = None,
     def _compile(item):
         sub_id, src = item
         exe = workdir / f'{sub_id}.out'
-        ok, err = compile_c(src, exe)
+        ok, err = compile_c(src, exe, extra_flags)
         return sub_id, (exe if ok else None), err
 
     with ThreadPoolExecutor(max_workers) as ex:

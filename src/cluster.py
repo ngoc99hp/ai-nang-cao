@@ -20,6 +20,7 @@ GROUP_KEY = {'T': 'test', 'O': 'outdiff', 'A': 'ast', 'D': 'diff'}
 def feature_matrix(W: pd.DataFrame, groups=('T', 'O', 'A', 'D'), weights=None, normalize_groups=True):
     """→ (X_codes int[n, d], w float[d], cols). Bỏ cột hằng."""
     weights = weights or config.FEATURE_WEIGHTS
+    groups = tuple(g for g in groups if weights[GROUP_KEY[g]] > 0)        # bỏ nhóm trọng số 0
     cols = [c for c in W.columns if c not in schema.WIDE_KEYS and c[0] in groups and W[c].nunique() > 1]
     X = np.column_stack([pd.factorize(W[c])[0] for c in cols]) if cols else np.zeros((len(W), 0), int)
     n_g = {g: sum(c[0] == g for c in cols) for g in groups}

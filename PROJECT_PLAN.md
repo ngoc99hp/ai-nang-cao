@@ -898,6 +898,7 @@ Tương tự cho ITSP (`dataset/Lab-*/<problem_id>/*_buggy.c`, `*_correct.c`, te
 | **DP2** | Taxonomy misconception cho mutation | Đầu Phase 2 |
 | | ✅ **Đã chốt (2026-11-19): M1–M6 + M7 (biên so sánh trong chuỗi if) + M8 (số âm với `%`, `/`)** — xem mục 8. M2/M4 cấy vào lời giải tự viết. ITSP (1.8) để sau Phase 4 | |
 | **DP3** | Trọng số nhóm thuộc tính (Test / Output-diff / AST) | Phase 3, tinh chỉnh sau ablation E3 |
+| | ✅ **Đã chốt (2026-11-19): T 0, O 0.5, A 0.5, D 3** (thêm nhóm D; trọng số chuẩn hóa theo nhóm). ARI synthetic TB 0.58, thấp nhất 0.51 (agglomerative, k = số nhãn đơn) | |
 | **DP4** | Số cụm k cho từng bài | Phase 4 |
 | **DP5** | Đặt tên misconception cho từng cụm từ luật sinh ra | Phase 5 |
 

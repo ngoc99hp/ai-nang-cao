@@ -175,7 +175,8 @@ def _m5(root):
         body = _f(fn, 'body')
         first = {}
         for var, val, node in _assignments(body):
-            if val is not None and not _in_condition(node):
+            # chỉ coi là 'khởi tạo' nếu nằm ngoài vòng lặp / if (không phải phép cập nhật)
+            if val is not None and not _inside(node, (*LOOPS, 'if_statement')):
                 first.setdefault(var, (val, node))
         accum = {_t(_f(n, 'left')) for n in au.walk(body)
                  if n.type == 'assignment_expression' and _t(_op(n)) in ('+=', '-=', '*=')

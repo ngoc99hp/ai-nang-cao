@@ -7,7 +7,7 @@ semantic : trích đáp án lỏng — không phân biệt hoa/thường, chịu
            và câu nhắc, bỏ qua khoảng trắng/xuống dòng, sửa bug checker gốc.
            Status dùng cho clustering. format_only = strict FAIL & semantic PASS.
 
-Không biết problem (bench, synthetic tự viết) → so token (`str.split`) cho cả hai chế độ.
+problem None hoặc không phải bài IntroClass (vd 'average') → so token (`str.split`) cho cả hai chế độ.
 """
 import re
 import string
@@ -135,7 +135,7 @@ _STRICT = {'checksum': _strict_checksum, 'digits': _strict_digits, 'grade': _str
 
 
 def check(problem: str | None, out: str, expected: str, test_input: str, mode: str) -> bool:
-    if problem is None:
+    if problem is None or problem not in _STRICT:      # bench/synthetic tự viết → so token
         return tokens(out) == tokens(expected)
     if mode == 'strict':
         if '�' in out:          # bản gốc .decode() utf-8 → UnicodeDecodeError → fail

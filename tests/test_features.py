@@ -1,3 +1,4 @@
+import pytest
 import pandas as pd
 
 import features as ft
@@ -56,3 +57,17 @@ int main(){ int a[4], i, min, s = 0;
     assert A[('A', 'extremum', 'init')] == 'expr'
     assert A[('A', 'accumulator', 'init')] == 'zero'
     assert A[('A', 'division', 'has_cast')] == 'T'
+
+
+@pytest.mark.parametrize('got, exp, flag', [
+    ('', '1 2', 'missing_answer'),
+    ('Sum: 3', 'sum = 3', 'text_only'),
+    ('12', '1 2', 'spacing_only'),
+    ('1 2 3', '1 2', 'extra_items'),
+    ('2 1', '1 2', 'wrong_order'),
+    ('4 2', '3 2', 'off_by_one'),
+    ('-3', '3', 'sign_error'),
+    ('7 9', '3 2', 'wrong_value'),
+])
+def test_generic_diff_flags(got, exp, flag):
+    assert flag in ft.generic_diff_flags(got, exp)

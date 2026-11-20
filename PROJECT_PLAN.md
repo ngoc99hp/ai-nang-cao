@@ -32,13 +32,12 @@
 | Phase | Trạng thái |
 |---|---|
 | Phase 0 — Setup, runner, schema | ✅ Hoàn tất trên server (phương án A — Docker). `docker exec aai-lab pytest -q` → **9 passed** (~12 s; 6 test plan + 3 test môi trường `tests/test_env.py`) |
-| Phase 1 — Dữ liệu IntroClass | ✅ Xong 1.1–1.7, DP0 + DP1 đã chốt. (1.8 ITSP tùy chọn — chưa làm) |
+| Phase 1 — Dữ liệu IntroClass | ✅ Xong 1.1–1.8 (ITSP), DP0 + DP1 đã chốt |
 | Phase 2 — Mutation | ✅ Xong (480 mutant có nhãn, mục 8) |
 | Phase 3 — OAV | ✅ Xong (mục 9) |
 | Phase 4 — Clustering | ✅ Xong (DP3, DP4 đã chốt) |
 | Phase 5 — Luật + đánh giá | ✅ Xong (DP5 tạm chốt) |
-| Phase 6 — Trực quan + báo cáo | ✅ Hình + bảng xong; còn viết báo cáo, ITSP (E4, tùy chọn) |
-| Phase 3–6 | ⬜ Chưa bắt đầu |
+| Phase 6 — Trực quan + báo cáo | ✅ Hình + bảng + tên cụm (DP5) + E4b ITSP xong; còn viết báo cáo |
 
 ---
 
@@ -884,6 +883,8 @@ Nhận xét: (1) grade: 123/228 bài "sai" theo dataset thực ra chỉ sai đ�
 
 ### Bước 1.8 (tùy chọn) — ITSP
 
+✅ **Xong (2026-11-20).** `src/itsp.py`, `scripts/p1_8_itsp_run.py` (661 cặp, 74 bài, ~5 phút), `scripts/p1_8_itsp_validate.py` → `results/tables/p1_8_itsp_validation.csv`. Mỗi file ITSP có comment đầu ghi verdict của hệ chấm gốc → kiểm định: khớp **95.7%** (8.721 test). Lệch chủ yếu "gốc PASS / ta FAIL" (279) tập trung ở vài bài (3078, 2932, 3076, 3075) — UB phụ thuộc nền tảng (chuỗi thiếu `\0`, tràn `char`, ngoài mảng); 96 "gốc FAIL / ta PASS" phần lớn chỉ khác khoảng trắng (ta so token, DP0). Lọc: correct pass hết + buggy fail ≥ 1 → **602 cặp / 72 bài**.
+
 Tương tự cho ITSP (`dataset/Lab-*/<problem_id>/*_buggy.c`, `*_correct.c`, test ở `dataset/test/in.<pid>.N.txt`, `out.<pid>.N.txt`). Lưu diff buggy/correct để dùng cho đánh giá định tính ở E4.
 
 ---
@@ -1035,6 +1036,10 @@ Xuất `results/tables/E*.csv`.
 - **E1b — leave-one-problem-out cho trọng số**: ARI held-out digits 0.28, grade 0.67, median 0.51, smallest 0.15, average 0.34 (so với DP3: 0.64/0.67/0.51/0.56/0.54) → trọng số tối ưu **nhạy theo bài**; ARI với DP3 có phần lạc quan, phải nêu trong báo cáo.
 - **E3 — ablation** (K-modes ARI): D là nhóm quyết định (A+D, O+D, O+A+D ≫ O, A, O+A); O+A+D tốt nhất cho digits (0.66) và smallest (0.67); T+O+A+D (bật T) giảm ở 3/5 bài.
 - **E4 — dữ liệu thật** (K_REAL): silhouette digits 0.30, grade 0.50, median 0.25, smallest 0.45; cụm lệch cỡ (digits 60/4/19/15/10; smallest 48/2/7/7). Không có nhãn tham chiếu (bugclasses theo triệu chứng; ITSP để sau).
+**E4b — ITSP (2026-11-20)** — `scripts/p5_itsp.py`, gom cụm **gộp 72 bài** (O tổng quát `features.output_features_generic` + A + D so với **bản sửa của chính SV**, 52 thuộc tính). Nhãn tham chiếu: `results/tables/itsp_labels.csv` — 45 cặp diff nhỏ (1–4 dòng, ≤ 1 cặp/bài, seed 42) do **Claude gán blind trước khi gom cụm, chưa qua người duyệt**; 41 còn lại sau lọc; 9 lớp (M1, M2, M6, M7, IDX, VAR, LOGIC, MISSING, FMT). Bảng `results/tables/E4b_itsp.csv`, luật `results/rules/itsp_all.txt`.
+- O+A+D K-modes k = 9: **ARI 0.20, NMI 0.54, purity 0.51** (O, A riêng lẻ ≈ 0; D 0.02–0.06; O+D đến 0.18 ở k = 20).
+- Cụm nhận diện được: `cmp_if + strictness` (M7, 3/3 thuần), `cmp_loop + strictness` (M1), `stmt_missing` (MISSING). Hai cụm lớn (226, 158 bài) gom theo cỡ diff + `text_only`, trộn FMT/VAR/LOGIC/M1 → D hiện chưa phân biệt được nhầm biến / sai công thức.
+- Hạn chế: mẫu nhãn nhỏ (41) → ARI dao động mạnh; nhãn một người gán.
 - **E5 — luật**: ILA luật ngắn hơn (1.5–2.0 điều kiện/luật vs ID3 2.8–4.6), nhiều luật hơn (8–46 vs 6–18); CV accuracy ILA 0.70–0.92, ID3 0.72–0.97.
 
 ---

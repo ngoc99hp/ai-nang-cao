@@ -1,0 +1,46 @@
+sub_id,label,rationale
+itsp_2810_270090_buggy,FMT,thiếu dấu cách trong printf
+itsp_2811_270211_buggy,LOGIC,đảo dấu mẫu số trong công thức
+itsp_2812_270277_buggy,FMT,in thêm giá trị vào thông báo
+itsp_2813_270399_buggy,VAR,sai thứ tự biến trong scanf
+itsp_2824_271084_buggy,M6,thiếu ngoặc khối if → return 0 sai phạm vi
+itsp_2825_271213_buggy,VAR,sai thứ tự biến trong scanf
+itsp_2827_271368_buggy,FMT,sai chữ trong thông báo
+itsp_2828_271471_buggy,M2,scanf thiếu & (truyền giá trị thay vì địa chỉ)
+itsp_2832_271845_buggy,M7,< thay vì <= trong điều kiện if
+itsp_2833_271946_buggy,LOGIC,điều kiện tam giác dùng || sai
+itsp_2864_277594_buggy,MISSING,thiếu ca đặc biệt num==1
+itsp_2866_277827_buggy,LOGIC,sai logic kiểm tra số nguyên tố
+itsp_2868_278042_buggy,M7,< thay vì <= trong điều kiện if
+itsp_2869_278146_buggy,FMT,vị trí xuống dòng
+itsp_2932_279952_buggy,VAR,đảo chiều phép gán
+itsp_2935_280354_buggy,M1,biên vòng lặp thiếu 1
+itsp_2938_280747_buggy,M1,< thay vì <= ở biên vòng lặp
+itsp_3075_295416_buggy,MISSING,thiếu câu lệnh n=n%l
+itsp_3076_295675_buggy,LOGIC,điều kiện dừng vòng lặp đảo (== thay vì !=)
+itsp_3079_295587_buggy,FMT,khác biệt không nhìn thấy (khoảng trắng) — kiểm tra lại
+itsp_3080_295842_buggy,VAR,nhầm biến độ dài l1/l2
+itsp_3081_297318_buggy,M1,biên vòng lặp m-1/n-1
+itsp_3083_297563_buggy,MISSING,thiếu nhánh in kết quả
+itsp_3105_300051_buggy,M1,biên vòng lặp <=n thay vì <=n-2
+itsp_3106_300237_buggy,VAR,dùng lại biến ngoài thay vì khai báo biến mới
+itsp_3107_300536_buggy,IDX,so sánh với N-1 thay vì N
+itsp_3109_300149_buggy,M1,biểu thức biên vòng lặp sai
+itsp_3111_300673_buggy,FMT,thiếu dấu cách giữa các số
+itsp_3237_303388_buggy,VAR,nhầm chỉ số i/j
+itsp_3239_303919_buggy,LOGIC,thêm điều kiện hợp lệ sai
+itsp_3240_304160_buggy,M1,<= thay vì < ở biên vòng lặp
+itsp_3241_303561_buggy,MISSING,thiếu đọc input (scanf)
+itsp_3243_304034_buggy,M1,biên vòng lặp n-1
+itsp_3244_304338_buggy,M6,thiếu return sau khi in kết quả
+itsp_3291_305277_buggy,M1,khởi đầu vòng lặp 0 thay vì 1 (kèm thiếu dấu cách)
+itsp_3293_305789_buggy,FMT,vị trí dấu cách
+itsp_3294_305984_buggy,FMT,in thêm giá trị debug
+itsp_3295_305374_buggy,M1,biên vòng lặp n thay vì n-1
+itsp_3297_305893_buggy,FMT,thiếu dấu cách giữa các số
+itsp_3355_307084_buggy,MISSING,thiếu nhánh else-if
+itsp_3356_307332_buggy,M7,> thay vì >= trong điều kiện if
+itsp_3357_307512_buggy,M2,scanf thiếu & với thành viên struct qua con trỏ
+itsp_3358_307782_buggy,FMT,thiếu dấu cách giữa các số
+itsp_3359_307152_buggy,IDX,chỉ số mảng sai
+itsp_3361_307667_buggy,IDX,chỉ số đối xứng lệch 1 (l-i thay vì l-i-1)

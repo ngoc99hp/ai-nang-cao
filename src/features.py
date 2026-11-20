@@ -258,6 +258,59 @@ def _ast_all(code: bytes) -> dict:
     return A
 
 
+_NUM = re.compile(r'-?\d+(?:\.\d+)?')
+
+
+def generic_diff_flags(got: str, exp: str) -> set[str]:
+    """Kiểu sai không phụ thuộc đề bài (ITSP): so dãy số + dãy token của output với output mong đợi."""
+    if not got.strip():
+        return {'missing_answer'}
+    g, e = [float(x) for x in _NUM.findall(got)], [float(x) for x in _NUM.findall(exp)]
+    f = set()
+    if g == e:
+        f.add('text_only')                       # số đúng hết, sai phần chữ/định dạng
+    elif ''.join(got.split()) == ''.join(exp.split()):
+        f.add('spacing_only')                    # vd thiếu dấu cách giữa các số
+    elif len(g) > len(e):
+        f.add('extra_items')
+    elif len(g) < len(e):
+        f.add('missing_items')
+    else:
+        bad = [(a, b) for a, b in zip(g, e) if a != b]
+        if sorted(g) == sorted(e):
+            f.add('wrong_order')
+        elif all(abs(a - b) == 1 for a, b in bad):
+            f.add('off_by_one')
+        elif all(a == -b for a, b in bad):
+            f.add('sign_error')
+        elif all(a == 0 for a, _ in bad):
+            f.add('output_zero')
+        else:
+            f.add('wrong_value')
+        f.add('one_wrong' if len(bad) == 1 else 'many_wrong')
+    return f
+
+
+def output_features_generic(tr_sub, tests: dict) -> dict:
+    """Như output_features nhưng dùng generic_diff_flags; không có thuộc tính test theo đề."""
+    out, kinds, n_fail = {}, defaultdict(int), 0
+    for t, st, so in zip(tr_sub.test_id, tr_sub.status_sem, tr_sub.stdout):
+        if st == 'PASS':
+            continue
+        n_fail += 1
+        if st == 'FAIL':
+            for k in generic_diff_flags(so, tests[t][1]):
+                kinds[k] += 1
+        else:
+            kinds[st.lower()] += 1
+    for k in sorted(kinds):
+        out[('O', 'output', k)] = 'T'
+    frac = n_fail / max(len(tr_sub), 1)
+    out[('O', 'tests', 'fail_frac')] = 'all' if frac == 1 else 'high' if frac > 2 / 3 else \
+        'mid' if frac > 1 / 3 else 'low'
+    return out
+
+
 def extract(problem, code: bytes, tr_sub, tests, flags=None) -> dict:
     return {**test_features(tr_sub), **output_features(problem, tr_sub, tests, flags), **ast_features(code)}
 

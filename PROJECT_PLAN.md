@@ -37,7 +37,7 @@
 | Phase 3 — OAV | ✅ Xong (mục 9) |
 | Phase 4 — Clustering | ✅ Xong (DP3, DP4 đã chốt) |
 | Phase 5 — Luật + đánh giá | ✅ Xong (DP5 tạm chốt) |
-| Phase 6 — Trực quan + báo cáo | ✅ Hình + bảng + tên cụm (DP5) + E4b ITSP xong; còn viết báo cáo |
+| Phase 6 — Trực quan + báo cáo | ✅ Hình + bảng + tên cụm (DP5) + E4b ITSP + **báo cáo Word** (`report/`, mục 12.2) |
 | Phase 7 — Demo giao diện | ✅ Streamlit (`aai-ui`) + worker trong `aai-lab`; xem mục 12.1 và `demo/README.md` |
 
 ---
@@ -1082,6 +1082,13 @@ Chạy: `./demo/start.sh` → http://127.0.0.1:8501 (từ máy khác: `ssh -L 85
 **Rà soát bảo mật (2026-11-23):** bản đầu chạy worker trong `aai-lab` → bài nộp **ghi được vào thư mục dự án** (đã chứng minh bằng file thử, đã xóa) → chuyển sang `aai-sandbox`. Bộ bài nộp độc hại (`work/scratch/adversarial.py`: lặp vô hạn, in vô hạn, ngủ, ăn RAM, ghi file, mở mạng, `#include "/etc/passwd"`/`"/dev/zero"`, fork bomb, tự diệt worker) đều bị chặn hoặc báo lỗi, sandbox tự hồi phục. Còn lại (chấp nhận cho demo): bài nộp đọc được file trong sandbox (code dự án, test công khai) và có thể xóa job trong hàng đợi.
 
 Kiểm thử: `tests/test_classify.py` + AppTest toàn bộ bài mẫu. Bài mẫu tự viết 5/6 đúng cụm (`digits_quen_so_0` → nhầm cụm log10); bài minh họa thật gán lại đúng cụm 16/18 (lệch vì demo không có bản tự sửa của SV → D so với bản gần nhất).
+
+### 12.2. Báo cáo Word (2026-11-23)
+
+`report/BaoCao_BTL_AINangCao_MisconceptionClustering.docx` (38 trang, 20 bảng, 7 hình) — dựng theo file mẫu `BaoCao_BTL_HocMayNangCao_UIT-VSMEC.docx` (giữ bìa + style, định dạng bảng/chú thích/công thức như mẫu). Nguồn: `report/content.py` (nội dung, số liệu lấy từ `results/tables/`), `report/build.py` (dựng 2 lượt để mục lục có số trang).
+- Dựng lại: `docker run --rm -v "$PWD":/w -e HOME=/tmp aai-doc:1 python -I report/build.py` (image công cụ `aai-doc:1` = python-docx + LibreOffice, Dockerfile ở `tools/Dockerfile.doc`; không cài gì lên host).
+- Hình mới: `results/figures/pipeline.png` (`scripts/p8_report_figs.py`), ảnh giao diện `results/figures/demo/*.png` (Playwright, image `aai-shot:1` từ `tools/Dockerfile.shot`, script `tools/shot.py`, cần demo đang chạy).
+- Còn để trống trên bìa: GVHD, học viên thực hiện. Tên học phần ghi “Trí tuệ nhân tạo nâng cao” — cần người dùng xác nhận.
 
 **Hướng mở rộng (bài báo):** kết hợp embedding mã nguồn (CodeBERT/UniXcoder) với vector OAV (hybrid clustering), dùng LLM đặt tên + giải thích cụm; so sánh OAV-only vs hybrid.
 

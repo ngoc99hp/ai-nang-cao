@@ -1,0 +1,8 @@
+FROM python:3.12-slim
+ENV DEBIAN_FRONTEND=noninteractive PIP_NO_CACHE_DIR=1
+RUN apt-get update && apt-get install -y --no-install-recommends libreoffice-writer-nogui poppler-utils fonts-dejavu fonts-liberation fonts-crosextra-carlito fonts-crosextra-caladea fonts-noto-core \
+    && rm -rf /var/lib/apt/lists/*
+RUN pip install python-docx==1.1.2 lxml
+RUN useradd -m -u 1000 doc
+USER doc
+WORKDIR /w

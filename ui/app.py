@@ -189,7 +189,10 @@ def show_problem(p, expanded=True):
         st.markdown('**Lưu ý:**\n' + '\n'.join(f'- {r}' for r in d['rules']))
         st.markdown(d['io'])
         st.markdown('**Ví dụ** (bỏ qua lời nhắc nhập):')
-        st.table(pd.DataFrame([{'Nhập vào': i, 'Kết quả in ra': o} for i, o in d['examples']]))
+        def _cell(s):                               # giữ nguyên khoảng trắng, xuống dòng → ⏎
+            return '`' + s.replace('\n', '` ⏎ `') + '`'
+        st.markdown('| Nhập vào | Kết quả in ra |\n|---|---|\n' +
+                    '\n'.join(f'| {_cell(i)} | {_cell(o)} |' for i, o in d['examples']))
         st.caption('Bài tập từ bộ dữ liệu IntroClass (UC Davis). Khi chấm, hệ thống chỉ so phần đáp án, '
                    'không bắt lỗi chính tả trong lời nhắc.')
 

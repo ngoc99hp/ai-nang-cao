@@ -139,6 +139,61 @@ def taxo(t: str) -> str:
     return '—' if t in ('-', '', None) else ', '.join(f'{x} ({TAXO.get(x, "")})' for x in t.split('+'))
 
 
+# ----------------------------------------------------------------------------- đề bài (IntroClass)
+PROBLEM_DOC = {
+    'digits': dict(
+        task='Nhập một số nguyên **n**. In ra từng chữ số của n, **mỗi chữ số một dòng**, bắt đầu từ chữ số hàng '
+             'đơn vị (tức là in **ngược** từ phải sang trái). Cuối cùng in dòng `That\'s all, have a nice day!`',
+        rules=['Nếu n **âm**: các chữ số in ra không có dấu, riêng chữ số **cuối cùng** (chữ số đầu của n) mang '
+               'dấu `-`.',
+               'Nếu n = **0**: in ra `0`.',
+               'Chữ số 0 nằm giữa hoặc cuối số vẫn phải được in.'],
+        io='**Input:** một số nguyên.  \n**Output:** lời nhắc `Enter an integer >`, các chữ số mỗi số một dòng, '
+           'rồi dòng kết thúc.',
+        examples=[('1234', '4\n3\n2\n1\nThat\'s all, have a nice day!'),
+                  ('-9876', '6\n7\n8\n-9\nThat\'s all, have a nice day!'),
+                  ('0', '0\nThat\'s all, have a nice day!'),
+                  ('3520', '0\n2\n5\n3\nThat\'s all, have a nice day!')]),
+    'grade': dict(
+        task='Nhập **4 ngưỡng điểm** cho loại A, B, C, D (giảm dần, theo %), sau đó nhập **điểm** của sinh viên. '
+             'In ra loại mà sinh viên đạt được.',
+        rules=['Điểm **≥ ngưỡng A** → `Student has an A grade`; tương tự với B, C, D.',
+               'Điểm **bằng đúng ngưỡng** vẫn đạt loại đó (ví dụ ngưỡng A = 80, điểm 80 → loại A).',
+               'Điểm **dưới ngưỡng D** → `Student has failed the course`.'],
+        io='**Input:** 4 số ngưỡng A B C D, rồi 1 số điểm.  \n**Output:** sau các lời nhắc, đúng một câu xếp loại.',
+        examples=[('80 70 60 50\n85', 'Student has an A grade'),
+                  ('80 70 60 50\n80', 'Student has an A grade'),
+                  ('80 70 60 50\n75', 'Student has an B grade'),
+                  ('80 70 60 50\n45', 'Student has failed the course')]),
+    'median': dict(
+        task='Nhập **3 số nguyên**. In ra **số trung vị** — số đứng giữa khi xếp 3 số theo thứ tự tăng dần.',
+        rules=['Các số có thể nhập theo **bất kỳ thứ tự nào**.',
+               'Các số có thể **bằng nhau** (ví dụ 9 9 9 → trung vị là 9).'],
+        io='**Input:** 3 số nguyên cách nhau bởi dấu cách.  \n**Output:** lời nhắc '
+           '`Please enter 3 numbers separated by spaces >` rồi `<số> is the median`.',
+        examples=[('2 6 8', '6 is the median'), ('8 2 6', '6 is the median'), ('9 9 9', '9 is the median')]),
+    'smallest': dict(
+        task='Nhập **4 số nguyên**. In ra **số nhỏ nhất**.',
+        rules=['Các số có thể **bằng nhau** (ví dụ 1 1 1 1 → 1).', 'Các số có thể **âm** hoặc bằng 0.'],
+        io='**Input:** 4 số nguyên cách nhau bởi dấu cách.  \n**Output:** lời nhắc '
+           '`Please enter 4 numbers separated by spaces >` rồi `<số> is the smallest`.',
+        examples=[('1 2 3 4', '1 is the smallest'), ('3 2 4 1', '1 is the smallest'),
+                  ('2 2 2 3', '2 is the smallest'), ('0 -1 0 0', '-1 is the smallest')]),
+}
+
+
+def show_problem(p, expanded=True):
+    d = PROBLEM_DOC[p]
+    with st.expander(f'📄 Đề bài: {PNAME[p]}', expanded=expanded):
+        st.markdown(d['task'])
+        st.markdown('**Lưu ý:**\n' + '\n'.join(f'- {r}' for r in d['rules']))
+        st.markdown(d['io'])
+        st.markdown('**Ví dụ** (bỏ qua lời nhắc nhập):')
+        st.table(pd.DataFrame([{'Nhập vào': i, 'Kết quả in ra': o} for i, o in d['examples']]))
+        st.caption('Bài tập từ bộ dữ liệu IntroClass (UC Davis). Khi chấm, hệ thống chỉ so phần đáp án, '
+                   'không bắt lỗi chính tả trong lời nhắc.')
+
+
 @st.cache_data(ttl=60)
 def load_dash():
     return json.loads((RES / 'demo' / 'dashboard.json').read_text(encoding='utf-8'))
@@ -155,11 +210,16 @@ D = load_dash()
 st.title('Tự động phát hiện và gom nhóm lỗi hiểu sai trong bài lập trình C')
 st.caption('Đề tài 5 — môn AI nâng cao')
 
-tab_over, tab_gv, tab_sv, tab_exp = st.tabs(
-    ['① Giới thiệu', '② Dành cho giảng viên', '③ Thử nộp bài', '④ Kết quả thực nghiệm'])
+PAGES = ['① Giới thiệu', '② Dành cho giảng viên', '③ Thử nộp bài', '④ Kết quả thực nghiệm']
+# Giữ lựa chọn bài tập / code đã dán khi chuyển trang (Streamlit xóa state của widget không được vẽ)
+for _k in list(st.session_state):
+    if _k in ('gv_p', 'sv_p', 'exp_p') or _k.startswith(('code_', 'sample_')):
+        st.session_state[_k] = st.session_state[_k]
+page = st.radio('Trang', PAGES, horizontal=True, key='page', label_visibility='collapsed')
+st.divider()
 
 # =============================================================================================== ① Giới thiệu
-with tab_over:
+if page == PAGES[0]:
     st.markdown('''
 ### Bài toán
 Lớp lập trình đông, mỗi bài tập có hàng trăm bài làm sai. Giảng viên không thể đọc hết, nhưng muốn biết:
@@ -198,17 +258,17 @@ khi tìm số nhỏ nhất → chương trình sai khi có hai số bằng nhau.
 ### Kết quả tóm tắt
 - Trên bài cấy lỗi, các nhóm tìm được **khớp khá tốt** với loại lỗi đã cấy (điểm khớp 0.48–0.73 trên thang 0 → 1).
 - Dấu hiệu quan trọng nhất là **"bài sai khác bài đúng ở đâu"**; chỉ nhìn test trượt thì gần như không phân biệt được lỗi.
-- Trên bài thật, hệ thống tìm ra các nhóm lỗi có ý nghĩa — xem tab **② Dành cho giảng viên**.
+- Trên bài thật, hệ thống tìm ra các nhóm lỗi có ý nghĩa — xem trang **② Dành cho giảng viên**.
 - Hạn chế: chưa tách tốt các lỗi kiểu "nhầm biến" hay "sai công thức"; một số nhóm còn lẫn nhiều kiểu lỗi.
 ''')
 
 # =============================================================================================== ② Giảng viên
-with tab_gv:
+if page == PAGES[1]:
     st.markdown('Chọn một bài tập để xem **sinh viên đang mắc những lỗi hiểu sai nào, bao nhiêu người mắc**, '
                 'kèm giải thích và bài làm minh họa.')
     p = st.selectbox('Bài tập', list(D['problems']), format_func=PNAME.get, key='gv_p')
     info = D['problems'][p]
-    st.info(f'**Đề bài:** {info["title"]}')
+    show_problem(p, expanded=False)
     c = st.columns(3)
     c[0].metric('Bài làm sai', info['n_sub'])
     c[1].metric('Sinh viên làm sai', info['n_students'])
@@ -246,11 +306,11 @@ with tab_gv:
     img(f'heatmap_real_{p}.png')
 
 # =============================================================================================== ③ Nộp bài
-with tab_sv:
+if page == PAGES[2]:
     st.markdown('Dán một bài làm C (hoặc chọn bài mẫu có sẵn) rồi bấm **Chấm và chẩn đoán**. Hệ thống sẽ chạy test, '
                 'và nếu bài sai thì cho biết bài **giống nhóm lỗi nào nhất** và vì sao.')
     p = st.selectbox('Bài tập', [k for k in D['problems']], format_func=PNAME.get, key='sv_p')
-    st.info(f'**Đề bài:** {D["problems"][p]["title"]}')
+    show_problem(p)
     samples = {f'Bài tự viết — {f.stem}': f.read_text() for f in sorted(SAMPLES.glob(f'{p}_*.c'))}
     for x in D['problems'][p]['clusters']:
         samples[f'Bài thật của sinh viên — ví dụ nhóm C{x["id"]} ({x["name"][:40]})'] = x['examples'][0]['code']
@@ -335,7 +395,7 @@ with tab_sv:
                              .drop(columns='strict'), hide_index=True, use_container_width=True)
 
 # =============================================================================================== ④ Thực nghiệm
-with tab_exp:
+if page == PAGES[3]:
     T = D['tables']
     st.markdown('''
 **Cách đọc điểm khớp (ARI):** so sánh các nhóm hệ thống tìm được với loại lỗi thật đã cấy vào bài.

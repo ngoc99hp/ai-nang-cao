@@ -10,9 +10,9 @@
 Mở http://127.0.0.1:8501. Nếu xem từ máy khác, tạo SSH tunnel trước:
 `ssh -L 8501:127.0.0.1:8501 tuyendv@<server>`, rồi mở http://localhost:8501.
 
-## 4 tab
+## 4 trang
 
-| Tab | Dành cho | Nội dung |
+| Trang | Dành cho | Nội dung |
 |---|---|---|
 | Tổng quan | hội đồng | quy trình 5 bước, số liệu chính |
 | Giảng viên: macro-feedback | giảng viên | chọn bài tập → các cụm lỗi, số SV mắc, đặc trưng, luật ILA, bài minh họa + diff, heatmap |

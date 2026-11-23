@@ -437,6 +437,7 @@ def run_batch(subs, tests, workdir, max_workers: int | None = None) -> list[dict
 | `-std=gnu99` | gcc 13 mặc định C17, chặt hơn; bài sinh viên ~2014–2015 có thể dùng khai báo hàm ngầm định |
 | Song song ở mức (bài × test) đã làm phẳng | Cân bằng tải tốt hơn song song theo bài |
 | `RLIMIT_CORE = 0` (`ulimit -c 0`) | Không sinh core dump |
+| Mỗi lần chạy: `start_new_session=True` + `killpg(SIGKILL)` sau khi xong (thêm 2026-11-23) | Không sót tiến trình con / fork bomb của bài nộp; không đổi kết quả chấm (`test_no_orphan_processes`) |
 
 **Ước lượng thời gian chạy:** bài chạy bình thường mất vài ms; thời gian bị chi phối bởi số lần TIMEOUT → xấp xỉ `(số lần TIMEOUT × 2 s) / số core`. Đo trên Colab 2 core: 150 runs (15 TIMEOUT) mất 32.8 s tuần tự, 19.4 s với 4 workers.
 
@@ -1074,9 +1075,11 @@ Chạy: `./demo/start.sh` → http://127.0.0.1:8501 (từ máy khác: `ssh -L 85
 |---|---|
 | `scripts/p7_build_demo.py` | dựng `data/processed/demo/model_<p>.pkl` (cột, trọng số, mode cụm, luật ILA, kho bản đúng) + `results/demo/dashboard.json` |
 | `src/classify.py` | bài mới → runner → OAV (T/O/A + D so với bản đúng gần nhất) → cụm có mode gần nhất (bước gán của K-modes) + luật ILA khớp + láng giềng |
-| `scripts/demo_worker.py` | chạy trong `aai-lab` (không mạng), đọc `work/queue/in/*.json`, ghi `work/queue/out/` |
+| `scripts/demo_worker.py` + service `sandbox` | worker chạy trong container riêng **`aai-sandbox`** (image `aai-lab:1`, không mạng, root fs chỉ đọc, chỉ mount `src/ scripts/ bench/`, mô hình demo và test của 4 bài ở chế độ `:ro`; ghi được duy nhất `work/queue` + tmpfs `work/demo_jobs`; 1 CPU / 1 GB / 128 PID; `restart: on-failure`). Nhận job bằng cách chuyển sang `queue/run/` → job làm chết worker không bị chạy lại |
 | `ui/app.py`, `docker/Dockerfile.ui`, service `ui` trong `compose.yaml` | Streamlit 1.41.1, container `aai-ui`: **không có gcc, không chạy code**, root fs read-only, cap_drop ALL, 0.5 CPU / 512 MB, cổng chỉ `127.0.0.1:8501` |
 | `demo/samples/*.c` | 6 bài mẫu tự viết (5 sai, 1 đúng) |
+
+**Rà soát bảo mật (2026-11-23):** bản đầu chạy worker trong `aai-lab` → bài nộp **ghi được vào thư mục dự án** (đã chứng minh bằng file thử, đã xóa) → chuyển sang `aai-sandbox`. Bộ bài nộp độc hại (`work/scratch/adversarial.py`: lặp vô hạn, in vô hạn, ngủ, ăn RAM, ghi file, mở mạng, `#include "/etc/passwd"`/`"/dev/zero"`, fork bomb, tự diệt worker) đều bị chặn hoặc báo lỗi, sandbox tự hồi phục. Còn lại (chấp nhận cho demo): bài nộp đọc được file trong sandbox (code dự án, test công khai) và có thể xóa job trong hàng đợi.
 
 Kiểm thử: `tests/test_classify.py` + AppTest toàn bộ bài mẫu. Bài mẫu tự viết 5/6 đúng cụm (`digits_quen_so_0` → nhầm cụm log10); bài minh họa thật gán lại đúng cụm 16/18 (lệch vì demo không có bản tự sửa của SV → D so với bản gần nhất).
 

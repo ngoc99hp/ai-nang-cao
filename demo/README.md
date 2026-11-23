@@ -3,12 +3,12 @@
 ## Chạy
 
 ```bash
-./demo/start.sh          # bật giao diện + worker
+./demo/start.sh          # bật giao diện + sandbox chấm bài
 ./demo/stop.sh           # tắt
 ```
 
 Mở http://127.0.0.1:8501. Nếu xem từ máy khác, tạo SSH tunnel trước:
-`ssh -L 8501:127.0.0.1:8501 tuyendv@<server>`, rồi mở http://localhost:8501.
+`ssh -p 2222 -N -L 8501:127.0.0.1:8501 tuyendv@63.250.52.57`, rồi mở http://localhost:8501.
 
 ## 4 trang
 
@@ -33,13 +33,19 @@ Mở http://127.0.0.1:8501. Nếu xem từ máy khác, tạo SSH tunnel trước
 ## Kiến trúc an toàn
 
 ```
-trình duyệt ──► aai-ui (Streamlit, 127.0.0.1:8501)      không có gcc, không chạy code
+trình duyệt ──► aai-ui (Streamlit, 127.0.0.1:8501)       không có gcc, không chạy code
                    │ ghi job json
                    ▼
-               work/queue/in ──► worker trong aai-lab ──► src/runner.py (ulimit CPU/RAM/output)
-                                 (network: none)            │
-               work/queue/out ◄─────────────────────────────┘
+               work/queue/in ──► aai-sandbox: worker + src/runner.py
+                                 không mạng · root fs chỉ đọc · code/dữ liệu mount chỉ đọc
+                                 ghi được: work/queue + tmpfs tạm · 1 CPU / 1 GB / 128 tiến trình
+               work/queue/out ◄──┘  (ulimit CPU/RAM/output từng lần chạy, diệt cả nhóm tiến trình sau đó)
 ```
+
+`aai-lab` (môi trường nghiên cứu) **không** chạy bài nộp từ giao diện.
+Đã thử với các bài độc hại: lặp/in vô hạn, ăn RAM, ghi file dự án, mở mạng, fork bomb, `#include "/dev/zero"`,
+tự diệt worker. Tất cả đều bị chặn hoặc báo lỗi, và sandbox tự hồi phục.
+Log của worker: `docker logs aai-sandbox`.
 
 ## Cập nhật dữ liệu demo
 
@@ -47,7 +53,7 @@ Sau khi sửa tên cụm (`results/tables/p5_cluster_names.csv`) hoặc chạy l
 
 ```bash
 docker exec aai-lab python -W ignore scripts/p7_build_demo.py
-./demo/stop.sh && ./demo/start.sh
+docker compose restart sandbox ui
 ```
 
 ## Giới hạn

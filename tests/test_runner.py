@@ -80,3 +80,16 @@ def test_uninit_reproducible(tmp_path):
     src.write_text('#include <stdio.h>\nint main(){int s; for(int i=0;i<0;i++) s=i; printf("%d\\n", s);}')
     rows = runner.run_batch([('u', src)], [('t0', tmp_path / 'in.txt', tmp_path / 'out.txt')], tmp_path / 'bin')
     assert rows[0]['status'] == 'PASS', rows
+
+
+def test_no_orphan_processes(io_files):
+    """Tiến trình con của bài nộp bị diệt sau khi chạy (cả khi cha đã thoát)."""
+    import subprocess
+    src = io_files / 'orphan.c'
+    src.write_text('#include <unistd.h>\n#include <stdio.h>\n'
+                   'int main(){ if(fork()==0){ execlp("sleep","sleep","77",(char*)0); } printf("6\\n"); return 0; }')
+    rows = runner.run_batch([('orphan', src)], [('t0', io_files / 'in.txt', io_files / 'out.txt')],
+                            io_files / 'bin')
+    assert rows[0]['status'] == 'PASS'
+    ps = subprocess.run(['pgrep', '-f', 'sleep 77'], capture_output=True, text=True).stdout
+    assert ps.strip() == '', f'còn tiến trình mồ côi: {ps}'

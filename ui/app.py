@@ -328,7 +328,8 @@ if page == PAGES[2]:
         tmp.write_text(json.dumps({'problem': p, 'code': code}, ensure_ascii=False))
         os.replace(tmp, QUEUE / 'in' / f'{jid}.json')
         out = QUEUE / 'out' / f'{jid}.json'
-        with st.spinner('Đang chạy test trong môi trường cách ly...'):
+        with st.spinner('Đang chạy test trong môi trường cách ly... (thường dưới 2 giây; bài bị lặp vô hạn '
+                        'có thể mất ~30 giây vì mỗi test được chạy tới giới hạn thời gian)'):
             for _ in range(180):
                 if out.exists():
                     break

@@ -54,16 +54,25 @@ def run_once(exe, input_path, cpu_limit: float | None = None) -> RunResult:
     cpu = math.ceil(cpu_limit or config.RUN_TIMEOUT)
     sh = _LIMIT_SH.format(cpu=cpu, fsize=MAX_OUTPUT_BYTES // 1024, mem=MAX_MEMORY_KB)
     with open(input_path, 'rb') as fin, tempfile.TemporaryFile() as fout:
+        # Nhóm tiến trình riêng (setsid trong child, an toàn với thread) → sau khi chạy diệt cả nhóm,
+        # không để sót tiến trình con / fork bomb của bài nộp.
+        p = subprocess.Popen(['bash', '-c', sh, str(Path(exe).resolve())],
+                             stdin=fin, stdout=fout, stderr=subprocess.DEVNULL, start_new_session=True)
         try:
-            p = subprocess.run(['bash', '-c', sh, str(Path(exe).resolve())],
-                               stdin=fin, stdout=fout, stderr=subprocess.DEVNULL,
-                               timeout=cpu * WALL_FACTOR)
+            rc = p.wait(timeout=cpu * WALL_FACTOR)
         except subprocess.TimeoutExpired:
+            rc = None
+        finally:
+            try:
+                os.killpg(p.pid, signal.SIGKILL)
+            except (ProcessLookupError, PermissionError):
+                pass
+            p.wait()
+        if rc is None:
             return RunResult('TIMEOUT', '', None)
         fout.seek(0)
         out = fout.read(MAX_OUTPUT_BYTES).decode('utf-8', errors='replace')
 
-    rc = p.returncode
     if rc in _TIMEOUT_SIGNALS:
         return RunResult('TIMEOUT', out, rc)
     if rc == -signal.SIGXFSZ:

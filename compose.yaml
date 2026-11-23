@@ -22,7 +22,7 @@ services:
     restart: "no"
 
   # Giao diện demo (Streamlit). Không chạy code sinh viên: chỉ đọc results/, demo/ và ghi job vào work/queue;
-  # worker trong 'lab' (không mạng) mới compile/chạy. Cổng chỉ mở trên 127.0.0.1 → truy cập qua SSH tunnel.
+  # worker trong 'sandbox' (không mạng) mới compile/chạy. Cổng chỉ mở trên 127.0.0.1 → truy cập qua SSH tunnel.
   ui:
     build: { context: ., dockerfile: docker/Dockerfile.ui }
     image: aai-ui:1
@@ -45,3 +45,36 @@ services:
     cap_drop: [ALL]
     security_opt: ["no-new-privileges:true"]
     restart: "no"
+
+  # Sandbox chấm bài nộp từ giao diện demo (code của người lạ). Tách khỏi 'lab': root fs chỉ đọc, chỉ mount
+  # đúng phần cần ở chế độ :ro; ghi được duy nhất hàng đợi + vùng tạm (tmpfs) để compile/chạy.
+  sandbox:
+    image: aai-lab:1
+    container_name: aai-sandbox
+    command: python -W ignore scripts/demo_worker.py
+    init: true
+    network_mode: none
+    working_dir: /home/aai/aai_misconception
+    environment: [PYTHONUNBUFFERED=1]
+    volumes:
+      - ./src:/home/aai/aai_misconception/src:ro
+      - ./scripts:/home/aai/aai_misconception/scripts:ro
+      - ./bench:/home/aai/aai_misconception/bench:ro
+      - ./data/processed/demo:/home/aai/aai_misconception/data/processed/demo:ro
+      - ./data/raw/introclass/digits/tests:/home/aai/aai_misconception/data/raw/introclass/digits/tests:ro
+      - ./data/raw/introclass/grade/tests:/home/aai/aai_misconception/data/raw/introclass/grade/tests:ro
+      - ./data/raw/introclass/median/tests:/home/aai/aai_misconception/data/raw/introclass/median/tests:ro
+      - ./data/raw/introclass/smallest/tests:/home/aai/aai_misconception/data/raw/introclass/smallest/tests:ro
+      - ./work/queue:/home/aai/aai_misconception/work/queue
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m
+      - /home/aai/aai_misconception/work/demo_jobs:exec,mode=1777,size=256m
+    cpus: 1.0
+    cpu_shares: 256
+    mem_limit: 1g
+    memswap_limit: 1g
+    pids_limit: 128
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: on-failure

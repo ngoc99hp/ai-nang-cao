@@ -1090,6 +1090,10 @@ Kiểm thử: `tests/test_classify.py` + AppTest toàn bộ bài mẫu. Bài m�
 - Hình mới: `results/figures/pipeline.png` (`scripts/p8_report_figs.py`), ảnh giao diện `results/figures/demo/*.png` (Playwright, image `aai-shot:1` từ `tools/Dockerfile.shot`, script `tools/shot.py`, cần demo đang chạy).
 - Còn để trống trên bìa: GVHD, học viên thực hiện. Tên học phần ghi “Trí tuệ nhân tạo nâng cao” — cần người dùng xác nhận.
 
+### 12.3. Slide thuyết trình (2026-11-23)
+
+Slides Artifact trên claude.ai: https://claude.ai/artifact/2rjW563aTwaEFE6hjhFCsJ (xem/sửa/tải .pptx). 14 slide chính + 1 tài liệu + 3 phụ lục hỏi đáp; bìa theo mẫu báo cáo; phong cách Swiss + xanh VMU; ghi chú thuyết trình trong từng slide. Bản sao nguồn: `report/slides/`. Skill dùng: `academic-pptx`, `pptx-design-styles` (zip upload claude.ai ở `tools/claude-skills/`).
+
 **Hướng mở rộng (bài báo):** kết hợp embedding mã nguồn (CodeBERT/UniXcoder) với vector OAV (hybrid clustering), dùng LLM đặt tên + giải thích cụm; so sánh OAV-only vs hybrid.
 
 ---

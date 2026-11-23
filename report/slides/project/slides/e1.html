@@ -1,9 +1,9 @@
 <section id="e1">
 <div class="bar"></div>
-<p class="eyebrow">07 · KẾT QUẢ E1 – E2 · DỮ LIỆU CẤY LỖI</p>
-<h2 class="t">K-modes khôi phục phần lớn lỗi đã cấy (ARI 0,48–0,73); không phương pháp nào thắng ở mọi bài</h2>
+<p class="eyebrow">KẾT QUẢ 1 · TRÊN BỘ CẤY LỖI</p>
+<h2 class="t">Trên bộ cấy lỗi, các nhóm máy chia khớp khá tốt với lỗi đã cấy: độ khớp ARI 0,48–0,73</h2>
 <hr class="rule" style="margin-bottom:24px">
-<div style="display:flex;gap:40px;justify-content:flex-end">
+<div style="display:flex;gap:40px;justify-content:flex-end;align-items:center"><p class="small" style="color:var(--ink);flex:1">ARI = 1: chia đúng hoàn toàn · ARI = 0: như chia ngẫu nhiên</p>
 <div style="display:flex;align-items:center;gap:12px"><div style="width:28px;height:28px;background:#1F4E79"></div><p class="small" style="color:var(--ink)">K-modes (chính)</p></div>
 <div style="display:flex;align-items:center;gap:12px"><div style="width:28px;height:28px;background:#6F9CC6"></div><p class="small" style="color:var(--ink)">Agglomerative</p></div>
 <div style="display:flex;align-items:center;gap:12px"><div style="width:28px;height:28px;background:#C9D5E1"></div><p class="small" style="color:var(--ink)">K-means one-hot</p></div>
@@ -42,6 +42,20 @@
 <p style="font-size:26px;width:200px;text-align:center">smallest</p>
 <p style="font-size:26px;width:200px;text-align:center">average</p>
 </div>
-<div class="foot"><p class="src">ARI (1 = trùng khớp nhãn cấy); k = số loại lỗi đơn; 480 mutant. K-means one-hot: 0,47–0,98</p><div class="pn"></div></div>
-<aside>Trên dữ liệu cấy lỗi, nơi có đáp án, em đo độ trùng khớp giữa cụm và loại lỗi đã cấy bằng chỉ số ARI, bằng 1 là trùng hoàn toàn. K-modes đạt từ 0,48 đến 0,73. Agglomerative và K-means trên one-hot cho kết quả tương đương; K-means rất cao ở grade (0,98) nhưng thấp nhất ở smallest, nên không phương pháp nào thắng ở mọi bài. Lưu ý: trọng số được chọn trên chính tập này nên con số còn lạc quan; em sẽ nói ở phần hạn chế. (Khoảng 1 phút.)</aside>
+<div class="foot"><p class="src">Số nhóm k = số kiểu lỗi có trong bài tập; 480 bài cấy lỗi. Nhãn số trên cột: K-modes</p><div class="pn"></div></div>
+<aside>KẾT QUẢ 1 – TRÊN BỘ CẤY LỖI (khoảng 1 phút 15 giây)
+
+Câu hỏi của thí nghiệm: trên bộ cấy lỗi, nơi biết chắc mỗi bài mắc lỗi gì, máy chia nhóm có khớp với đáp án không?
+
+Thước đo ARI (Adjusted Rand Index): so cách máy chia nhóm với cách chia đúng. ARI = 1 là chia đúng hoàn toàn; ARI = 0 là không tốt hơn chia ngẫu nhiên. ARI không quan tâm tên hay thứ tự nhóm, chỉ xét hai bài cùng lỗi có bị xếp chung nhóm không, và hai bài khác lỗi có bị tách ra không.
+
+Cách đọc biểu đồ: trục ngang là 5 bài tập. Mỗi bài có 3 cột, là 3 thuật toán chia nhóm:
+- Cột xanh đậm: K-modes, phương pháp chính. Số trên cột là ARI của nó.
+- Cột xanh vừa: Agglomerative (gộp dần từ dưới lên: mỗi bài là một nhóm, gộp dần hai nhóm gần nhau nhất).
+- Cột xanh nhạt: K-means trên dữ liệu đã đổi sang dạng 0/1 (one-hot), dùng làm mốc so sánh.
+Cột càng cao càng tốt. Số nhóm k đặt bằng số kiểu lỗi có trong bài tập đó.
+
+Kết quả: K-modes đạt từ 0,48 (median) đến 0,73 (grade), tức phần lớn các bài cùng lỗi được xếp chung. Không thuật toán nào thắng ở mọi bài: K-means rất cao ở grade (0,98) nhưng thấp nhất ở smallest (0,47). Em chọn K-modes vì nó hợp lý về mặt toán cho dữ liệu dạng nhãn và ổn định giữa các bài.
+
+Lưu ý để trung thực: trọng số các nhóm thông tin được chọn dựa trên chính bộ dữ liệu này, nên con số có phần lạc quan. Em sẽ nói rõ ở phần hạn chế.</aside>
 </section>

@@ -1,19 +1,33 @@
 <section id="demo" class="tinted">
 <div class="bar"></div>
-<p class="eyebrow">11 · DEMO</p>
-<h2 class="t">Demo: giảng viên xem nhóm lỗi phổ biến, sinh viên nộp bài và nhận chẩn đoán kèm lý do</h2>
+<p class="eyebrow">DEMO</p>
+<h2 class="t">Demo: giảng viên xem các nhóm lỗi; sinh viên nộp bài và được cho biết mắc lỗi gì, vì sao</h2>
 <hr class="rule" style="margin-bottom:32px">
 <div class="cols" style="gap:48px">
 <div class="col" style="flex:0 0 500px;gap:28px">
-<div class="in" style="--i:1;border-left:6px solid var(--navy);padding-left:24px"><p class="small" style="color:var(--navy);font-weight:700">Bước 1 · Dành cho giảng viên</p><p class="body" style="font-size:28px">Chọn bài smallest: nhóm lỗi, số SV, luật, bài minh họa</p></div>
-<div class="in" style="--i:2;border-left:6px solid var(--navy);padding-left:24px"><p class="small" style="color:var(--navy);font-weight:700">Bước 2 · Thử nộp bài sai</p><p class="body" style="font-size:28px">Bài mẫu “so sánh chặt” → nhóm C0, lý do, khác bản đúng ở đâu</p></div>
-<div class="in" style="--i:3;border-left:6px solid var(--navy);padding-left:24px"><p class="small" style="color:var(--navy);font-weight:700">Bước 3 · Nộp bài đúng</p><p class="body" style="font-size:28px">Hệ thống báo qua mọi test</p></div>
+<div class="in" style="--i:1;border-left:6px solid var(--navy);padding-left:24px"><p class="small" style="color:var(--navy);font-weight:700">Bước 1 · Trang giảng viên</p><p class="body" style="font-size:28px">Chọn bài smallest: các nhóm lỗi, số SV, luật, bài ví dụ</p></div>
+<div class="in" style="--i:2;border-left:6px solid var(--navy);padding-left:24px"><p class="small" style="color:var(--navy);font-weight:700">Bước 2 · Nộp một bài sai</p><p class="body" style="font-size:28px">Máy chấm, xếp vào nhóm lỗi gần nhất và giải thích lý do</p></div>
+<div class="in" style="--i:3;border-left:6px solid var(--navy);padding-left:24px"><p class="small" style="color:var(--navy);font-weight:700">Bước 3 · Nộp một bài đúng</p><p class="body" style="font-size:28px">Máy báo qua hết test</p></div>
 </div>
 <div class="in" style="--i:2;display:flex;gap:24px;flex:1">
 <div style="flex:1;display:flex;flex-direction:column;gap:10px"><img src="/_blob/c3fd381369adc0b56cefb2b11e3d5ad7" alt="Trang giảng viên: bảng các nhóm lỗi bài smallest, số sinh viên và luật" style="width:528px;height:470px;object-fit:contain;background:#FFFFFF;border:2px solid #D6DBE1"><p class="small">Trang giảng viên</p></div>
-<div style="flex:1;display:flex;flex-direction:column;gap:10px"><img src="/_blob/c1483dbd703bbe832241db74fee1d888" alt="Kết quả chẩn đoán: bài nộp thuộc nhóm C0, kèm lý do và luật khớp" style="width:528px;height:470px;object-fit:contain;background:#FFFFFF;border:2px solid #D6DBE1"><p class="small">Chẩn đoán bài nộp</p></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px"><img src="/_blob/c1483dbd703bbe832241db74fee1d888" alt="Kết quả chẩn đoán: bài nộp thuộc nhóm C0, kèm lý do và luật khớp" style="width:528px;height:470px;object-fit:contain;background:#FFFFFF;border:2px solid #D6DBE1"><p class="small">Kết quả chẩn đoán bài nộp</p></div>
 </div>
 </div>
-<div class="foot"><p class="src">Streamlit + sandbox không mạng, chỉ đọc. Bài mẫu tự viết: 5/6 đúng nhóm</p><div class="pn"></div></div>
-<aside>Demo trực tiếp khoảng 2 phút. Trước buổi: chạy ./demo/start.sh trên server, mở tunnel ssh -p 2222 -N -L 8501:127.0.0.1:8501 tới server, mở http://127.0.0.1:8501. Bước 1: trang Dành cho giảng viên, chọn smallest, chỉ bảng nhóm lỗi và luật. Bước 2: trang Thử nộp bài, chọn bài mẫu so sánh nghiêm ngặt, bấm chấm: hệ thống chạy test trong sandbox, báo nhóm C0, giải thích vì sao và so với bản đúng gần nhất. Bước 3: chọn bài mẫu đúng, hệ thống báo qua mọi test. Nếu mạng hoặc server có sự cố, dùng hai ảnh chụp trên slide này.</aside>
+<div class="foot"><p class="src">Giao diện web Streamlit; bài nộp chạy trong container cách ly. Thử 6 bài mẫu: 5 bài đúng nhóm</p><div class="pn"></div></div>
+<aside>DEMO (khoảng 2 phút)
+
+Chuẩn bị trước buổi: chạy ./demo/start.sh trên server, mở tunnel SSH theo hướng dẫn trong demo/README.md, rồi mở trình duyệt http://127.0.0.1:8501. Nếu mạng hoặc server có sự cố, trình bày bằng hai ảnh chụp trên slide này.
+
+Sản phẩm là một trang web có 4 mục: Giới thiệu, Dành cho giảng viên, Thử nộp bài, Kết quả thực nghiệm.
+
+Bước 1 – Trang giảng viên (ảnh bên trái): chọn bài smallest. Bảng trên cùng liệt kê các nhóm lỗi, xếp theo số sinh viên: nhóm C0 “so sánh nghiêm ngặt, không xử lý giá trị bằng nhau” có 36 sinh viên, 48 bài. Mở chi tiết một nhóm sẽ thấy: dấu hiệu đặc trưng của nhóm (ví dụ 100% bài trong nhóm đổi phép so sánh trong if); luật do máy viết; và một bài ví dụ so với bản đúng, dòng đỏ là code đúng, dòng xanh là code sai.
+
+Bước 2 – Thử nộp bài: chọn bài mẫu “so sánh nghiêm ngặt” rồi bấm chấm. Hệ thống biên dịch và chạy test trong container cách ly, mô tả bài bằng OAV, rồi xếp vào nhóm có tâm gần nhất (đúng như bước gán nhóm của K-modes). Kết quả (ảnh bên phải): “giống nhất nhóm C0”, kèm lý do (các dấu hiệu chung), luật khớp, mức giống với từng nhóm, và chỗ khác so với một bài đúng tương tự.
+
+Bước 3 – chọn bài mẫu đúng: hệ thống báo qua hết các test.
+
+Về độ tin cậy: em thử 6 bài mẫu tự viết, gồm 5 bài sai và 1 bài đúng; 5 bài được xếp đúng. Bài sai còn lại (quên số 0 ở bài digits) bị xếp nhầm, vì bài nộp mới không có bản tự sửa của chính sinh viên để so.
+
+Về an toàn: bài nộp là code lạ nên chạy trong container không mạng, chỉ đọc, giới hạn CPU, bộ nhớ, số tiến trình. Em đã thử các bài nộp độc hại như vòng lặp vô hạn hay fork bomb, đều bị chặn (xem phụ lục A1).</aside>
 </section>

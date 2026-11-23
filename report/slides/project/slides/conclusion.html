@@ -1,17 +1,29 @@
 <section id="conclusion" class="tinted">
 <div class="bar"></div>
-<p class="eyebrow">13 · KẾT LUẬN</p>
-<h2 class="t">OAV + K-modes + ILA cho ra báo cáo lỗi phổ biến đọc được; so sánh với bản đúng là then chốt</h2>
+<p class="eyebrow">KẾT LUẬN</p>
+<h2 class="t">Máy đã tự gom bài sai theo lỗi hiểu sai và viết luật giải thích; so với bản đúng là then chốt</h2>
 <hr class="rule">
 <div class="cards">
-<div class="card in" style="--i:1"><p class="num">01</p><h3>Nhóm D quyết định</h3><p class="desc">So với bản đúng gần nhất: ARI 0,61 so với 0,20 khi chỉ dùng output</p></div>
-<div class="card in" style="--i:2"><p class="num">02</p><h3>18 nhóm lỗi thật</h3><p class="desc">279 bài, mỗi nhóm có tên, số SV, luật 1–2 điều kiện; lớn nhất 36 SV</p></div>
-<div class="card in" style="--i:3"><p class="num">03</p><h3>Demo chạy được</h3><p class="desc">Chấm an toàn trong sandbox, chẩn đoán bài mới kèm lý do</p></div>
+<div class="card in" style="--i:1"><p class="num">01</p><h3>So với bản đúng là then chốt</h3><p class="desc">Có thông tin “khác bản đúng ở đâu”: ARI 0,61; chỉ dùng output: 0,20</p></div>
+<div class="card in" style="--i:2"><p class="num">02</p><h3>18 nhóm lỗi trên bài thật</h3><p class="desc">Mỗi nhóm có tên, số SV, luật 1–2 điều kiện; nhóm lớn nhất 36 SV</p></div>
+<div class="card in" style="--i:3"><p class="num">03</p><h3>Có sản phẩm demo</h3><p class="desc">Chấm an toàn, xếp bài nộp mới vào nhóm lỗi kèm lý do</p></div>
 </div>
-<div class="in" style="--i:4;margin-top:96px;border-top:2px solid var(--rule);padding-top:28px">
+<div class="in" style="--i:4;margin-top:80px;border-top:2px solid var(--rule);padding-top:28px">
 <p class="small" style="color:var(--navy);font-weight:700">Hướng phát triển</p>
-<p class="body" style="margin-top:8px">Kết hợp embedding mã (CodeBERT, UniXcoder) với OAV · dùng LLM đặt tên và giải thích cụm · thử trên dữ liệu lớp thật của khoa</p>
+<p class="body" style="margin-top:8px">Kết hợp mô hình hiểu code (CodeBERT, UniXcoder) với OAV · dùng LLM tự đặt tên nhóm lỗi · thử trên bài nộp thật của lớp</p>
 </div>
-<div class="foot"><p class="src">Mã nguồn, dữ liệu và báo cáo: kèm theo bài nộp</p><div class="pn"></div></div>
-<aside>Tóm lại, ba ý chính. Một, nhóm thuộc tính D, so bài sai với bản đúng gần nhất, là yếu tố quyết định: ARI 0,61 so với 0,20 khi chỉ dùng output. Hai, trên 279 bài thật, hệ thống tìm ra 18 nhóm lỗi, mỗi nhóm có tên, số sinh viên và luật ngắn, nhóm lớn nhất 36 sinh viên. Ba, demo chạy được, chấm an toàn và chẩn đoán bài mới. Hướng phát triển là kết hợp embedding mã nguồn và dùng LLM để đặt tên cụm. Em xin cảm ơn và rất mong nhận được câu hỏi. (Để slide này trên màn hình khi hỏi đáp.)</aside>
+<div class="foot"><p class="src">Mã nguồn, dữ liệu đã xử lý và báo cáo: nộp kèm</p><div class="pn"></div></div>
+<aside>KẾT LUẬN (khoảng 45 giây; để slide này trên màn hình trong lúc hỏi đáp)
+
+Trở lại câu hỏi ban đầu: máy có tự gom được bài sai theo lỗi hiểu sai và viết luật giải thích không? Câu trả lời là được, với ba kết quả chính:
+
+1. Thông tin “bài sai khác bản đúng ở đâu” là then chốt. Có nó, độ khớp với đáp án đạt 0,61; chỉ nhìn output thì chỉ 0,20. Đây là đóng góp chính so với cách làm chỉ dựa trên kết quả test.
+
+2. Trên 279 bài sai thật, máy chia thành 18 nhóm lỗi. Mỗi nhóm có tên, số sinh viên, luật NẾU – THÌ chỉ 1 đến 2 điều kiện, và bài ví dụ. Nhóm lớn nhất có 36 sinh viên mắc lỗi quên trường hợp các số bằng nhau. Đó chính là báo cáo cả lớp mà đề bài hướng tới.
+
+3. Có sản phẩm demo chạy được: chấm bài an toàn trong môi trường cách ly và xếp bài nộp mới vào nhóm lỗi, kèm lý do.
+
+Hướng phát triển: kết hợp các mô hình học sâu hiểu code như CodeBERT hay UniXcoder với biểu diễn OAV; dùng mô hình ngôn ngữ lớn (LLM) để tự đặt tên và giải thích nhóm lỗi thay cho người; và thử trên bài nộp thật của lớp lập trình C tại trường.
+
+Em xin cảm ơn thầy/cô và các bạn đã lắng nghe, em rất mong nhận được câu hỏi và góp ý.</aside>
 </section>

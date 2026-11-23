@@ -1,12 +1,12 @@
 <section id="a-lopo">
 <div class="bar"></div>
 <p class="eyebrow">PHỤ LỤC A2 · KIỂM TRA CHÉO TRỌNG SỐ</p>
-<h2 class="t">Chọn trọng số trên 4 bài rồi thử trên bài còn lại, ARI giảm rõ ở digits và smallest</h2>
+<h2 class="t">Chọn trọng số trên 4 bài rồi thử trên bài thứ 5, độ khớp giảm rõ ở digits và smallest</h2>
 <hr class="rule" style="margin-bottom:28px">
 <div class="cols" style="gap:72px">
 <div class="col" style="flex:0 0 900px">
 <table class="tb" style="font-size:32px">
-<tr><th style="width:34%">Bài</th><th style="width:33%">ARI, trọng số DP3</th><th>ARI, bỏ-một-bài</th></tr>
+<tr><th style="width:34%">Bài</th><th style="width:33%">ARI, trọng số chung</th><th>ARI, bài để riêng</th></tr>
 <tr><td>digits</td><td>0,64</td><td style="color:#1F4E79">0,28</td></tr>
 <tr><td>grade</td><td>0,67</td><td>0,67</td></tr>
 <tr><td>median</td><td>0,51</td><td>0,51</td></tr>
@@ -15,9 +15,17 @@
 </table>
 </div>
 <div class="col">
-<p class="body">Trọng số tối ưu <b>phụ thuộc bài tập</b>. Con số E1 nên đọc là cận trên; báo cáo nêu rõ điều này.</p>
+<p class="body">Trọng số tốt nhất <b>phụ thuộc bài tập</b>. Kết quả 1 nên hiểu là cận trên.</p>
 </div>
 </div>
-<div class="foot"><p class="src">Agglomerative, k = số loại lỗi đơn; DP3 = T 0, O 0,5, A 0,5, D 3</p><div class="pn"></div></div>
-<aside>Slide dự phòng nếu được hỏi trọng số có bị khớp quá với dữ liệu đánh giá không. Câu trả lời: có, khi chọn trọng số trên 4 bài và thử trên bài thứ năm, ARI giảm mạnh ở digits và smallest; vì vậy kết quả E1 là cận trên.</aside>
+<div class="foot"><p class="src">Chia nhóm Agglomerative; trọng số chung: T 0, O 0,5, A 0,5, D 3</p><div class="pn"></div></div>
+<aside>PHỤ LỤC A2 – KIỂM TRA CHÉO TRỌNG SỐ (chỉ dùng khi được hỏi)
+
+Câu hỏi thường gặp: trọng số chọn trên chính dữ liệu đánh giá thì kết quả có bị “học thuộc” không?
+
+Cách kiểm tra: lần lượt để riêng một bài tập ra; chọn trọng số tốt nhất trên 4 bài còn lại, rồi đo ARI trên bài để riêng. Cách này gọi là kiểm tra chéo bỏ một bài (leave-one-problem-out).
+
+Cách đọc bảng: cột giữa là ARI khi dùng trọng số chung đã chọn (D = 3, O = A = 0,5, T = 0); cột phải là ARI khi bài đó không tham gia chọn trọng số. Hai ô màu xanh là chỗ giảm mạnh: digits từ 0,64 xuống 0,28, smallest từ 0,56 xuống 0,15. grade và median không đổi.
+
+Kết luận: trọng số tốt nhất phụ thuộc vào bài tập, nên các con số ở slide “Kết quả 1” nên được hiểu là cận trên. Báo cáo đã ghi rõ điều này.</aside>
 </section>

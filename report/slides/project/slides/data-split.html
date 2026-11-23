@@ -1,0 +1,36 @@
+<section id="data-split">
+<div class="bar"></div>
+<p class="eyebrow">DỮ LIỆU · PHÂN CHIA</p>
+<h2 class="t">Chọn 4 bài tập IntroClass; sau khi lọc còn 279 bài sai thật, cộng 480 bài cấy lỗi</h2>
+<hr class="rule" style="margin-bottom:28px">
+<table class="tb in" style="--i:1;font-size:26px">
+<tr><th style="width:15%">Bài tập</th><th style="width:31%">Đề bài</th><th style="width:9%">Số test</th><th style="width:12%">Bài nộp gốc</th><th style="width:12%">Bài sai giữ lại</th><th style="width:9%">Số SV</th><th>Bài cấy lỗi</th></tr>
+<tr><td>digits</td><td>In từng chữ số, từ phải sang trái</td><td>16</td><td>236</td><td>108</td><td>54</td><td>247</td></tr>
+<tr><td>grade</td><td>Xếp loại A–F theo 4 ngưỡng điểm</td><td>18</td><td>268</td><td>38</td><td>22</td><td>79</td></tr>
+<tr><td>median</td><td>Tìm số trung vị của 3 số</td><td>13</td><td>232</td><td>69</td><td>44</td><td>82</td></tr>
+<tr><td>smallest</td><td>Tìm số nhỏ nhất trong 4 số</td><td>16</td><td>177</td><td>64</td><td>42</td><td>51</td></tr>
+<tr><td>average</td><td>Tính trung bình (tự viết)</td><td>8</td><td>—</td><td>—</td><td>—</td><td>21</td></tr>
+<tr style="background:#EEF2F6"><td>Tổng</td><td></td><td></td><td>913</td><td>279</td><td>162</td><td>480</td></tr>
+</table>
+<p class="small in" style="--i:2;margin-top:24px">Lọc: bỏ bài trùng nhau, bỏ bài chỉ sai chính tả câu in ra (riêng grade: 123 bài). Bỏ 2 bài checksum, syllables vì quá ít bài sai. ITSP: giữ 602 / 661 cặp, 72 bài tập.</p>
+<div class="foot"><p class="src">Số test = test hộp đen + hộp trắng có sẵn trong IntroClass</p><div class="pn"></div></div>
+<aside>DỮ LIỆU – PHÂN CHIA (khoảng 1 phút 15 giây)
+
+Bảng này cho biết dữ liệu được chia và lọc thế nào. Mỗi dòng là một bài tập:
+- digits: nhập số nguyên, in từng chữ số từ phải sang trái, mỗi chữ số một dòng.
+- grade: nhập 4 ngưỡng điểm A, B, C, D và điểm của sinh viên, in ra loại.
+- median: tìm số đứng giữa của 3 số.
+- smallest: tìm số nhỏ nhất trong 4 số.
+- average: bài tính trung bình do em tự viết thêm, chỉ dùng để cấy lỗi chia nguyên (thiếu ép kiểu float), vì IntroClass không có bài nào dùng phép chia.
+
+Các cột:
+- Số test: số bộ dữ liệu vào/ra mẫu có sẵn, gồm test hộp đen (viết theo đề) và test hộp trắng (viết theo code mẫu).
+- Bài nộp gốc: tổng số lần nộp trong IntroClass. Một sinh viên nộp nhiều lần, nên con số lớn.
+- Bài sai giữ lại: sau khi lọc. Em chạy lại toàn bộ bài trong môi trường cách ly, rồi (1) bỏ bài trùng nhau, so sau khi bỏ chú thích và khoảng trắng; (2) bỏ bài chỉ sai chính tả câu in ra, ví dụ in “Studetn has an A grade” nhưng đáp án đúng. Riêng bài grade có 123 bài loại này, vì đó là lỗi gõ chứ không phải hiểu sai kiến thức.
+- Số SV: số sinh viên khác nhau có bài sai được giữ (đếm riêng từng bài tập).
+- Bài cấy lỗi: số bài do em tự cấy lỗi cho bài tập đó.
+
+Kết quả: 279 bài sai thật của 162 lượt sinh viên, và 480 bài cấy lỗi. Hai bài checksum và syllables bị bỏ vì quá ít bài sai sau khi lọc (29 và 38 bài, nhiều bài chạy không ổn định). Với ITSP, giữ 602 trên 661 cặp, thuộc 72 bài tập: những cặp mà bản sửa chạy đúng hết test và bản sai trượt ít nhất 1 test.
+
+Để chắc kết quả chạy lại là tin được, em so với kết quả chấm gốc của bộ dữ liệu: khớp 99,8 đến 100% với IntroClass và 95,7% với ITSP.</aside>
+</section>

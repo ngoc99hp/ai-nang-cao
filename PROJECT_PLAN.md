@@ -1092,7 +1092,7 @@ Kiểm thử: `tests/test_classify.py` + AppTest toàn bộ bài mẫu. Bài m�
 
 ### 12.3. Slide thuyết trình (2026-11-23)
 
-Slides Artifact trên claude.ai: https://claude.ai/artifact/2rjW563aTwaEFE6hjhFCsJ (xem/sửa/tải .pptx). 14 slide chính + 1 tài liệu + 3 phụ lục hỏi đáp; bìa theo mẫu báo cáo; phong cách Swiss + xanh VMU; ghi chú thuyết trình trong từng slide. Bản sao nguồn: `report/slides/`. Skill dùng: `academic-pptx`, `pptx-design-styles` (zip upload claude.ai ở `tools/claude-skills/`).
+Slides Artifact trên claude.ai: https://claude.ai/artifact/2rjW563aTwaEFE6hjhFCsJ (xem/sửa/tải .pptx). 16 slide chính + 1 tài liệu + 3 phụ lục hỏi đáp; bìa kiểu slide, giữ nguyên tên đề tài; dùng thuật ngữ “lỗi hiểu sai”; phong cách Swiss + xanh VMU; ghi chú thuyết trình trong từng slide. Bản sao nguồn: `report/slides/`. Skill dùng: `academic-pptx`, `pptx-design-styles` (zip upload claude.ai ở `tools/claude-skills/`).
 
 **Hướng mở rộng (bài báo):** kết hợp embedding mã nguồn (CodeBERT/UniXcoder) với vector OAV (hybrid clustering), dùng LLM đặt tên + giải thích cụm; so sánh OAV-only vs hybrid.
 

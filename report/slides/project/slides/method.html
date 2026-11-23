@@ -1,32 +1,47 @@
 <section id="method">
 <div class="bar"></div>
-<p class="eyebrow">06 · GOM CỤM VÀ LUẬT</p>
-<h2 class="t">Dữ liệu định danh nên dùng K-modes với Hamming có trọng số; ILA chạy sau khi gom cụm</h2>
+<p class="eyebrow">PHƯƠNG PHÁP · CHIA NHÓM VÀ VIẾT LUẬT</p>
+<h2 class="t">Hai bài càng ít thuộc tính khác nhau thì càng gần nhau; thuật toán K-modes chia nhóm dựa vào đó</h2>
 <hr class="rule">
 <div class="cols" style="gap:80px">
 <div class="col in" style="--i:1">
-<p class="small" style="color:var(--navy);font-weight:700">Khoảng cách giữa hai bài x, y</p>
-<p style="font-family:var(--mono);font-size:36px;color:var(--ink);margin-top:16px;white-space:nowrap">d(x, y) = Σ w·[x ≠ y] / Σ w</p>
-<p class="small" style="margin-top:12px">Cộng trọng số các thuộc tính khác giá trị</p>
-<p class="small" style="color:var(--navy);font-weight:700;margin-top:40px">Trọng số nhóm (DP3)</p>
+<p class="small" style="color:var(--navy);font-weight:700">Khoảng cách giữa hai bài</p>
+<p class="body" style="color:var(--ink);margin-top:8px">= tổng trọng số của các thuộc tính có giá trị khác nhau</p>
+<p class="small" style="color:var(--navy);font-weight:700;margin-top:36px">Trọng số mỗi nhóm thông tin</p>
 <div class="hbars" style="margin-top:16px;gap:12px">
-<div class="hrow"><p class="lab" style="width:220px">T · Test</p><div class="track"><div class="fill" style="width:4px"></div><p class="val">0</p></div></div>
-<div class="hrow"><p class="lab" style="width:220px">O · Output</p><div class="track"><div class="fill" style="width:80px"></div><p class="val">0,5</p></div></div>
-<div class="hrow"><p class="lab" style="width:220px">A · AST</p><div class="track"><div class="fill" style="width:80px"></div><p class="val">0,5</p></div></div>
-<div class="hrow"><p class="lab" style="width:220px">D · Diff</p><div class="track"><div class="fill on" style="width:480px"></div><p class="val">3</p></div></div>
+<div class="hrow"><p class="lab" style="width:300px">T · Kết quả test</p><div class="track"><div class="fill" style="width:4px"></div><p class="val">0</p></div></div>
+<div class="hrow"><p class="lab" style="width:300px">O · Kiểu sai output</p><div class="track"><div class="fill" style="width:80px"></div><p class="val">0,5</p></div></div>
+<div class="hrow"><p class="lab" style="width:300px">A · Cấu trúc code</p><div class="track"><div class="fill" style="width:80px"></div><p class="val">0,5</p></div></div>
+<div class="hrow"><p class="lab" style="width:300px">D · Khác bản đúng</p><div class="track"><div class="fill on" style="width:400px"></div><p class="val">3</p></div></div>
 </div>
 </div>
-<div class="col in" style="--i:2;gap:40px">
+<div class="col in" style="--i:2;gap:36px">
 <div style="border-left:6px solid var(--navy);padding-left:28px">
-<h3 style="font-size:34px;font-weight:700">K-modes thay K-means</h3>
-<p class="body" style="margin-top:10px">K-means tối ưu khoảng cách Euclid, ghép với Hamming không nhất quán; K-modes dùng mode và Hamming</p>
+<h3 style="font-size:34px;font-weight:700">Vì sao K-modes, không phải K-means?</h3>
+<p class="body" style="margin-top:10px">K-means lấy trung bình nên chỉ hợp với số. Giá trị ở đây là nhãn (sai, có, chặt), nên K-modes lấy giá trị hay gặp nhất làm tâm nhóm.</p>
 </div>
 <div style="border-left:6px solid var(--navy);padding-left:28px">
-<h3 style="font-size:34px;font-weight:700">Gom cụm trước, ILA sau</h3>
-<p class="body" style="margin-top:10px">ILA là học có giám sát nên không gom cụm được; dùng mã cụm làm nhãn lớp để ILA sinh luật</p>
+<h3 style="font-size:34px;font-weight:700">Vì sao chia nhóm trước rồi mới chạy ILA?</h3>
+<p class="body" style="margin-top:10px">ILA phải biết trước mỗi bài thuộc nhóm nào mới học được luật, nên dùng số nhóm do K-modes chia làm nhãn.</p>
 </div>
 </div>
 </div>
-<div class="foot"><p class="src">Huang 1998 · Cao et al. 2009 · Tolun &amp; Abu-Soud 1998</p><div class="pn"></div></div>
-<aside>Về phương pháp, có hai điều chỉnh so với gợi ý của đề. Thứ nhất, K-means tối ưu theo khoảng cách Euclid nên ghép với Hamming là không nhất quán; dữ liệu của em là định danh nên dùng K-modes, khoảng cách Hamming có trọng số. Thứ hai, ILA là thuật toán học có giám sát, không phải thuật toán gom cụm, nên em gom cụm trước rồi dùng mã cụm làm nhãn cho ILA. Trọng số nhóm D lớn nhất, bằng 3, theo kết quả thực nghiệm ở slide sau. (Khoảng 1 phút.)</aside>
+<div class="foot"><p class="src">K-modes: Huang 1998, khởi tạo Cao et al. 2009 · ILA: Tolun &amp; Abu-Soud 1998</p><div class="pn"></div></div>
+<aside>CHIA NHÓM VÀ VIẾT LUẬT (khoảng 1 phút 15 giây)
+
+Bên trái: cách đo hai bài giống nhau đến đâu. Với mỗi thuộc tính, nếu hai bài có giá trị khác nhau thì cộng trọng số của thuộc tính đó; cộng hết lại là khoảng cách. Hai bài càng ít chỗ khác nhau thì càng gần, càng dễ về chung một nhóm. Cách tính này gọi là khoảng cách Hamming có trọng số. Công thức: d(x, y) = tổng w_j nhân [x_j khác y_j], chia cho tổng w_j.
+
+Trọng số theo 4 nhóm thông tin ở slide trước (biểu đồ cột nhỏ):
+- D – khác bản đúng ở đâu: nặng nhất, bằng 3, vì thí nghiệm ở phần kết quả cho thấy đây là thông tin quan trọng nhất.
+- O và A: 0,5.
+- T – kết quả test thô: 0. Thêm vào lại làm kết quả kém đi, vì cùng một lỗi có thể trượt những test khác nhau tùy cách viết code.
+Trọng số được chia đều cho các thuộc tính trong nhóm, để nhóm nhiều thuộc tính không lấn át nhóm ít thuộc tính.
+
+Bên phải là hai điều chỉnh so với gợi ý của đề bài:
+
+1. Đề gợi ý K-means với khoảng cách Hamming. Nhưng K-means tính tâm nhóm bằng giá trị trung bình, chỉ có nghĩa với số; còn giá trị của em là nhãn như “sai”, “có”, “chặt”, không lấy trung bình được. K-modes là biến thể của K-means dành cho dữ liệu dạng nhãn: tâm nhóm là giá trị hay gặp nhất (mode) của từng thuộc tính, khoảng cách là Hamming. Em vẫn chạy K-means để so sánh.
+
+2. Đề gợi ý dùng ILA để gom cụm. Nhưng ILA là thuật toán học có giám sát: nó cần biết trước mỗi mẫu thuộc lớp nào mới rút ra được luật, nên không tự chia nhóm được. Vì vậy em chia nhóm bằng K-modes trước, rồi lấy số thứ tự nhóm làm nhãn để ILA học luật.
+
+Số nhóm k của mỗi bài tập được chọn bằng chỉ số silhouette (mức tách biệt giữa các nhóm) kết hợp xem cỡ nhóm, được 4 đến 5 nhóm mỗi bài.</aside>
 </section>

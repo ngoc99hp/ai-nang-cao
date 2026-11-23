@@ -1,19 +1,34 @@
 <section id="real">
 <div class="bar"></div>
-<p class="eyebrow">09 · KẾT QUẢ E4 · DỮ LIỆU THẬT</p>
-<h2 class="t">Trên bài thật, lỗi phổ biến nhất là so sánh chặt bỏ sót giá trị bằng nhau (36 SV ở smallest, 19 ở median)</h2>
+<p class="eyebrow">KẾT QUẢ 3 · TRÊN BÀI NỘP THẬT</p>
+<h2 class="t">Trên bài thật, lỗi phổ biến nhất là quên trường hợp các số bằng nhau: 36 SV ở smallest, 19 ở median</h2>
 <hr class="rule" style="margin-bottom:28px">
 <p class="small" style="color:var(--ink);margin-bottom:16px">Số sinh viên mỗi nhóm lỗi — 8 nhóm lớn nhất trong 18 nhóm</p>
 <div class="hbars in" style="--i:1;gap:12px">
-<div class="hrow"><p class="lab" style="width:720px"><b>smallest · So sánh chặt, bỏ sót số bằng nhau</b></p><div class="track"><div class="fill on" style="width:828px"></div><p class="val">36</p></div></div>
-<div class="hrow"><p class="lab" style="width:720px">digits · Bỏ sót trường hợp n = 0</p><div class="track"><div class="fill" style="width:805px"></div><p class="val">35</p></div></div>
-<div class="hrow"><p class="lab" style="width:720px"><b>median · So sánh chặt, bỏ sót số bằng nhau</b></p><div class="track"><div class="fill on" style="width:437px"></div><p class="val">19</p></div></div>
-<div class="hrow"><p class="lab" style="width:720px">median · Hoán đổi / sắp xếp thiếu bước</p><div class="track"><div class="fill" style="width:299px"></div><p class="val">13</p></div></div>
-<div class="hrow"><p class="lab" style="width:720px">digits · Tách chữ số bằng log10</p><div class="track"><div class="fill" style="width:276px"></div><p class="val">12</p></div></div>
-<div class="hrow"><p class="lab" style="width:720px">grade · Chuỗi if không loại trừ nhau</p><div class="track"><div class="fill" style="width:276px"></div><p class="val">12</p></div></div>
-<div class="hrow"><p class="lab" style="width:720px">median · Điều kiện trung vị thiếu vế đối xứng</p><div class="track"><div class="fill" style="width:276px"></div><p class="val">12</p></div></div>
-<div class="hrow"><p class="lab" style="width:720px">digits · Đặt dấu âm sai chỗ</p><div class="track"><div class="fill" style="width:253px"></div><p class="val">11</p></div></div>
+<div class="hrow"><p class="lab" style="width:760px"><b>smallest · Dùng &lt; thay cho &lt;=, quên số bằng nhau</b></p><div class="track"><div class="fill on" style="width:780px"></div><p class="val">36</p></div></div>
+<div class="hrow"><p class="lab" style="width:760px">digits · Bỏ sót trường hợp n = 0</p><div class="track"><div class="fill" style="width:758px"></div><p class="val">35</p></div></div>
+<div class="hrow"><p class="lab" style="width:760px"><b>median · Dùng &lt; thay cho &lt;=, quên số bằng nhau</b></p><div class="track"><div class="fill on" style="width:412px"></div><p class="val">19</p></div></div>
+<div class="hrow"><p class="lab" style="width:760px">median · Hoán đổi / sắp xếp thiếu bước</p><div class="track"><div class="fill" style="width:282px"></div><p class="val">13</p></div></div>
+<div class="hrow"><p class="lab" style="width:760px">digits · Tách chữ số bằng log10, sai khi có số 0</p><div class="track"><div class="fill" style="width:260px"></div><p class="val">12</p></div></div>
+<div class="hrow"><p class="lab" style="width:760px">grade · Các lệnh if không loại trừ nhau</p><div class="track"><div class="fill" style="width:260px"></div><p class="val">12</p></div></div>
+<div class="hrow"><p class="lab" style="width:760px">median · Điều kiện trung vị chỉ xét một chiều</p><div class="track"><div class="fill" style="width:260px"></div><p class="val">12</p></div></div>
+<div class="hrow"><p class="lab" style="width:760px">digits · In dấu âm sai chỗ</p><div class="track"><div class="fill" style="width:238px"></div><p class="val">11</p></div></div>
 </div>
-<div class="foot"><p class="src">279 bài, 162 SV, K-modes k = 4–5 mỗi bài; silhouette 0,25–0,50. Tên nhóm do người đặt từ luật và bài minh họa</p><div class="pn"></div></div>
-<aside>Áp lên 279 bài sai thật, hệ thống chia thành 18 nhóm trên 4 bài tập. Biểu đồ là 8 nhóm có nhiều sinh viên nhất. Lỗi phổ biến nhất xuất hiện ở hai bài khác nhau: so sánh chặt bỏ sót giá trị bằng nhau, 36 sinh viên ở bài smallest và 19 ở bài median, chính là ví dụ ở slide đầu. Tiếp theo là bỏ sót trường hợp n bằng 0 ở bài digits, 35 sinh viên. Đây chính là thông tin giảng viên cần để giảng lại cho cả lớp. Tên nhóm do người đặt dựa trên luật và bài minh họa. (Khoảng 1 phút 15 giây.)</aside>
+<div class="foot"><p class="src">279 bài, 18 nhóm (4–5 nhóm mỗi bài tập). Tên nhóm do người đặt sau khi đọc luật và bài ví dụ</p><div class="pn"></div></div>
+<aside>KẾT QUẢ 3 – TRÊN BÀI NỘP THẬT (khoảng 1 phút 15 giây)
+
+Bây giờ áp dụng lên 279 bài sai thật của IntroClass. Ở đây không có đáp án, nên không tính được ARI; em đánh giá bằng cách xem các nhóm có hợp lý không và đo độ tách biệt giữa các nhóm bằng chỉ số silhouette (từ -1 đến 1, càng cao càng tách bạch), đạt 0,25 đến 0,50.
+
+Máy chia 4 bài tập thành 18 nhóm, mỗi bài 4 hoặc 5 nhóm. Biểu đồ là 8 nhóm có nhiều sinh viên nhất.
+
+Cách đọc: mỗi thanh là một nhóm lỗi, ghi theo dạng “bài tập · tên lỗi”; độ dài thanh và con số bên phải là số sinh viên khác nhau có bài trong nhóm (một sinh viên nộp nhiều lần chỉ tính một). Hai thanh xanh đậm là cùng một lỗi hiểu sai xuất hiện ở hai bài tập khác nhau.
+
+Nội dung:
+- Lỗi phổ biến nhất: dùng < thay cho <=, quên trường hợp các số bằng nhau. 36 sinh viên ở bài smallest, 19 ở bài median. Đây chính là ví dụ ở slide đầu. Nó trùng với kiểu lỗi M7 em định nghĩa khi cấy lỗi.
+- Thứ hai: bài digits, 35 sinh viên quên trường hợp n = 0. Vòng lặp while(n) không chạy lần nào nên không in gì.
+- Các nhóm khác: hoán đổi giá trị thiếu biến tạm; dùng log10 để tách chữ số nên sai khi số có chữ số 0; các lệnh if không loại trừ nhau nên in nhiều loại điểm; in dấu âm sai chỗ.
+
+Tên nhóm không phải máy tự đặt. Người đọc luật và bài ví dụ của từng nhóm rồi đặt tên; đặt tên tự động bằng LLM là hướng phát triển.
+
+Với giảng viên, thông tin dạng này cho biết nên giảng lại phần nào và cho bao nhiêu em.</aside>
 </section>

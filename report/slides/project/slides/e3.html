@@ -1,18 +1,29 @@
 <section id="e3">
 <div class="bar"></div>
-<p class="eyebrow">08 · KẾT QUẢ E3 · ABLATION ĐẶC TRƯNG</p>
-<h2 class="t">Nhóm D “khác bản đúng ở đâu” quyết định chất lượng cụm; chỉ dùng output thì gần như không gom được</h2>
+<p class="eyebrow">KẾT QUẢ 2 · THỬ BỎ BỚT TỪNG NHÓM THÔNG TIN</p>
+<h2 class="t">Thông tin “khác bản đúng ở đâu” (nhóm D) quan trọng nhất: thiếu nó, độ khớp chỉ còn 0,20–0,34</h2>
 <hr class="rule" style="margin-bottom:32px">
 <div class="hbars in" style="--i:1;gap:24px">
-<div class="hrow"><p class="lab" style="width:380px">O · output</p><div class="track"><div class="fill" style="width:300px"></div><p class="val">0,20</p></div></div>
-<div class="hrow"><p class="lab" style="width:380px">A · cấu trúc AST</p><div class="track"><div class="fill" style="width:300px"></div><p class="val">0,20</p></div></div>
-<div class="hrow"><p class="lab" style="width:380px">O + A</p><div class="track"><div class="fill" style="width:510px"></div><p class="val">0,34</p></div></div>
-<div class="hrow"><p class="lab" style="width:380px">D · khác bản đúng</p><div class="track"><div class="fill on" style="width:585px"></div><p class="val">0,39</p></div></div>
-<div class="hrow"><p class="lab" style="width:380px">A + D</p><div class="track"><div class="fill on" style="width:825px"></div><p class="val">0,55</p></div></div>
-<div class="hrow"><p class="lab" style="width:380px">O + D</p><div class="track"><div class="fill on" style="width:855px"></div><p class="val">0,57</p></div></div>
-<div class="hrow"><p class="lab" style="width:380px"><b>O + A + D (chọn)</b></p><div class="track"><div class="fill on" style="width:915px"></div><p class="val">0,61</p></div></div>
-<div class="hrow"><p class="lab" style="width:380px">T + O + A + D</p><div class="track"><div class="fill on" style="width:795px"></div><p class="val">0,53</p></div></div>
+<div class="hrow"><p class="lab" style="width:440px">Chỉ kiểu sai output (O)</p><div class="track"><div class="fill" style="width:300px"></div><p class="val">0,20</p></div></div>
+<div class="hrow"><p class="lab" style="width:440px">Chỉ cấu trúc code (A)</p><div class="track"><div class="fill" style="width:300px"></div><p class="val">0,20</p></div></div>
+<div class="hrow"><p class="lab" style="width:440px">O + A</p><div class="track"><div class="fill" style="width:510px"></div><p class="val">0,34</p></div></div>
+<div class="hrow"><p class="lab" style="width:440px">Chỉ khác bản đúng (D)</p><div class="track"><div class="fill on" style="width:585px"></div><p class="val">0,39</p></div></div>
+<div class="hrow"><p class="lab" style="width:440px">A + D</p><div class="track"><div class="fill on" style="width:825px"></div><p class="val">0,55</p></div></div>
+<div class="hrow"><p class="lab" style="width:440px">O + D</p><div class="track"><div class="fill on" style="width:855px"></div><p class="val">0,57</p></div></div>
+<div class="hrow"><p class="lab" style="width:440px"><b>O + A + D (dùng)</b></p><div class="track"><div class="fill on" style="width:915px"></div><p class="val">0,61</p></div></div>
+<div class="hrow"><p class="lab" style="width:440px">Thêm kết quả test (T)</p><div class="track"><div class="fill on" style="width:795px"></div><p class="val">0,53</p></div></div>
 </div>
-<div class="foot"><p class="src">ARI trung bình 5 bài, K-modes. Xanh đậm = có nhóm D; xanh nhạt = không có D</p><div class="pn"></div></div>
-<aside>Đây là thí nghiệm quan trọng nhất: bỏ bớt từng nhóm thuộc tính. Chỉ dùng output hoặc chỉ dùng cấu trúc AST, ARI chỉ 0,2: cùng một lỗi biểu hiện khác nhau tùy chương trình gốc, và AST gom theo chương trình gốc chứ không theo lỗi. Thêm nhóm D, tức so với bản đúng gần nhất, ARI tăng lên 0,55 đến 0,61. Bật thêm kết quả test thô (nhóm T) lại làm giảm, nên trọng số T bằng 0. (Khoảng 1 phút 15 giây.)</aside>
+<div class="foot"><p class="src">ARI trung bình trên 5 bài tập, K-modes. Cột đậm: có nhóm D · cột nhạt: không có D</p><div class="pn"></div></div>
+<aside>KẾT QUẢ 2 – THỬ BỎ BỚT TỪNG NHÓM THÔNG TIN (khoảng 1 phút 15 giây)
+
+Đây là thí nghiệm quan trọng nhất (trong báo cáo gọi là ablation, nghĩa là bỏ bớt từng thành phần để xem mỗi thành phần đóng góp bao nhiêu). Em chạy lại K-modes nhiều lần trên bộ cấy lỗi, mỗi lần chỉ dùng một số nhóm thông tin, rồi đo ARI và lấy trung bình trên 5 bài tập.
+
+Cách đọc: mỗi thanh ngang là một cách kết hợp; số bên phải là ARI trung bình. Thanh xanh đậm là các cách có dùng nhóm D, thanh nhạt là không có D. Chữ cái lấy theo slide OAV: O là kiểu sai output, A là cấu trúc code, D là khác bản đúng ở đâu, T là kết quả từng test.
+
+Ba điều rút ra:
+1. Chỉ dùng output (O) hoặc chỉ dùng cấu trúc code (A): ARI chỉ 0,20, gần như không chia được theo lỗi. Lý do: cùng một lỗi biểu hiện khác nhau tùy chương trình gốc. Riêng cấu trúc code có xu hướng gom các bài viết theo cùng một kiểu, chứ không gom theo lỗi.
+2. Có nhóm D thì tăng rõ: D đứng một mình 0,39; kết hợp O + A + D đạt cao nhất, 0,61. Đây là cấu hình em dùng.
+3. Thêm kết quả test thô (T) lại giảm xuống 0,53, vì thông tin test bị lặp với O và gây nhiễu. Vì vậy trọng số của T bằng 0.
+
+Kết luận: muốn biết sinh viên hiểu sai gì, nhìn output hay nhìn code thôi là chưa đủ; phải so với bản đúng xem đã đổi chỗ nào.</aside>
 </section>

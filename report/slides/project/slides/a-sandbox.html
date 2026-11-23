@@ -1,7 +1,7 @@
 <section id="a-sandbox">
 <div class="bar"></div>
 <p class="eyebrow">PHỤ LỤC A1 · AN TOÀN KHI CHẠY CODE LẠ</p>
-<h2 class="t">Mọi bài nộp độc hại thử nghiệm đều bị chặn hoặc báo lỗi, sandbox tự hồi phục</h2>
+<h2 class="t">Mọi bài nộp độc hại đã thử đều bị chặn hoặc báo lỗi; môi trường chấm tự hồi phục</h2>
 <hr class="rule" style="margin-bottom:28px">
 <table class="tb">
 <tr><th style="width:45%">Bài nộp thử</th><th>Kết quả</th></tr>
@@ -10,10 +10,20 @@
 <tr><td>Cấp phát bộ nhớ liên tục</td><td>Bị chặn bởi giới hạn bộ nhớ</td></tr>
 <tr><td>Ghi tệp vào thư mục dự án</td><td>Bị chặn (hệ thống tệp chỉ đọc)</td></tr>
 <tr><td>Mở kết nối mạng</td><td>Thất bại (không có mạng)</td></tr>
-<tr><td>Fork bomb</td><td>Bị chặn; sandbox tự hồi phục</td></tr>
+<tr><td>Fork bomb</td><td>Bị chặn; tự hồi phục</td></tr>
 <tr><td>#include "/dev/zero"</td><td>Dừng ở giới hạn bộ nhớ, báo lỗi biên dịch</td></tr>
-<tr><td>Tự diệt tiến trình chấm</td><td>Sandbox khởi động lại, bài sau chấm bình thường</td></tr>
+<tr><td>Tự diệt tiến trình chấm</td><td>Tự khởi động lại, bài sau chấm bình thường</td></tr>
 </table>
 <div class="foot"><p class="src">Giới hạn: CPU time, 256 MB/tiến trình, 1 MB output, 128 tiến trình; diệt cả nhóm tiến trình sau mỗi lần chạy</p><div class="pn"></div></div>
-<aside>Slide dự phòng nếu được hỏi về an toàn khi chạy code của sinh viên. Bài nộp chạy trong container riêng không có mạng, hệ thống tệp chỉ đọc, giới hạn CPU, RAM và số tiến trình; giao diện chạy ở container khác không có trình biên dịch.</aside>
+<aside>PHỤ LỤC A1 – AN TOÀN KHI CHẠY CODE LẠ (chỉ dùng khi được hỏi)
+
+Câu hỏi thường gặp: chạy code của sinh viên có nguy hiểm cho máy chủ không?
+
+Bảng liệt kê các kiểu bài nộp độc hại em đã cố tình thử và kết quả. Cột trái là bài nộp thử, cột phải là hệ thống phản ứng thế nào.
+- TIMEOUT: chạy quá giới hạn thời gian CPU nên bị dừng. OUTPUT_LIMIT: in ra quá 1 MB nên bị dừng.
+- Fork bomb: chương trình tự nhân bản tiến trình liên tục để làm treo máy; bị chặn nhờ giới hạn số tiến trình, và sau mỗi lần chạy hệ thống diệt toàn bộ nhóm tiến trình con.
+- #include "/dev/zero": mẹo bắt trình biên dịch đọc một file vô tận; bị chặn bởi giới hạn bộ nhớ.
+- Tự diệt tiến trình chấm: bài nộp tìm cách giết chương trình chấm bài; container tự khởi động lại, bài đó bị báo lỗi, các bài sau chấm bình thường.
+
+Kiến trúc: giao diện web chạy ở một container không có trình biên dịch; bài nộp được chuyển qua hàng đợi sang một container “sandbox” không mạng, hệ thống file chỉ đọc, giới hạn 1 CPU, 1 GB RAM, 128 tiến trình.</aside>
 </section>

@@ -1,14 +1,24 @@
 <section id="data">
 <div class="bar"></div>
-<p class="eyebrow">03 · DỮ LIỆU</p>
-<h2 class="t">Ba nguồn dữ liệu bổ sung nhau: bài sai thật, bài cấy lỗi có nhãn và cặp sai – đúng</h2>
+<p class="eyebrow">DỮ LIỆU · NGUỒN</p>
+<h2 class="t">Dùng 2 bộ dữ liệu công khai và 1 bộ tự tạo để có sẵn đáp án đối chiếu</h2>
 <hr class="rule">
-<div class="stats">
-<div class="stat in" style="--i:1"><p class="big">279</p><h3>bài sai thật</h3><p class="desc">IntroClass (UC Davis), 162 sinh viên, 4 bài: digits, grade, median, smallest</p></div>
-<div class="stat in" style="--i:2"><p class="big">480</p><h3>bài cấy lỗi có nhãn</h3><p class="desc">8 loại lỗi M1–M8 cấy vào lời giải đúng; dùng để đo ARI</p></div>
-<div class="stat in" style="--i:3"><p class="big">602</p><h3>cặp sai – đúng</h3><p class="desc">ITSP (IIT Kanpur), 72 bài; mỗi bài sai có bản tự sửa của chính SV</p></div>
+<div class="cards" style="gap:48px">
+<div class="card in" style="--i:1"><p class="num">IntroClass</p><h3>Bài nộp thật, nguồn chính</h3><p class="desc">UC Davis (Mỹ). 6 bài tập C nhập môn, 1.143 bài nộp kèm bộ test</p><p class="small"><a href="https://github.com/ProgramRepair/IntroClass">github.com/ProgramRepair/IntroClass</a></p></div>
+<div class="card in" style="--i:2"><p class="num">ITSP</p><h3>Bài nộp thật, kiểm tra thêm</h3><p class="desc">IIT Kanpur (Ấn Độ). 661 cặp bài sai + bản tự sửa của cùng sinh viên, 74 bài tập</p><p class="small"><a href="https://github.com/jyi/ITSP">github.com/jyi/ITSP</a></p></div>
+<div class="card in" style="--i:3"><p class="num">Bộ cấy lỗi</p><h3>Tự tạo, có đáp án</h3><p class="desc">Cố ý sửa sai lời giải đúng theo 8 kiểu lỗi hiểu sai, nên biết trước mỗi bài thuộc lỗi nào</p><p class="small">Mã sinh: src/mutators.py</p></div>
 </div>
-<p class="small in" style="--i:4;margin-top:48px">Bộ chấm tái lập khớp nhãn gốc 99,8–100% (IntroClass) và 95,7% (ITSP). Dữ liệu của giảng viên không truy cập được nên dùng benchmark công khai.</p>
-<div class="foot"><p class="src">Le Goues et al., IEEE TSE 2015 · Yi et al., FSE 2017</p><div class="pn"></div></div>
-<aside>Do máy chủ dữ liệu của giảng viên bị lỗi, em dùng ba nguồn công khai bổ sung cho nhau. Thứ nhất, 279 bài sai thật của 162 sinh viên từ IntroClass, sau khi lọc trùng và loại lỗi chỉ do định dạng. Thứ hai, 480 bài cấy lỗi có nhãn theo 8 loại quan niệm sai, dùng làm đáp án để đo chất lượng gom cụm. Thứ ba, 602 cặp bài sai và bài tự sửa từ ITSP. Bộ chấm em viết lại khớp với nhãn gốc của dataset 99,8 đến 100 phần trăm với IntroClass và 95,7 phần trăm với ITSP. (Khoảng 1 phút.)</aside>
+<p class="small in" style="--i:4;margin-top:48px">Dữ liệu lớp học của giảng viên không truy cập được (máy chủ lỗi) nên chuyển sang bộ dữ liệu công khai.</p>
+<div class="foot"><p class="src">[1] Le Goues et al., IEEE TSE 41(12), 2015 · [2] Yi et al., ESEC/FSE 2017</p><div class="pn"></div></div>
+<aside>DỮ LIỆU – NGUỒN (khoảng 1 phút)
+
+Dữ liệu ban đầu của giảng viên không truy cập được do máy chủ lỗi, nên em dùng hai bộ dữ liệu công khai và tự tạo thêm một bộ.
+
+1. IntroClass – nguồn chính. Do nhóm của Le Goues tại UC Davis công bố năm 2015 (tài liệu [1], tạp chí IEEE Transactions on Software Engineering), link GitHub trên slide. Gồm 6 bài tập C nhập môn, tổng 1.143 bài nộp thật của sinh viên, mỗi bài tập có sẵn bộ test. Nhược điểm: không có nhãn “bài này mắc lỗi hiểu sai gì”, chỉ biết đúng hay sai.
+
+2. ITSP – do Yi và cộng sự tại IIT Kanpur, Ấn Độ công bố năm 2017 (tài liệu [2], hội nghị ESEC/FSE). Điểm đặc biệt: mỗi bài sai có kèm bản đã sửa đúng của chính sinh viên đó, nên so hai bản là thấy sinh viên đã sửa chỗ nào. Em dùng bộ này để kiểm tra thêm phương pháp trên dữ liệu thật khác.
+
+3. Bộ cấy lỗi – do em tự tạo. Lấy lời giải đúng rồi cố ý sửa sai theo 8 kiểu lỗi hiểu sai đã định nghĩa trước (ví dụ đổi <= thành <). Vì tự cấy nên biết chắc mỗi bài thuộc lỗi nào, dùng làm “đáp án” để đo máy chia nhóm đúng đến đâu. Đây là cách làm phổ biến trong kiểm thử phần mềm, gọi là mutation (đột biến).
+
+Lý do cần cả ba: dữ liệu thật thì không có đáp án; dữ liệu tự tạo có đáp án nhưng “sạch” hơn thực tế. Vì vậy em báo cáo kết quả trên hai loại dữ liệu này tách riêng.</aside>
 </section>

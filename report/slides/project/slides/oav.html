@@ -1,34 +1,44 @@
 <section id="oav">
 <div class="bar"></div>
-<p class="eyebrow">05 · BIỂU DIỄN OAV</p>
-<h2 class="t">Mỗi bài sai được mô tả bằng các bộ ba Đối tượng – Thuộc tính – Giá trị thuộc 4 nhóm</h2>
-<hr class="rule">
-<div class="cols" style="gap:56px">
-<div class="col in" style="--i:1;flex:0 0 640px">
+<p class="eyebrow">PHƯƠNG PHÁP · MÔ TẢ BÀI SAI BẰNG OAV</p>
+<h2 class="t">Mỗi bài sai thành danh sách bộ ba (Đối tượng, Thuộc tính, Giá trị), chia 4 nhóm thông tin</h2>
+<hr class="rule" style="margin-bottom:28px">
+<div class="cols" style="gap:48px">
+<div class="col in" style="--i:1;flex:0 0 560px">
 <div class="code">
-<p class="dim">// smallest — bài sai thật</p>
+<p class="dim">// Bài smallest của sinh viên A</p>
 <p>scanf("%d%d%d%d", &amp;one, &amp;two,</p>
 <p>&#160;&#160;&#160;&#160;&#160;&#160;&amp;three, &amp;four);</p>
 <p class="hl">if (one&lt;two &amp;&amp; one&lt;three</p>
 <p class="hl">&#160;&#160;&#160;&#160;&amp;&amp; one&lt;four)</p>
 <p>&#160;&#160;printf("%d is the smallest\n",</p>
 <p>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;one);</p>
-<p class="dim">... (3 if tương tự)</p>
+<p class="dim">... (3 lệnh if tương tự)</p>
 </div>
+<p class="codecap">Bên phải: 6 bộ ba tiêu biểu, trong vài chục bộ ba của bài này</p>
 </div>
 <div class="col in" style="--i:2">
-<table class="tb">
-<tr><th style="width:14%">Nhóm</th><th style="width:50%">Đối tượng.Thuộc tính</th><th>Giá trị</th></tr>
-<tr><td>T · Test</td><td>bb5.status, wb1.status …</td><td>FAIL (8/16 test)</td></tr>
-<tr><td>O · Output</td><td>output.missing_answer</td><td>T (không in đáp án)</td></tr>
-<tr><td>O · Output</td><td>tests_tie.fail</td><td>some</td></tr>
-<tr><td>A · AST</td><td>condition.if_cmp</td><td>strict</td></tr>
-<tr><td style="color:#1F4E79">D · Diff</td><td style="color:#1F4E79">diff.cmp_if</td><td style="color:#1F4E79">T</td></tr>
-<tr><td style="color:#1F4E79">D · Diff</td><td style="color:#1F4E79">diff.cmp_kind</td><td style="color:#1F4E79">strictness</td></tr>
-</table>
-<p class="small" style="margin-top:24px">D: so với <b>bản đúng gần nhất</b>, ưu tiên bản tự sửa sau đó của chính sinh viên.</p>
+<div class="grp"><p class="gname">T · Kết quả test</p><div class="triples"><p>(test số 5, kết quả, sai) và 7 test khác</p></div></div>
+<div class="grp"><p class="gname">O · Kiểu sai của output</p><div class="triples"><p>(output, có in đáp án, không)</p><p>(các test có số bằng nhau, bị trượt, một phần)</p></div></div>
+<div class="grp"><p class="gname">A · Cấu trúc code</p><div class="triples"><p>(điều kiện if, kiểu so sánh, chặt: chỉ &lt; &gt;)</p></div></div>
+<div class="grp" style="border-bottom:2px solid var(--rule)"><p class="gname">D · Khác bản đúng ở đâu</p><div class="triples"><p class="navy">(phép so sánh trong if, bị đổi, có)</p><p class="navy">(kiểu thay đổi, là, chặt ↔ không chặt)</p></div></div>
 </div>
 </div>
-<div class="foot"><p class="src">Trích xuất tự động trên AST (tree-sitter) và output; 22–48 thuộc tính mỗi bài tập</p><div class="pn"></div></div>
-<aside>Lấy lại bài smallest ở đầu. Mỗi bài sai được mô tả bằng các bộ ba đối tượng, thuộc tính, giá trị chia làm 4 nhóm. Nhóm T là kết quả từng test. Nhóm O là kiểu sai của output, ví dụ không in đáp án, trượt các test có số bằng nhau. Nhóm A là cấu trúc code trên cây cú pháp, ví dụ điều kiện if chỉ dùng so sánh chặt. Nhóm D là điểm mới của em: so bài sai với bản đúng gần nhất, ưu tiên chính bản tự sửa của sinh viên, để biết đã đổi cái gì, ở đây là đổi phép so sánh trong if từ chặt sang không chặt. (Khoảng 1 phút 15 giây.)</aside>
+<div class="foot"><p class="src">Trích tự động từ output và cây cú pháp (tree-sitter); 22–48 loại thuộc tính mỗi bài tập</p><div class="pn"></div></div>
+<aside>MÔ TẢ BÀI SAI BẰNG OAV (khoảng 1 phút 30 giây)
+
+OAV là viết tắt của Object – Attribute – Value, tức Đối tượng – Thuộc tính – Giá trị. Đây là cách biểu diễn tri thức cổ điển trong AI: mỗi sự kiện được viết thành một bộ ba, ví dụ (quả táo, màu, đỏ). Ở đây, em mô tả mỗi bài sai bằng một danh sách bộ ba như vậy, để máy so sánh được các bài với nhau.
+
+Bên trái là lại bài smallest của sinh viên A ở slide đầu. Bên phải là 6 bộ ba tiêu biểu của bài này. Thực tế bài này có vài chục bộ ba (mỗi test một bộ ba, cộng các thuộc tính khác); slide chỉ trích những bộ ba quan trọng.
+
+Vì sao nói 4 nhóm mà có 6 bộ ba? Mỗi nhóm thông tin có thể gồm nhiều bộ ba. Bảng chia thành 4 hàng theo 4 nhóm:
+
+- Nhóm T – kết quả test: mỗi test là một bộ ba, ví dụ (test số 5, kết quả, sai). Bài này trượt 8 trên 16 test; slide gộp lại thành một dòng cho gọn.
+- Nhóm O – kiểu sai của output: không chỉ “sai” mà sai kiểu gì. Bài này có 2 bộ ba: không in ra đáp án; và trượt một phần các test có hai số bằng nhau. Thông tin này đã gợi ý lỗi nằm ở trường hợp bằng nhau.
+- Nhóm A – cấu trúc code: đọc từ cây cú pháp của chương trình. Ở đây: các điều kiện if chỉ dùng so sánh chặt (< hoặc >), không có <=.
+- Nhóm D – khác bản đúng ở đâu: điểm em bổ sung. Máy tìm bản đúng gần nhất, ưu tiên bản sinh viên tự sửa đúng ở lần nộp sau, rồi so hai bản: phép so sánh trong if đã bị đổi, kiểu đổi là từ chặt sang không chặt. Hai dòng màu xanh này gần như chỉ thẳng ra lỗi hiểu sai.
+
+Giá trị là chữ hoặc nhãn (sai, có/không, chặt…), không phải số. Đây là lý do ở bước sau em dùng K-modes chứ không dùng K-means.
+
+Tất cả được trích tự động. Mỗi bài tập có từ 22 đến 48 loại thuộc tính, tùy bài.</aside>
 </section>

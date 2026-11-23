@@ -1,40 +1,51 @@
 <section id="problem">
 <div class="bar"></div>
-<p class="eyebrow">01 · BÀI TOÁN</p>
-<h2 class="t">Giảng viên lớp đông cần biết sinh viên hiểu sai điều gì, không chỉ bài nào sai</h2>
+<p class="eyebrow">BÀI TOÁN</p>
+<h2 class="t">Giảng viên lớp đông cần biết sinh viên đang hiểu sai điều gì, không chỉ biết bài nào sai</h2>
 <hr class="rule">
 <div class="cols" style="gap:48px;flex:0">
 <div class="col in" style="--i:1">
 <div class="code">
-<p class="dim">// smallest — sinh viên A (rút gọn)</p>
+<p class="dim">// Bài “tìm số nhỏ nhất” — sinh viên A</p>
 <p class="hl">if (one&lt;two &amp;&amp; one&lt;three &amp;&amp; one&lt;four)</p>
 <p>&#160;&#160;&#160;&#160;printf("%d is the smallest\n", one);</p>
 <p class="hl">if (two&lt;one &amp;&amp; two&lt;three &amp;&amp; two&lt;four)</p>
 <p class="dim">&#160;&#160;&#160;&#160;...</p>
 </div>
-<p class="codecap">Nhập 4 4 5 6 → không in gì</p>
+<p class="codecap">Nhập 4 4 5 6 → chương trình không in gì</p>
 </div>
 <div class="col in" style="--i:2">
 <div class="code">
-<p class="dim">// median — sinh viên B (rút gọn)</p>
+<p class="dim">// Bài “tìm số trung vị” — sinh viên B</p>
 <p class="hl">if ((n1&gt;n2 &amp;&amp; n1&lt;n3) || (n1&gt;n3 &amp;&amp; n1&lt;n2))</p>
 <p>&#160;&#160;&#160;&#160;printf("%i is the median\n", n1);</p>
 <p class="hl">else if ((n2&gt;n1 &amp;&amp; n2&lt;n3) || ...)</p>
 <p class="dim">&#160;&#160;&#160;&#160;...</p>
 </div>
-<p class="codecap">Nhập 2 2 3 → không in gì</p>
+<p class="codecap">Nhập 2 2 3 → chương trình không in gì</p>
 </div>
 </div>
 <div class="in" style="--i:3;display:flex;gap:48px;margin-top:48px">
 <div style="flex:1;border-left:6px solid var(--soft);padding-left:24px">
-<p class="small">Bộ chấm tự động cho biết</p>
-<p class="body" style="color:var(--ink)">2 bài khác nhau · 2 kết luận “sai”</p>
+<p class="small">Máy chấm bài chỉ cho biết</p>
+<p class="body" style="color:var(--ink)">Cả 2 bài đều sai</p>
 </div>
 <div style="flex:1;border-left:6px solid var(--navy);padding-left:24px">
 <p class="small">Điều giảng viên cần biết</p>
-<p class="body" style="color:var(--navy);font-weight:700">1 quan niệm sai: so sánh chặt bỏ sót giá trị bằng nhau</p>
+<p class="body" style="color:var(--navy);font-weight:700">Cả 2 cùng một lỗi hiểu sai: dùng &lt; thay cho &lt;=, quên trường hợp hai số bằng nhau</p>
 </div>
 </div>
-<div class="foot"><p class="src">Code thật từ IntroClass (UC Davis)</p><div class="pn"></div></div>
-<aside>Đây là hai bài làm thật của hai sinh viên khác nhau, cho hai bài tập khác nhau: tìm số nhỏ nhất và tìm trung vị. Code trông khác hẳn, nhưng cả hai đều dùng so sánh chặt (dấu nhỏ hơn, lớn hơn) nên khi có hai số bằng nhau thì chương trình không in gì. Bộ chấm chỉ cho biết “sai”. Giảng viên một lớp vài trăm sinh viên thì cần biết: có bao nhiêu em mắc cùng một hiểu sai, để giảng lại một lần cho cả lớp. Đó là macro-feedback. (Khoảng 1 phút.)</aside>
+<div class="foot"><p class="src">Code thật trong bộ dữ liệu IntroClass, đã rút gọn</p><div class="pn"></div></div>
+<aside>BÀI TOÁN (khoảng 1 phút)
+
+Đây là hai bài làm thật của hai sinh viên khác nhau, lấy từ bộ dữ liệu IntroClass.
+
+- Bên trái: bài “tìm số nhỏ nhất trong 4 số”. Sinh viên A kiểm tra từng số: nếu one nhỏ hơn cả ba số còn lại thì in one. Dòng tô xanh là điều kiện dùng dấu “nhỏ hơn” (<).
+- Bên phải: bài “tìm trung vị của 3 số”. Sinh viên B kiểm tra n1 có nằm giữa hai số kia không, cũng chỉ dùng < và >.
+
+Khi nhập 4 4 5 6 (hai số nhỏ nhất bằng nhau), bên trái không số nào “nhỏ hơn hẳn” ba số còn lại, nên chương trình không in gì. Tương tự, nhập 2 2 3 ở bên phải cũng không in gì.
+
+Hai đoạn code trông khác nhau, hai bài tập khác nhau, nhưng gốc rễ là MỘT lỗi hiểu sai: sinh viên nghĩ “nhỏ nhất” là “nhỏ hơn tất cả” và quên trường hợp các số bằng nhau; đúng ra phải dùng <=.
+
+Máy chấm tự động chỉ báo “sai”. Với lớp vài trăm sinh viên, giảng viên không thể đọc từng bài. Thứ giảng viên cần là một báo cáo kiểu: “36 em đang mắc lỗi so sánh chặt, quên trường hợp bằng nhau” để giảng lại một lần cho cả lớp. Báo cáo dạng này gọi là macro-feedback (phản hồi ở mức cả lớp), là mục tiêu ứng dụng của đề tài.</aside>
 </section>

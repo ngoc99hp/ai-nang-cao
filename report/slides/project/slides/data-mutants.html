@@ -1,0 +1,32 @@
+<section id="data-mutants">
+<div class="bar"></div>
+<p class="eyebrow">DỮ LIỆU · BỘ CẤY LỖI</p>
+<h2 class="t">Bộ cấy lỗi gồm 8 kiểu lỗi hiểu sai, mỗi kiểu là một cách sửa sai lời giải đúng</h2>
+<hr class="rule" style="margin-bottom:24px">
+<table class="tb in" style="--i:1;font-size:26px">
+<tr><th style="width:8%">Mã</th><th style="width:40%">Lỗi hiểu sai</th><th style="width:40%">Cách cấy vào code đúng</th><th>Số bài</th></tr>
+<tr><td>M1</td><td>Sai điểm dừng vòng lặp</td><td>&lt; thành &lt;=, i = 0 thành i = 1</td><td>58</td></tr>
+<tr><td>M2</td><td>Không hiểu truyền con trỏ</td><td>Bỏ * ở tham số, bỏ &amp; khi gọi hàm</td><td>30</td></tr>
+<tr><td>M3</td><td>Nhầm gán = với so sánh ==</td><td>== thành = trong điều kiện</td><td>72</td></tr>
+<tr><td>M4</td><td>Không biết chia nguyên bỏ phần lẻ</td><td>Bỏ ép kiểu (float)</td><td>3</td></tr>
+<tr><td>M5</td><td>Quên khởi tạo biến cộng dồn</td><td>Bỏ sum = 0; đặt min = 0</td><td>17</td></tr>
+<tr><td>M6</td><td>Đặt return / break sai chỗ</td><td>Đưa return vào trong vòng lặp</td><td>93</td></tr>
+<tr><td>M7</td><td>Sai biên so sánh trong if</td><td>&gt; thành &gt;=, &lt; thành &lt;=</td><td>84</td></tr>
+<tr><td>M8</td><td>Xử lý số âm sai với % và /</td><td>Bỏ abs(), bỏ n = -n</td><td>51</td></tr>
+<tr style="background:#EEF2F6"><td>Kép</td><td>Hai lỗi cùng lúc</td><td>Ví dụ M1 + M7</td><td>72</td></tr>
+</table>
+<div class="foot"><p class="src">Chỉ giữ bài biên dịch được, trượt ≥ 1 test và chạy khác bản gốc. Tổng 480</p><div class="pn"></div></div>
+<aside>BỘ CẤY LỖI (khoảng 1 phút)
+
+Bảng liệt kê 8 kiểu lỗi hiểu sai em chọn để cấy, đặt mã M1 đến M8. Mỗi dòng có: mã lỗi, lỗi hiểu sai là gì, cách em sửa code đúng để tạo ra lỗi đó, và số bài cấy lỗi thu được.
+
+Ví dụ đọc dòng M7: sinh viên hiểu sai biên so sánh trong lệnh if. Em lấy code đúng và đổi dấu > thành >= (hoặc ngược lại), tạo ra 84 bài. Đây đúng là lỗi ở slide đầu tiên.
+
+Một số dòng đáng chú ý:
+- M2 (con trỏ) và M4 (chia nguyên) ít bài vì IntroClass gần như không dùng con trỏ hay phép chia. Em phải tự viết thêm các lời giải có hàm dùng con trỏ và bài average (tổng cộng 19 lời giải tự viết) để cấy hai lỗi này. Đề bài có nhắc ví dụ hàm hoán đổi không dùng con trỏ, chính là M2.
+- Dòng “Kép”: 72 bài bị cấy cùng lúc 2 lỗi, khoảng 15%, cho giống thực tế là một bài có thể sai nhiều chỗ.
+
+Cách cấy: em không dùng tìm-thay chuỗi mà phân tích code thành cây cú pháp (thư viện tree-sitter) rồi sửa đúng vị trí, để không sửa nhầm.
+
+Chỉ giữ bài cấy lỗi thỏa 3 điều kiện: biên dịch được; trượt ít nhất 1 test; và chạy khác bản gốc. Điều kiện cuối loại các bài sửa rồi mà vẫn chạy y hệt bản gốc. Ví dụ ở bài median, đổi > thành >= không làm kết quả khác đi, nên M7 ở median rất ít. Tổng cộng 480 bài.</aside>
+</section>

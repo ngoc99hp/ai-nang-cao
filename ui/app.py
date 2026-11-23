@@ -1,4 +1,4 @@
-"""Demo: Cụm hóa quan niệm sai lầm (misconception) trong bài lập trình C — giao diện Streamlit.
+"""Demo: Phát hiện và gom nhóm lỗi hiểu sai (misconception) trong bài lập trình C — giao diện Streamlit.
 
 Chỉ đọc /data/results (dashboard.json, hình) và /data/demo (bài mẫu); bài nộp được ghi vào /data/queue/in,
 worker trong container aai-lab (không mạng) chấm và trả /data/queue/out. Container này không chạy code C.
@@ -16,96 +16,127 @@ import streamlit as st
 DATA = Path('/data')
 RES, QUEUE, SAMPLES = DATA / 'results', DATA / 'queue', DATA / 'demo' / 'samples'
 FIG = RES / 'figures'
-PNAME = {'digits': 'digits — tách chữ số', 'grade': 'grade — xếp loại điểm',
-         'median': 'median — số trung vị', 'smallest': 'smallest — số nhỏ nhất'}
+PNAME = {'digits': 'Tách chữ số (digits)', 'grade': 'Xếp loại điểm (grade)',
+         'median': 'Tìm số trung vị (median)', 'smallest': 'Tìm số nhỏ nhất (smallest)',
+         'average': 'Tính trung bình (average — bài phụ)'}
+TAXO = {'M1': 'biên vòng lặp', 'M2': 'truyền tham trị / tham chiếu', 'M3': 'nhầm = và ==', 'M4': 'chia nguyên',
+        'M5': 'khởi tạo biến', 'M6': 'vị trí return/break', 'M7': 'biên so sánh trong if', 'M8': 'xử lý số âm'}
 
-# Diễn giải các thuộc tính OAV thường gặp (cho người xem không cần đọc tên kỹ thuật)
-GLOSS = {
-    'D:diff.cmp_if': 'Đổi phép so sánh trong điều kiện if',
-    'D:diff.cmp_loop': 'Đổi phép so sánh ở điều kiện vòng lặp',
-    'D:diff.cmp_kind': 'Kiểu đổi phép so sánh (strictness: < ↔ <=; reversed: < ↔ >)',
-    'D:diff.eq_assign': 'Nhầm = và ==',
-    'D:diff.logic_op': 'Đổi toán tử logic && / ||',
-    'D:diff.loop_init': 'Khởi tạo biến vòng lặp khác',
-    'D:diff.init_value': 'Giá trị khởi tạo khác',
-    'D:diff.literal_other': 'Hằng số khác',
-    'D:diff.ptr_missing': 'Thiếu con trỏ / toán tử &, *',
-    'D:diff.ptr_extra': 'Thừa con trỏ / toán tử &, *',
-    'D:diff.cast_missing': 'Thiếu ép kiểu',
-    'D:diff.neg_missing': 'Thiếu xử lý số âm',
-    'D:diff.neg_extra': 'Xử lý dấu âm thừa / sai chỗ',
-    'D:diff.moved_into_loop': 'Câu lệnh bị đưa vào trong vòng lặp',
-    'D:diff.moved_out_of_loop': 'Câu lệnh bị đưa ra ngoài vòng lặp',
-    'D:diff.extra_break': 'Thừa break/return',
-    'D:diff.missing_break': 'Thiếu break/return',
-    'D:diff.extra_output': 'Thừa lệnh in',
-    'D:diff.missing_output': 'Thiếu lệnh in (thiếu nhánh in kết quả)',
-    'D:diff.var_changed': 'Dùng nhầm biến',
-    'D:diff.arith_changed': 'Đổi phép toán số học',
-    'D:diff.stmt_missing': 'Thiếu câu lệnh',
-    'D:diff.stmt_extra': 'Thừa câu lệnh',
-    'D:diff.size': 'Số token khác biệt so với bản đúng',
-    'O:output.missing_answer': 'Không in ra đáp án',
-    'O:output.multiple_answers': 'In nhiều đáp án',
-    'O:output.off_by_one': 'Đáp án lệch 1',
-    'O:output.output_zero': 'In ra 0',
-    'O:output.wrong_input_elem': 'In một số trong input nhưng sai số',
-    'O:output.not_input_elem': 'In số không có trong input',
-    'O:output.sign_error': 'Sai dấu',
-    'O:output.missing_items': 'Thiếu phần tử output',
-    'O:output.extra_items': 'Thừa phần tử output',
-    'O:output.missing_last': 'Thiếu phần tử cuối',
-    'O:output.wrong_digit': 'Sai chữ số',
-    'O:output.digits_reversed': 'Chữ số bị đảo thứ tự',
-    'O:output.adjacent_grade': 'Xếp loại lệch 1 bậc',
-    'O:output.far_grade': 'Xếp loại lệch nhiều bậc',
-    'O:output.grade_too_low': 'Xếp loại thấp hơn đúng',
-    'O:output.grade_too_high': 'Xếp loại cao hơn đúng',
-    'O:output.timeout': 'Chạy quá thời gian',
-    'O:output.crash': 'Chương trình bị lỗi khi chạy',
-    'O:tests.fail_frac': 'Tỷ lệ test trượt',
-    'O:tests_tie.fail': 'Trượt test có các giá trị bằng nhau',
-    'O:tests_negative.fail': 'Trượt test có số âm',
-    'O:tests_zero.fail': 'Trượt test có số 0',
-    'O:tests_sorted.fail': 'Trượt test input đã sắp xếp',
-    'O:tests_single_digit.fail': 'Trượt test số có 1 chữ số',
-    'O:tests_inner_zero.fail': 'Trượt test số có chữ số 0 ở giữa',
-    'O:tests_boundary.fail': 'Trượt test điểm đúng bằng ngưỡng',
-    'O:tests_failing.fail': 'Trượt test điểm trượt',
-    'O:tests_top.fail': 'Trượt test điểm cao nhất',
-    'O:run.format_only_any': 'Có test chỉ sai định dạng',
-    'A:condition.if_cmp': 'Kiểu so sánh trong if (strict <, > / nonstrict <=, >=)',
-    'A:condition.assign_in_cond': 'Có phép gán trong điều kiện',
-    'A:loop.cmp_op': 'Phép so sánh ở vòng lặp',
-    'A:loop.output_in_loop': 'In bên trong vòng lặp',
-    'A:loop.return_in_loop': 'return trong vòng lặp',
-    'A:loop.break_in_loop': 'break trong vòng lặp',
-    'A:function.has_ptr_param': 'Hàm có tham số con trỏ',
-    'A:extremum.init': 'Cách khởi tạo biến min/max',
-    'A:accumulator.init': 'Cách khởi tạo biến tích lũy',
-    'A:negation.uses_abs': 'Dùng abs()',
-    'A:negation.unary_minus': 'Dùng phép đổi dấu',
+# ----------------------------------------------------------------------------- diễn giải thuộc tính OAV
+FLAG = {   # thuộc tính đúng/sai → câu mô tả khi giá trị = T
+    'D:diff.cmp_if': 'đổi phép so sánh trong điều kiện if',
+    'D:diff.cmp_loop': 'đổi phép so sánh ở điều kiện vòng lặp',
+    'D:diff.eq_assign': 'nhầm phép gán = với phép so sánh ==',
+    'D:diff.logic_op': 'đổi toán tử logic && / ||',
+    'D:diff.loop_init': 'khởi tạo biến chạy vòng lặp khác',
+    'D:diff.init_value': 'khởi tạo biến bằng giá trị khác',
+    'D:diff.literal_other': 'dùng hằng số khác',
+    'D:diff.ptr_missing': 'thiếu con trỏ hoặc toán tử & / *',
+    'D:diff.ptr_extra': 'thừa con trỏ hoặc toán tử & / *',
+    'D:diff.cast_missing': 'thiếu ép kiểu',
+    'D:diff.neg_missing': 'thiếu đoạn xử lý số âm',
+    'D:diff.neg_extra': 'xử lý dấu âm thừa hoặc sai chỗ',
+    'D:diff.moved_into_loop': 'đưa câu lệnh vào trong vòng lặp',
+    'D:diff.moved_out_of_loop': 'đưa câu lệnh ra ngoài vòng lặp',
+    'D:diff.extra_break': 'thừa lệnh break / return',
+    'D:diff.missing_break': 'thiếu lệnh break / return',
+    'D:diff.extra_output': 'thừa lệnh in',
+    'D:diff.missing_output': 'thiếu lệnh in (thiếu nhánh in kết quả)',
+    'D:diff.var_changed': 'dùng nhầm biến',
+    'D:diff.arith_changed': 'dùng phép toán số học khác',
+    'D:diff.stmt_missing': 'thiếu câu lệnh',
+    'D:diff.stmt_extra': 'thừa câu lệnh',
+    'O:output.missing_answer': 'không in ra đáp án',
+    'O:output.multiple_answers': 'in ra nhiều đáp án',
+    'O:output.off_by_one': 'đáp án lệch 1 đơn vị',
+    'O:output.output_zero': 'in ra số 0',
+    'O:output.wrong_input_elem': 'in ra một số có trong input nhưng không phải đáp án',
+    'O:output.not_input_elem': 'in ra số không có trong input',
+    'O:output.sign_error': 'đáp án sai dấu',
+    'O:output.missing_items': 'in thiếu chữ số',
+    'O:output.extra_items': 'in thừa chữ số',
+    'O:output.missing_last': 'thiếu chữ số cuối',
+    'O:output.wrong_digit': 'in sai chữ số',
+    'O:output.digits_reversed': 'in chữ số theo thứ tự ngược',
+    'O:output.adjacent_grade': 'xếp loại lệch 1 bậc',
+    'O:output.far_grade': 'xếp loại lệch nhiều bậc',
+    'O:output.grade_too_low': 'xếp loại thấp hơn đúng',
+    'O:output.grade_too_high': 'xếp loại cao hơn đúng',
+    'O:output.timeout': 'chạy quá thời gian (có thể lặp vô hạn)',
+    'O:output.crash': 'chương trình bị dừng do lỗi khi chạy',
+    'O:output.output_limit': 'in ra quá nhiều',
+    'O:run.format_only_any': 'có test chỉ sai câu chữ / định dạng',
+    'O:run.uninit_dependent': 'kết quả phụ thuộc biến chưa khởi tạo',
+    'O:run.nondet_dataset': 'kết quả không ổn định giữa các lần chạy',
+    'A:loop.output_in_loop': 'có lệnh in bên trong vòng lặp',
+    'A:loop.return_in_loop': 'có return bên trong vòng lặp',
+    'A:loop.break_in_loop': 'có break bên trong vòng lặp',
+    'A:condition.assign_in_cond': 'có phép gán trong điều kiện',
+    'A:function.has_ptr_param': 'có hàm nhận tham số con trỏ',
+    'A:division.int_div_float_ctx': 'chia hai số nguyên rồi dùng như số thực',
+    'A:division.has_cast': 'có ép kiểu khi chia',
+    'A:negation.uses_abs': 'dùng hàm abs()',
+    'A:negation.unary_minus': 'dùng phép đổi dấu (-x)',
 }
-TAXO = {'M1': 'Biên vòng lặp', 'M2': 'Tham trị / tham chiếu', 'M3': 'Nhầm = và ==', 'M4': 'Chia nguyên',
-        'M5': 'Khởi tạo biến', 'M6': 'Phạm vi return/break', 'M7': 'Biên so sánh trong if', 'M8': 'Số âm với % và /'}
+TESTS = {'tie': 'có các số bằng nhau', 'negative': 'có số âm', 'zero': 'có số 0', 'sorted': 'input đã sắp xếp',
+         'single_digit': 'số chỉ có 1 chữ số', 'inner_zero': 'số có chữ số 0 ở giữa',
+         'boundary': 'điểm đúng bằng ngưỡng', 'failing': 'điểm dưới ngưỡng D', 'top': 'điểm loại A'}
+QTY = {'some': 'một số', 'all': 'tất cả', 'none': 'không'}
+FRAC = {'low': 'trượt ít test (dưới 1/3)', 'mid': 'trượt khoảng 1/3–2/3 số test',
+        'high': 'trượt phần lớn test', 'all': 'trượt toàn bộ test'}
+CMP_KIND = {'strictness': 'đổi giữa so sánh "chặt" và "không chặt" (< ↔ <=, > ↔ >=)',
+            'reversed': 'đảo chiều phép so sánh (< ↔ >)', 'mixed': 'đổi phép so sánh theo nhiều kiểu',
+            'none': 'không đổi phép so sánh nào'}
+SIZE = {'1': 'chỉ khác bản đúng 1 ký hiệu', '2-5': 'khác bản đúng 2–5 ký hiệu',
+        '6-20': 'khác bản đúng 6–20 ký hiệu', '21+': 'khác bản đúng hơn 20 ký hiệu'}
+IF_CMP = {'strict': 'các điều kiện if chỉ dùng < hoặc > (so sánh chặt)',
+          'nonstrict': 'các điều kiện if dùng <= hoặc >=', 'mixed': 'điều kiện if dùng cả hai kiểu so sánh',
+          'none': 'không có so sánh trong if'}
+INIT = {'zero': 'bằng 0', 'literal': 'bằng một hằng số', 'expr': 'bằng một biến / biểu thức',
+        'none': 'không khởi tạo', 'n/a': 'không có'}
 
 
-def gloss(attr):
-    return GLOSS.get(attr, attr)
+def describe(attr: str, v: str) -> str:
+    """Thuộc tính OAV + giá trị → một câu tiếng Việt."""
+    v = str(v).strip()
+    if attr in FLAG:
+        return FLAG[attr][0].upper() + FLAG[attr][1:] if v == 'T' else f'Không {FLAG[attr]}'
+    m = re.fullmatch(r'O:tests_(\w+)\.fail', attr)
+    if m and m.group(1) in TESTS:
+        t = TESTS[m.group(1)]
+        return {'none': f'Không trượt test nào {t}', 'all': f'Trượt tất cả test {t}'}.get(
+            v, f'Trượt một số test {t}')
+    if attr == 'O:tests.fail_frac':
+        return FRAC.get(v, v).capitalize()
+    if attr == 'D:diff.cmp_kind':
+        return CMP_KIND.get(v, v).capitalize()
+    if attr == 'D:diff.size':
+        return SIZE.get(v, v).capitalize()
+    if attr == 'A:condition.if_cmp':
+        return IF_CMP.get(v, v).capitalize()
+    if attr == 'A:loop.cmp_op':
+        return 'Không có vòng lặp so sánh' if v == 'none' else f'Vòng lặp dùng phép so sánh {v}'
+    if attr == 'A:extremum.init':
+        return f'Biến min/max khởi tạo {INIT.get(v, v)}'
+    if attr == 'A:accumulator.init':
+        return f'Biến tích lũy khởi tạo {INIT.get(v, v)}'
+    return f'{attr} = {v}'
 
 
-def humanize_rule(text):
-    """'NẾU [D:diff.cmp_if = T] VÀ ...' → thêm diễn giải tiếng Việt cho từng điều kiện."""
-    m = re.match(r'NẾU (.*) THÌ (.*?) \[(.*)\]$', text)
+def rule_to_text(text: str) -> tuple[str, str]:
+    """'NẾU [a = v] VÀ ... THÌ Cụm k [coverage x/y, accuracy z]' → (câu, ghi chú độ phủ)."""
+    m = re.match(r'(?:R\d+: )?NẾU (.*) THÌ Cụm (\d+) \[coverage (\d+)/(\d+), accuracy ([\d.]+)\]', text)
     if not m:
-        return text
-    conds = re.findall(r'\[([^\]=]+?) = ([^\]]+)\]', m.group(1))
-    parts = []
-    for a, v in conds:
-        v = v.strip()
-        g = gloss(a.strip())
-        parts.append(g if v == 'T' else f'KHÔNG {g[0].lower() + g[1:]}' if v == 'F' else f'{g} = {v}')
-    return f'NẾU {" VÀ ".join(parts)} THÌ {m.group(2)}  ({m.group(3)})'
+        return text, ''
+    conds = [describe(a.strip(), v) for a, v in re.findall(r'\[([^\]=]+?) = ([^\]]+)\]', m.group(1))]
+    cond = ' **và** '.join(c[0].lower() + c[1:] for c in conds)
+    acc = float(m.group(5))
+    note = f'đúng với {m.group(3)}/{m.group(4)} bài của nhóm' + ('' if acc == 1 else f', chính xác {acc:.0%}')
+    return f'**Nếu** bài {cond} **thì** thuộc nhóm C{m.group(2)}', note
+
+
+def taxo(t: str) -> str:
+    return '—' if t in ('-', '', None) else ', '.join(f'{x} ({TAXO.get(x, "")})' for x in t.split('+'))
 
 
 @st.cache_data(ttl=60)
@@ -119,85 +150,111 @@ def img(name, caption=None):
         st.image(str(f), caption=caption, use_container_width=True)
 
 
-st.set_page_config(page_title='Misconception Clustering — Demo', page_icon='🧩', layout='wide')
+st.set_page_config(page_title='Phát hiện lỗi hiểu sai — Demo', page_icon='🧩', layout='wide')
 D = load_dash()
-st.title('Cụm hóa quan niệm sai lầm trong bài lập trình C')
-st.caption('Đề tài 5 — AI nâng cao · OAV + K-modes (Hamming có trọng số) + ILA · dữ liệu IntroClass, ITSP, mutation')
+st.title('Tự động phát hiện và gom nhóm lỗi hiểu sai trong bài lập trình C')
+st.caption('Đề tài 5 — môn AI nâng cao')
 
 tab_over, tab_gv, tab_sv, tab_exp = st.tabs(
-    ['Tổng quan', 'Giảng viên: macro-feedback', 'Nộp bài: chẩn đoán lỗi', 'Thực nghiệm'])
+    ['① Giới thiệu', '② Dành cho giảng viên', '③ Thử nộp bài', '④ Kết quả thực nghiệm'])
 
-# ------------------------------------------------------------------------------------------- Tổng quan
+# =============================================================================================== ① Giới thiệu
 with tab_over:
-    P = D['problems']
-    c = st.columns(4)
-    c[0].metric('Bài sai thật (IntroClass)', sum(v['n_sub'] for v in P.values()))
-    c[1].metric('Sinh viên', sum(v['n_students'] for v in P.values()))
-    c[2].metric('Cụm misconception', sum(v['k'] for v in P.values()))
-    c[3].metric('Bài tập', len(P))
-    st.subheader('Quy trình')
     st.markdown('''
-| Bước | Làm gì | Kết quả |
-|---|---|---|
-| 1. Chấm bài an toàn | Compile + chạy bài C trong container cách ly (không mạng, giới hạn CPU/RAM) | Khớp kết quả chấm gốc 96–100% |
-| 2. Hình thức hóa OAV | Mỗi bài sai → các bộ ba **Đối tượng – Thuộc tính – Giá trị**, 4 nhóm: **T** test trượt, **O** kiểu sai output, **A** cấu trúc code, **D** khác biệt so với bản đúng gần nhất | 40–60 thuộc tính / bài tập |
-| 3. Gom cụm phi giám sát | K-modes, khoảng cách Hamming có trọng số (O 0.5, A 0.5, D 3) | Mỗi cụm ≈ một kiểu hiểu sai |
-| 4. Sinh luật | ILA (tự cài đặt) học luật NẾU–THÌ mô tả từng cụm | Luật ngắn 1.5–2 điều kiện |
-| 5. Macro-feedback | Bảng cho giảng viên: lỗi phổ biến, số sinh viên mắc, luật, bài minh họa | Tab "Giảng viên" |
+### Bài toán
+Lớp lập trình đông, mỗi bài tập có hàng trăm bài làm sai. Giảng viên không thể đọc hết, nhưng muốn biết:
+**sinh viên đang hiểu sai điều gì, và bao nhiêu người hiểu sai như vậy** — để giảng lại cho cả lớp
+(*macro-feedback*).
+
+Nhiều bài sai trông khác nhau nhưng thực ra cùng một **lỗi hiểu sai** (misconception). Ví dụ: dùng `<` thay vì `<=`
+khi tìm số nhỏ nhất → chương trình sai khi có hai số bằng nhau.
+
+### Hệ thống làm gì
 ''')
-    st.subheader('Đánh giá')
+    cols = st.columns(4)
+    steps = [('1. Chấm bài', 'Chạy bài C với bộ test trong môi trường cách ly, ghi lại test nào trượt và in ra gì.'),
+             ('2. Mô tả bài sai', 'Mỗi bài sai được mô tả bằng các **dấu hiệu** dạng *Đối tượng – Thuộc tính – Giá trị*: '
+                                  'kết quả in ra sai kiểu gì, cấu trúc code ra sao, khác bài đúng ở chỗ nào.'),
+             ('3. Gom nhóm', 'Các bài có dấu hiệu giống nhau được gom vào cùng một **nhóm lỗi** '
+                             '(không cần ai gán nhãn trước).'),
+             ('4. Giải thích', 'Với mỗi nhóm, hệ thống tự viết **luật "Nếu … thì …"** để giải thích vì sao các bài '
+                               'đó cùng nhóm; con người đặt tên lỗi dựa trên luật.')]
+    for c, (h, t) in zip(cols, steps):
+        c.markdown(f'#### {h}')
+        c.markdown(t)
+    P = D['problems']
+    st.markdown('### Dữ liệu')
+    c = st.columns(4)
+    c[0].metric('Bài làm sai thật', sum(v['n_sub'] for v in P.values()))
+    c[1].metric('Sinh viên', sum(v['n_students'] for v in P.values()))
+    c[2].metric('Bài tập', len(P))
+    c[3].metric('Nhóm lỗi tìm được', sum(v['k'] for v in P.values()))
     st.markdown('''
-- **Dữ liệu sinh** (480 bài cấy lỗi có nhãn M1–M8): cụm khớp lỗi đã cấy, **ARI 0.48–0.73** (K-modes).
-  Ablation: nhóm **D** là quyết định; chỉ dùng test/output: ARI 0.06–0.17.
-- **Dữ liệu thật**: silhouette 0.25–0.50; nhiều cụm rõ ràng (vd. smallest: 36 SV dùng `<` thay vì `<=`).
-- **ITSP** (602 cặp bài sai/bản tự sửa, nhãn gán tay cho 41 bài): ARI 0.20 — nhận ra được lỗi biên so sánh, biên vòng lặp,
-  thiếu câu lệnh; chưa tách được nhầm biến / sai công thức.
+- **Bài thật**: bộ dữ liệu IntroClass (ĐH UC Davis) — bài nộp của sinh viên cho 4 bài tập C nhập môn.
+- **Bài cấy lỗi**: 480 bài do nhóm tự tạo bằng cách cố ý đưa 8 loại lỗi quen thuộc vào bài đúng.
+  Vì biết trước mỗi bài mắc lỗi gì, ta **chấm được** hệ thống gom nhóm đúng đến đâu.
+- **Bài kiểm chứng thêm**: bộ ITSP (IIT Kanpur, Ấn Độ) — 602 bài sai kèm bản sinh viên tự sửa đúng.
+
+### Kết quả tóm tắt
+- Trên bài cấy lỗi, các nhóm tìm được **khớp khá tốt** với loại lỗi đã cấy (điểm khớp 0.48–0.73 trên thang 0 → 1).
+- Dấu hiệu quan trọng nhất là **"bài sai khác bài đúng ở đâu"**; chỉ nhìn test trượt thì gần như không phân biệt được lỗi.
+- Trên bài thật, hệ thống tìm ra các nhóm lỗi có ý nghĩa — xem tab **② Dành cho giảng viên**.
+- Hạn chế: chưa tách tốt các lỗi kiểu "nhầm biến" hay "sai công thức"; một số nhóm còn lẫn nhiều kiểu lỗi.
 ''')
 
-# ------------------------------------------------------------------------------------------- Giảng viên
+# =============================================================================================== ② Giảng viên
 with tab_gv:
+    st.markdown('Chọn một bài tập để xem **sinh viên đang mắc những lỗi hiểu sai nào, bao nhiêu người mắc**, '
+                'kèm giải thích và bài làm minh họa.')
     p = st.selectbox('Bài tập', list(D['problems']), format_func=PNAME.get, key='gv_p')
     info = D['problems'][p]
-    st.markdown(f'**Đề:** {info["title"]}')
+    st.info(f'**Đề bài:** {info["title"]}')
     c = st.columns(3)
-    c[0].metric('Bài sai (đã khử trùng)', info['n_sub'])
-    c[1].metric('Sinh viên', info['n_students'])
-    c[2].metric('Số cụm', info['k'])
-    tbl = pd.DataFrame([dict(Cụm=f'C{x["id"]}', Misconception=x['name'],
-                             Taxonomy=', '.join(f'{t} ({TAXO.get(t, "")})' for t in x['taxonomy'].split('+'))
-                             if x['taxonomy'] != '-' else '—',
-                             **{'Sinh viên': x['n_students'], 'Bài': x['n_sub']}) for x in info['clusters']])
+    c[0].metric('Bài làm sai', info['n_sub'])
+    c[1].metric('Sinh viên làm sai', info['n_students'])
+    c[2].metric('Nhóm lỗi', info['k'])
+    st.markdown('#### Các lỗi phổ biến (nhiều sinh viên mắc nhất ở trên)')
+    tbl = pd.DataFrame([{'Nhóm': f'C{x["id"]}', 'Lỗi hiểu sai': x['name'], 'Số sinh viên': x['n_students'],
+                         'Số bài': x['n_sub'], 'Ứng với loại lỗi chuẩn': taxo(x['taxonomy'])}
+                        for x in info['clusters']])
     st.dataframe(tbl, hide_index=True, use_container_width=True, column_config={
-        'Sinh viên': st.column_config.ProgressColumn('Sinh viên', format='%d', min_value=0,
-                                                     max_value=int(tbl['Sinh viên'].max()))})
-    st.caption('Sắp theo số sinh viên mắc lỗi (một sinh viên có thể nộp nhiều phiên bản).')
+        'Số sinh viên': st.column_config.ProgressColumn('Số sinh viên', format='%d', min_value=0,
+                                                        max_value=int(tbl['Số sinh viên'].max()))})
+    st.caption('Một sinh viên có thể nộp nhiều lần, nên "số bài" có thể lớn hơn "số sinh viên". '
+               'Tên lỗi do người đặt sau khi đọc luật và bài minh họa.')
+    st.markdown('#### Chi tiết từng nhóm')
     for x in info['clusters']:
-        with st.expander(f'C{x["id"]} · {x["name"]} — {x["n_students"]} SV, {x["n_sub"]} bài'):
-            st.markdown('**Đặc trưng nổi bật** (tỷ lệ trong cụm so với toàn bài):')
-            st.dataframe(pd.DataFrame([dict(**{'Thuộc tính': gloss(f['attr']), 'Mã': f['attr'],
-                                               'Giá trị': f['value'], 'Trong cụm': f['in_cluster'],
-                                               'Toàn bài': f['overall']}) for f in x['features']]),
-                         hide_index=True, use_container_width=True)
-            st.markdown('**Luật ILA tiêu biểu:**')
+        with st.expander(f'C{x["id"]} · {x["name"]} — {x["n_students"]} sinh viên'):
+            st.markdown('**Dấu hiệu đặc trưng của nhóm:**')
+            for f in x['features'][:5]:
+                st.markdown(f'- {describe(f["attr"], f["value"])} — **{f["in_cluster"]:.0%}** bài trong nhóm '
+                            f'(so với {f["overall"]:.0%} ở toàn bộ bài sai)')
+            st.markdown('**Luật do hệ thống tự sinh:**')
             for r in x['rules'][:3]:
-                st.markdown(f'- {humanize_rule(r)}')
-                st.code(r, language=None)
+                s, note = rule_to_text(r)
+                st.markdown(f'- {s}  \n  <span style="color:gray">↳ {note}</span>', unsafe_allow_html=True)
             ex = x['examples'][0]
-            st.markdown(f'**Bài minh họa** `{ex["sub_id"]}` — so với bản đúng `{ex["ref_id"]}` '
-                        f'({"bản sửa của chính SV" if ex["ref_kind"] == "own_fix" else "bản đúng gần nhất"}):')
+            src = 'bản sinh viên đó tự sửa đúng sau này' if ex['ref_kind'] == 'own_fix' else 'một bài đúng tương tự'
+            st.markdown(f'**Bài minh họa** — so với {src}. Dòng đỏ (–) là code đúng, dòng xanh (+) là code sai:')
             st.code(ex['diff'][:3000] or '(không có khác biệt)', language='diff')
-    st.subheader('Bản đồ nhiệt cụm × thuộc tính')
+            if st.toggle('Hiện chi tiết kỹ thuật', key=f'tech_{p}_{x["id"]}'):
+                st.dataframe(pd.DataFrame(x['features']), hide_index=True, use_container_width=True)
+                st.code('\n'.join(x['rules'][:5]), language=None)
+    st.markdown('#### Bản đồ nhiệt: nhóm lỗi × dấu hiệu')
+    st.caption('Mỗi hàng là một nhóm lỗi, mỗi cột là một dấu hiệu; ô càng đậm thì càng nhiều bài trong nhóm có dấu '
+               'hiệu đó.')
     img(f'heatmap_real_{p}.png')
 
-# ------------------------------------------------------------------------------------------- Nộp bài
+# =============================================================================================== ③ Nộp bài
 with tab_sv:
-    st.markdown('Dán bài làm C (hoặc chọn bài mẫu). Hệ thống chấm test trong container cách ly, trích OAV, '
-                'gán vào cụm misconception gần nhất và chỉ ra luật khớp.')
-    p = st.selectbox('Bài tập', list(D['problems']), format_func=PNAME.get, key='sv_p')
-    st.markdown(f'**Đề:** {D["problems"][p]["title"]}')
-    samples = {f'Bài mẫu tự viết: {f.stem}': f.read_text() for f in sorted(SAMPLES.glob(f'{p}_*.c'))}
+    st.markdown('Dán một bài làm C (hoặc chọn bài mẫu có sẵn) rồi bấm **Chấm và chẩn đoán**. Hệ thống sẽ chạy test, '
+                'và nếu bài sai thì cho biết bài **giống nhóm lỗi nào nhất** và vì sao.')
+    p = st.selectbox('Bài tập', [k for k in D['problems']], format_func=PNAME.get, key='sv_p')
+    st.info(f'**Đề bài:** {D["problems"][p]["title"]}')
+    samples = {f'Bài tự viết — {f.stem}': f.read_text() for f in sorted(SAMPLES.glob(f'{p}_*.c'))}
     for x in D['problems'][p]['clusters']:
-        samples[f'Bài thật minh họa C{x["id"]}: {x["examples"][0]["sub_id"]}'] = x['examples'][0]['code']
+        samples[f'Bài thật của sinh viên — ví dụ nhóm C{x["id"]} ({x["name"][:40]})'] = x['examples'][0]['code']
+
     def _load_sample(p=p):
         st.session_state[f'code_{p}'] = samples.get(st.session_state[f'sample_{p}'], '')
 
@@ -211,13 +268,13 @@ with tab_sv:
         tmp.write_text(json.dumps({'problem': p, 'code': code}, ensure_ascii=False))
         os.replace(tmp, QUEUE / 'in' / f'{jid}.json')
         out = QUEUE / 'out' / f'{jid}.json'
-        with st.spinner('Đang chấm trong container cách ly...'):
+        with st.spinner('Đang chạy test trong môi trường cách ly...'):
             for _ in range(180):
                 if out.exists():
                     break
                 time.sleep(0.5)
         if not out.exists():
-            st.error('Không nhận được kết quả sau 90 giây — worker trong aai-lab có đang chạy không?')
+            st.error('Không nhận được kết quả sau 90 giây. Bộ chấm có thể chưa chạy — chạy lại ./demo/start.sh trên server.')
             st.stop()
         st.session_state['result'] = (p, json.loads(out.read_text(encoding='utf-8')))
         out.unlink(missing_ok=True)
@@ -227,87 +284,121 @@ with tab_sv:
         names = {x['id']: x for x in D['problems'][p]['clusters']}
         st.divider()
         if R['status'] == 'compile_error':
-            st.error('Lỗi biên dịch')
+            st.error('Chương trình **không biên dịch được** — kiểm tra lỗi cú pháp:')
             st.code(R['stderr'], language=None)
         elif R['status'] == 'error':
-            st.error(f'Lỗi xử lý: {R["message"]}')
+            st.error(f'Không xử lý được bài này: {R["message"]}')
         else:
             tests = pd.DataFrame(R['tests'])
             if R['status'] == 'correct':
-                st.success(f'Bài đúng: pass {len(tests)}/{len(tests)} test — không phát hiện misconception.')
+                st.success(f'✅ **Bài đúng** — qua cả {len(tests)}/{len(tests)} test. Không phát hiện lỗi hiểu sai.')
                 if R.get('format_fail'):
-                    st.info(f'{R["format_fail"]} test chỉ sai định dạng (câu chữ), không tính là sai.')
+                    st.info(f'Có {R["format_fail"]} test chỉ khác câu chữ (ví dụ lời nhắc nhập), không tính là sai.')
             else:
                 cl = names[R['cluster']]
-                c = st.columns([1, 3])
-                c[0].metric('Test trượt', f'{R["n_fail"]}/{len(tests)}')
-                c[1].markdown(f'#### Chẩn đoán: C{R["cluster"]} — {cl["name"]}')
-                c[1].caption(f'{cl["n_students"]} sinh viên trong dữ liệu mắc lỗi này · '
-                             f'khoảng cách tới cụm {R["distances"][str(R["cluster"])]:.3f} · '
-                             f'chấm trong {R["elapsed"]} s')
-                st.markdown('**Vì sao?** Bài nộp có chung các đặc trưng sau với cụm này:')
-                st.markdown('\n'.join(f'- {gloss(w["attr"])} = `{w["value"]}`  ·  `{w["attr"]}`' for w in R['why']))
+                st.error(f'❌ Bài **trượt {R["n_fail"]}/{len(tests)} test**.')
+                st.markdown(f'### Chẩn đoán: giống nhất nhóm **C{R["cluster"]} — {cl["name"]}**')
+                st.caption(f'Trong dữ liệu, {cl["n_students"]} sinh viên đã mắc lỗi này.')
+                st.markdown('**Vì sao hệ thống nghĩ vậy?** Bài này có chung các dấu hiệu sau với nhóm đó:')
+                st.markdown('\n'.join(f'- {describe(w["attr"], w["value"])}' for w in R['why'][:6]))
                 own = [r for r in R['rules'] if r['cls'] == R['cluster']]
                 other = [r for r in R['rules'] if r['cls'] != R['cluster']]
                 if own:
-                    st.markdown('**Luật ILA khớp (cùng cụm):**')
-                    for r in own:
-                        st.markdown(f'- {humanize_rule(r["text"])}')
+                    st.markdown('**Luật khớp với bài này:**')
+                    for r in own[:3]:
+                        st.markdown(f'- {rule_to_text(r["text"])[0]}')
                 if other:
-                    st.warning('Luật của cụm khác cũng khớp → bài có thể mang đặc điểm của nhiều kiểu lỗi: ' +
+                    st.warning('Bài cũng khớp luật của nhóm khác — có thể bài mắc nhiều kiểu lỗi cùng lúc: ' +
                                '; '.join(f'C{r["cls"]} ({names[r["cls"]]["name"]})' for r in other))
-                if not R['rules']:
-                    st.caption('Không có luật ILA nào khớp hoàn toàn — gán theo khoảng cách tới cụm.')
-                dist = pd.DataFrame([dict(Cụm=f'C{k} · {names[int(k)]["name"]}', **{'Độ tương đồng': 1 - v})
+                st.markdown('**Mức giống với từng nhóm lỗi** (1 = giống hoàn toàn):')
+                dist = pd.DataFrame([{'Nhóm lỗi': f'C{k} — {names[int(k)]["name"]}', 'Mức giống': 1 - v}
                                      for k, v in sorted(R['distances'].items(), key=lambda kv: kv[1])])
-                st.markdown('**Độ tương đồng với từng cụm** (1 − khoảng cách Hamming có trọng số):')
                 st.dataframe(dist, hide_index=True, use_container_width=True, column_config={
-                    'Độ tương đồng': st.column_config.ProgressColumn('Độ tương đồng', format='%.2f',
-                                                                      min_value=0.0, max_value=1.0)})
-                st.markdown(f'**So với bản đúng gần nhất** `{R["ref"]["id"]}` (tương đồng token '
-                            f'{R["ref"]["similarity"]:.2f}):')
+                    'Mức giống': st.column_config.ProgressColumn('Mức giống', format='%.2f',
+                                                                 min_value=0.0, max_value=1.0)})
+                st.markdown('**So với một bài đúng tương tự** — dòng đỏ (–) là code đúng, dòng xanh (+) là code '
+                            'của bài này:')
                 st.code(R['ref']['diff'][:4000], language='diff')
-                with st.expander('Bộ ba OAV trích được'):
-                    st.dataframe(pd.DataFrame(R['oav']).assign(**{'Diễn giải': lambda d: [
-                        gloss(f'{a[0]}:{o}.{t}') for a, o, t in zip(
-                            d.group.map({'Output': 'O', 'Cấu trúc (AST)': 'A', 'Khác bản đúng': 'D'}),
-                            d.object, d.attribute)]}), hide_index=True, use_container_width=True)
-                with st.expander('Bài thật giống nhất trong dữ liệu'):
-                    st.dataframe(pd.DataFrame([dict(Bài=n['sub_id'], Cụm=f'C{n["cluster"]} · '
-                                                    f'{names[n["cluster"]]["name"]}', **{'Khoảng cách': n['distance']})
-                                               for n in R['neighbors']]), hide_index=True, use_container_width=True)
+                with st.expander('Chi tiết kỹ thuật (bộ ba Đối tượng – Thuộc tính – Giá trị, bài giống nhất)'):
+                    st.dataframe(pd.DataFrame(R['oav']).rename(columns={
+                        'group': 'Nhóm dấu hiệu', 'object': 'Đối tượng', 'attribute': 'Thuộc tính',
+                        'value': 'Giá trị'}), hide_index=True, use_container_width=True)
+                    st.dataframe(pd.DataFrame([{'Bài thật': n['sub_id'], 'Thuộc nhóm': f'C{n["cluster"]}',
+                                                'Khoảng cách': n['distance']} for n in R['neighbors']]),
+                                 hide_index=True, use_container_width=True)
+                    st.caption(f'Bài đúng dùng để so: {R["ref"]["id"]} (giống {R["ref"]["similarity"]:.0%}) · '
+                               f'thời gian chấm {R["elapsed"]} s')
             with st.expander('Kết quả từng test', expanded=R['status'] == 'correct'):
-                st.dataframe(tests.rename(columns={'test_id': 'Test', 'status': 'Kết quả', 'input': 'Input',
-                                                   'expected': 'Mong đợi', 'output': 'Output'})
+                st.dataframe(tests.assign(status=tests.status.map(lambda s: '✅ Đạt' if s == 'PASS' else f'❌ {s}'))
+                             .rename(columns={'test_id': 'Test', 'status': 'Kết quả', 'input': 'Dữ liệu vào',
+                                              'expected': 'Kết quả mong đợi', 'output': 'Bài in ra'})
                              .drop(columns='strict'), hide_index=True, use_container_width=True)
 
-# ------------------------------------------------------------------------------------------- Thực nghiệm
+# =============================================================================================== ④ Thực nghiệm
 with tab_exp:
     T = D['tables']
-    st.subheader('E1/E2 — Khôi phục lỗi đã cấy (dữ liệu sinh)')
+    st.markdown('''
+**Cách đọc điểm khớp (ARI):** so sánh các nhóm hệ thống tìm được với loại lỗi thật đã cấy vào bài.
+**1** = khớp hoàn toàn, **0** = không hơn chia nhóm ngẫu nhiên.
+''')
+    st.markdown('### 1. Hệ thống có tìm lại đúng các lỗi đã cấy không?')
+    st.markdown('Dùng 480 bài cấy lỗi (biết trước đáp án), cho hệ thống gom nhóm rồi so với loại lỗi đã cấy.')
     if 'E1_E2_synthetic' in T:
-        st.dataframe(pd.DataFrame(T['E1_E2_synthetic']), hide_index=True, use_container_width=True)
-    p = st.selectbox('Bài tập (hình)', ['digits', 'grade', 'median', 'smallest', 'average'], key='exp_p')
+        e = pd.DataFrame(T['E1_E2_synthetic'])
+        e['Bài tập'] = e.problem.map(PNAME)
+        tb = e.pivot_table(index='Bài tập', columns='method', values='ari').rename(columns={
+            'kmodes': 'K-modes (phương pháp chính)', 'agglo': 'Phân cấp (Agglomerative)',
+            'kmeans1h': 'K-means (đối chứng)'})
+        st.dataframe(tb.round(2), use_container_width=True)
+        st.success('**Kết luận:** điểm khớp 0.48–0.73 với phương pháp chính — các nhóm phần lớn trùng với loại lỗi '
+                   'thật. Ba phương pháp gom nhóm cho kết quả gần nhau, không phương pháp nào luôn thắng.')
+    p = st.selectbox('Xem hình cho bài tập', ['digits', 'grade', 'median', 'smallest', 'average'],
+                     format_func=PNAME.get, key='exp_p')
     c = st.columns(2)
     with c[0]:
-        img(f'confusion_syn_{p}.png', 'Nhãn cấy × cụm')
+        img(f'confusion_syn_{p}.png', 'Hàng: loại lỗi đã cấy · Cột: nhóm tìm được. Ô đậm tập trung = gom đúng.')
     with c[1]:
-        img(f'mds_synthetic_{p}.png', 'MDS trên khoảng cách Hamming')
-    st.subheader('E3 — Ablation nhóm thuộc tính')
+        img(f'mds_synthetic_{p}.png', 'Mỗi chấm là một bài; bài càng giống nhau càng nằm gần nhau.')
+
+    st.markdown('### 2. Loại dấu hiệu nào quan trọng?')
+    st.markdown('Thử gom nhóm chỉ với từng loại dấu hiệu: **O** = kết quả in ra sai kiểu gì, **A** = cấu trúc code, '
+                '**D** = khác bài đúng ở đâu, **T** = test nào trượt.')
     img('ablation_E3.png')
+    st.success('**Kết luận:** có dấu hiệu **D** thì điểm khớp tăng mạnh; chỉ dùng O hoặc A thì thấp. '
+               'Thêm "test nào trượt" (T) không giúp ích, thậm chí làm giảm ở 3/5 bài.')
     if 'E3_ablation' in T:
-        with st.expander('Bảng E3'):
-            st.dataframe(pd.DataFrame(T['E3_ablation']), hide_index=True, use_container_width=True)
-    st.subheader('E4 — Dữ liệu thật IntroClass')
+        with st.expander('Bảng số liệu'):
+            e = pd.DataFrame(T['E3_ablation'])
+            e = e[e.method == 'kmodes']
+            e['Bài tập'] = e.problem.map(PNAME)
+            st.dataframe(e.pivot_table(index='Bài tập', columns='groups', values='ari').round(2),
+                         use_container_width=True)
+
+    st.markdown('### 3. Trên bài làm thật của sinh viên')
+    st.markdown('Bài thật không có đáp án sẵn, nên đánh giá bằng **độ tách nhóm** (silhouette: -1 → 1, càng cao '
+                'các nhóm càng tách bạch) và bằng cách đọc lại bài trong từng nhóm.')
     if 'E4_real' in T:
-        st.dataframe(pd.DataFrame(T['E4_real']), hide_index=True, use_container_width=True)
-    img('ksweep_real.png', 'Silhouette theo k')
-    st.subheader('E4b — ITSP (602 cặp, đối chiếu 41 nhãn gán tay)')
-    if 'E4b_itsp' in T:
-        e = pd.DataFrame(T['E4b_itsp'])
-        st.dataframe(e[e.method == 'kmodes'].pivot_table(index='groups', columns='k', values='ari'),
-                     use_container_width=True)
-        st.caption('ARI theo nhóm thuộc tính (hàng) và số cụm k (cột), K-modes.')
-    st.subheader('E5 — Chất lượng luật: ILA vs ID3')
+        e = pd.DataFrame(T['E4_real'])
+        st.dataframe(pd.DataFrame({'Bài tập': e.problem.map(PNAME), 'Số bài sai': e.n, 'Số nhóm': e.k,
+                                   'Độ tách nhóm': e.silhouette.round(2), 'Số bài từng nhóm': e.sizes,
+                                   'Số sinh viên từng nhóm': e.students}),
+                     hide_index=True, use_container_width=True)
+        st.info('**Nhận xét:** grade và smallest tách nhóm tốt (≈ 0.5); digits và median kém hơn. '
+                'Thường có một nhóm lớn chiếm đa số — lỗi phổ biến nhất.')
+    st.markdown('**Kiểm chứng thêm trên ITSP** (602 bài; 41 bài được gán nhãn lỗi bằng tay để đối chiếu): '
+                'điểm khớp **0.20**. Hệ thống nhận ra tốt lỗi biên so sánh, biên vòng lặp, thiếu câu lệnh; '
+                'chưa tách được lỗi nhầm biến và sai công thức.')
+
+    st.markdown('### 4. Luật sinh ra có dễ hiểu và đáng tin không?')
+    st.markdown('So sánh thuật toán **ILA** (tự cài đặt) với cây quyết định **ID3** khi viết luật giải thích các nhóm.')
     if 'E5_rules' in T:
-        st.dataframe(pd.DataFrame(T['E5_rules']), hide_index=True, use_container_width=True)
+        e = pd.DataFrame(T['E5_rules'])
+        st.dataframe(pd.DataFrame({
+            'Dữ liệu': e.dataset.map({'real': 'Bài thật', 'synthetic': 'Bài cấy lỗi'}),
+            'Bài tập': e.problem.map(PNAME),
+            'ILA: số luật': e.ila_rules, 'ILA: điều kiện / luật': e.ila_avg_conds.round(1),
+            'ILA: độ chính xác': e.ila_cv_acc.round(2),
+            'ID3: số luật': e.id3_rules, 'ID3: điều kiện / luật': e.id3_avg_conds.round(1),
+            'ID3: độ chính xác': e.id3_cv_acc.round(2)}), hide_index=True, use_container_width=True)
+        st.success('**Kết luận:** luật của ILA **ngắn hơn** (1–2 điều kiện so với 3–5 của ID3) nên dễ đọc hơn, '
+                   'độ chính xác tương đương (0.70–0.92 so với 0.72–0.97).')

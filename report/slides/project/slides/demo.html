@@ -1,0 +1,19 @@
+<section id="demo" class="tinted">
+<div class="bar"></div>
+<p class="eyebrow">11 · DEMO</p>
+<h2 class="t">Demo: giảng viên xem nhóm lỗi phổ biến, sinh viên nộp bài và nhận chẩn đoán kèm lý do</h2>
+<hr class="rule" style="margin-bottom:32px">
+<div class="cols" style="gap:48px">
+<div class="col" style="flex:0 0 500px;gap:28px">
+<div class="in" style="--i:1;border-left:6px solid var(--navy);padding-left:24px"><p class="small" style="color:var(--navy);font-weight:700">Bước 1 · Dành cho giảng viên</p><p class="body" style="font-size:28px">Chọn bài smallest: nhóm lỗi, số SV, luật, bài minh họa</p></div>
+<div class="in" style="--i:2;border-left:6px solid var(--navy);padding-left:24px"><p class="small" style="color:var(--navy);font-weight:700">Bước 2 · Thử nộp bài sai</p><p class="body" style="font-size:28px">Bài mẫu “so sánh chặt” → nhóm C0, lý do, khác bản đúng ở đâu</p></div>
+<div class="in" style="--i:3;border-left:6px solid var(--navy);padding-left:24px"><p class="small" style="color:var(--navy);font-weight:700">Bước 3 · Nộp bài đúng</p><p class="body" style="font-size:28px">Hệ thống báo qua mọi test</p></div>
+</div>
+<div class="in" style="--i:2;display:flex;gap:24px;flex:1">
+<div style="flex:1;display:flex;flex-direction:column;gap:10px"><img src="/_blob/c3fd381369adc0b56cefb2b11e3d5ad7" alt="Trang giảng viên: bảng các nhóm lỗi bài smallest, số sinh viên và luật" style="width:528px;height:470px;object-fit:contain;background:#FFFFFF;border:2px solid #D6DBE1"><p class="small">Trang giảng viên</p></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px"><img src="/_blob/c1483dbd703bbe832241db74fee1d888" alt="Kết quả chẩn đoán: bài nộp thuộc nhóm C0, kèm lý do và luật khớp" style="width:528px;height:470px;object-fit:contain;background:#FFFFFF;border:2px solid #D6DBE1"><p class="small">Chẩn đoán bài nộp</p></div>
+</div>
+</div>
+<div class="foot"><p class="src">Streamlit + sandbox không mạng, chỉ đọc. Bài mẫu tự viết: 5/6 đúng nhóm</p><div class="pn"></div></div>
+<aside>Demo trực tiếp khoảng 2 phút. Trước buổi: chạy ./demo/start.sh trên server, mở tunnel ssh -p 2222 -N -L 8501:127.0.0.1:8501 tới server, mở http://127.0.0.1:8501. Bước 1: trang Dành cho giảng viên, chọn smallest, chỉ bảng nhóm lỗi và luật. Bước 2: trang Thử nộp bài, chọn bài mẫu so sánh nghiêm ngặt, bấm chấm: hệ thống chạy test trong sandbox, báo nhóm C0, giải thích vì sao và so với bản đúng gần nhất. Bước 3: chọn bài mẫu đúng, hệ thống báo qua mọi test. Nếu mạng hoặc server có sự cố, dùng hai ảnh chụp trên slide này.</aside>
+</section>

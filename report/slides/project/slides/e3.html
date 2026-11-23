@@ -1,0 +1,18 @@
+<section id="e3">
+<div class="bar"></div>
+<p class="eyebrow">08 · KẾT QUẢ E3 · ABLATION ĐẶC TRƯNG</p>
+<h2 class="t">Nhóm D “khác bản đúng ở đâu” quyết định chất lượng cụm; chỉ dùng output thì gần như không gom được</h2>
+<hr class="rule" style="margin-bottom:32px">
+<div class="hbars in" style="--i:1;gap:24px">
+<div class="hrow"><p class="lab" style="width:380px">O · output</p><div class="track"><div class="fill" style="width:300px"></div><p class="val">0,20</p></div></div>
+<div class="hrow"><p class="lab" style="width:380px">A · cấu trúc AST</p><div class="track"><div class="fill" style="width:300px"></div><p class="val">0,20</p></div></div>
+<div class="hrow"><p class="lab" style="width:380px">O + A</p><div class="track"><div class="fill" style="width:510px"></div><p class="val">0,34</p></div></div>
+<div class="hrow"><p class="lab" style="width:380px">D · khác bản đúng</p><div class="track"><div class="fill on" style="width:585px"></div><p class="val">0,39</p></div></div>
+<div class="hrow"><p class="lab" style="width:380px">A + D</p><div class="track"><div class="fill on" style="width:825px"></div><p class="val">0,55</p></div></div>
+<div class="hrow"><p class="lab" style="width:380px">O + D</p><div class="track"><div class="fill on" style="width:855px"></div><p class="val">0,57</p></div></div>
+<div class="hrow"><p class="lab" style="width:380px"><b>O + A + D (chọn)</b></p><div class="track"><div class="fill on" style="width:915px"></div><p class="val">0,61</p></div></div>
+<div class="hrow"><p class="lab" style="width:380px">T + O + A + D</p><div class="track"><div class="fill on" style="width:795px"></div><p class="val">0,53</p></div></div>
+</div>
+<div class="foot"><p class="src">ARI trung bình 5 bài, K-modes. Xanh đậm = có nhóm D; xanh nhạt = không có D</p><div class="pn"></div></div>
+<aside>Đây là thí nghiệm quan trọng nhất: bỏ bớt từng nhóm thuộc tính. Chỉ dùng output hoặc chỉ dùng cấu trúc AST, ARI chỉ 0,2: cùng một lỗi biểu hiện khác nhau tùy chương trình gốc, và AST gom theo chương trình gốc chứ không theo lỗi. Thêm nhóm D, tức so với bản đúng gần nhất, ARI tăng lên 0,55 đến 0,61. Bật thêm kết quả test thô (nhóm T) lại làm giảm, nên trọng số T bằng 0. (Khoảng 1 phút 15 giây.)</aside>
+</section>

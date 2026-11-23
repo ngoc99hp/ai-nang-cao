@@ -1,0 +1,32 @@
+<section id="method">
+<div class="bar"></div>
+<p class="eyebrow">06 · GOM CỤM VÀ LUẬT</p>
+<h2 class="t">Dữ liệu định danh nên dùng K-modes với Hamming có trọng số; ILA chạy sau khi gom cụm</h2>
+<hr class="rule">
+<div class="cols" style="gap:80px">
+<div class="col in" style="--i:1">
+<p class="small" style="color:var(--navy);font-weight:700">Khoảng cách giữa hai bài x, y</p>
+<p style="font-family:var(--mono);font-size:36px;color:var(--ink);margin-top:16px;white-space:nowrap">d(x, y) = Σ w·[x ≠ y] / Σ w</p>
+<p class="small" style="margin-top:12px">Cộng trọng số các thuộc tính khác giá trị</p>
+<p class="small" style="color:var(--navy);font-weight:700;margin-top:40px">Trọng số nhóm (DP3)</p>
+<div class="hbars" style="margin-top:16px;gap:12px">
+<div class="hrow"><p class="lab" style="width:220px">T · Test</p><div class="track"><div class="fill" style="width:4px"></div><p class="val">0</p></div></div>
+<div class="hrow"><p class="lab" style="width:220px">O · Output</p><div class="track"><div class="fill" style="width:80px"></div><p class="val">0,5</p></div></div>
+<div class="hrow"><p class="lab" style="width:220px">A · AST</p><div class="track"><div class="fill" style="width:80px"></div><p class="val">0,5</p></div></div>
+<div class="hrow"><p class="lab" style="width:220px">D · Diff</p><div class="track"><div class="fill on" style="width:480px"></div><p class="val">3</p></div></div>
+</div>
+</div>
+<div class="col in" style="--i:2;gap:40px">
+<div style="border-left:6px solid var(--navy);padding-left:28px">
+<h3 style="font-size:34px;font-weight:700">K-modes thay K-means</h3>
+<p class="body" style="margin-top:10px">K-means tối ưu khoảng cách Euclid, ghép với Hamming không nhất quán; K-modes dùng mode và Hamming</p>
+</div>
+<div style="border-left:6px solid var(--navy);padding-left:28px">
+<h3 style="font-size:34px;font-weight:700">Gom cụm trước, ILA sau</h3>
+<p class="body" style="margin-top:10px">ILA là học có giám sát nên không gom cụm được; dùng mã cụm làm nhãn lớp để ILA sinh luật</p>
+</div>
+</div>
+</div>
+<div class="foot"><p class="src">Huang 1998 · Cao et al. 2009 · Tolun &amp; Abu-Soud 1998</p><div class="pn"></div></div>
+<aside>Về phương pháp, có hai điều chỉnh so với gợi ý của đề. Thứ nhất, K-means tối ưu theo khoảng cách Euclid nên ghép với Hamming là không nhất quán; dữ liệu của em là định danh nên dùng K-modes, khoảng cách Hamming có trọng số. Thứ hai, ILA là thuật toán học có giám sát, không phải thuật toán gom cụm, nên em gom cụm trước rồi dùng mã cụm làm nhãn cho ILA. Trọng số nhóm D lớn nhất, bằng 3, theo kết quả thực nghiệm ở slide sau. (Khoảng 1 phút.)</aside>
+</section>

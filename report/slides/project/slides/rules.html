@@ -1,0 +1,29 @@
+<section id="rules">
+<div class="bar"></div>
+<p class="eyebrow">10 · KẾT QUẢ E5 · CHẤT LƯỢNG LUẬT</p>
+<h2 class="t">Luật ILA chỉ 1–2 điều kiện nên giảng viên đọc được; ID3 chính xác hơn chút nhưng dài gấp đôi</h2>
+<hr class="rule">
+<div class="cols" style="gap:72px">
+<div class="col in" style="--i:1;flex:0 0 760px">
+<p class="small" style="color:var(--navy);font-weight:700">Luật ILA cho nhóm lớn nhất (smallest)</p>
+<div class="code" style="margin-top:16px">
+<p class="hl" style="font-size:28px">NẾU [D:diff.cmp_if = T]</p>
+<p class="hl" style="font-size:28px">THÌ Cụm 0</p>
+<p class="dim">phủ 48/48 bài · accuracy 1,00</p>
+</div>
+<p class="body" style="margin-top:28px;color:var(--ink)">Đọc là: “Nếu bài đổi phép so sánh trong điều kiện if so với bản đúng thì thuộc nhóm <b>so sánh chặt bỏ sót giá trị bằng nhau</b>”</p>
+</div>
+<div class="col in" style="--i:2">
+<table class="tb">
+<tr><th style="width:46%">Chỉ số (9 tập dữ liệu)</th><th style="width:27%">ILA</th><th>ID3</th></tr>
+<tr><td>Điều kiện / luật</td><td style="color:#1F4E79">1,3 – 2,0</td><td>2,8 – 4,6</td></tr>
+<tr><td>Số luật</td><td>7 – 46</td><td>6 – 18</td></tr>
+<tr><td>Độ chính xác (CV)</td><td>0,70 – 0,92</td><td>0,72 – 0,97</td></tr>
+<tr><td>Phủ tập huấn luyện</td><td>0,99 – 1,00</td><td>—</td></tr>
+</table>
+<p class="small" style="margin-top:24px">ILA tự cài đặt, kiểm chứng trên ví dụ của bài báo gốc; ID3 = cây quyết định entropy (scikit-learn).</p>
+</div>
+</div>
+<div class="foot"><p class="src">Tolun &amp; Abu-Soud 1998 · Quinlan 1986</p><div class="pn"></div></div>
+<aside>Sau khi gom cụm, em dùng mã cụm làm nhãn để ILA sinh luật. Ví dụ luật cho nhóm lớn nhất bài smallest: nếu bài đổi phép so sánh trong điều kiện if thì thuộc cụm 0, phủ đủ 48 trên 48 bài. So với cây quyết định ID3, luật ILA ngắn hơn hẳn, trung bình 1 đến 2 điều kiện so với 3 đến 5, đổi lại độ chính xác kiểm định chéo thấp hơn một chút. Với mục tiêu để giảng viên đọc, luật ngắn quan trọng hơn. (Khoảng 1 phút.)</aside>
+</section>

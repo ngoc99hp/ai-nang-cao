@@ -1,0 +1,34 @@
+<section id="oav">
+<div class="bar"></div>
+<p class="eyebrow">05 · BIỂU DIỄN OAV</p>
+<h2 class="t">Mỗi bài sai được mô tả bằng các bộ ba Đối tượng – Thuộc tính – Giá trị thuộc 4 nhóm</h2>
+<hr class="rule">
+<div class="cols" style="gap:56px">
+<div class="col in" style="--i:1;flex:0 0 640px">
+<div class="code">
+<p class="dim">// smallest — bài sai thật</p>
+<p>scanf("%d%d%d%d", &amp;one, &amp;two,</p>
+<p>&#160;&#160;&#160;&#160;&#160;&#160;&amp;three, &amp;four);</p>
+<p class="hl">if (one&lt;two &amp;&amp; one&lt;three</p>
+<p class="hl">&#160;&#160;&#160;&#160;&amp;&amp; one&lt;four)</p>
+<p>&#160;&#160;printf("%d is the smallest\n",</p>
+<p>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;one);</p>
+<p class="dim">... (3 if tương tự)</p>
+</div>
+</div>
+<div class="col in" style="--i:2">
+<table class="tb">
+<tr><th style="width:14%">Nhóm</th><th style="width:50%">Đối tượng.Thuộc tính</th><th>Giá trị</th></tr>
+<tr><td>T · Test</td><td>bb5.status, wb1.status …</td><td>FAIL (8/16 test)</td></tr>
+<tr><td>O · Output</td><td>output.missing_answer</td><td>T (không in đáp án)</td></tr>
+<tr><td>O · Output</td><td>tests_tie.fail</td><td>some</td></tr>
+<tr><td>A · AST</td><td>condition.if_cmp</td><td>strict</td></tr>
+<tr><td style="color:#1F4E79">D · Diff</td><td style="color:#1F4E79">diff.cmp_if</td><td style="color:#1F4E79">T</td></tr>
+<tr><td style="color:#1F4E79">D · Diff</td><td style="color:#1F4E79">diff.cmp_kind</td><td style="color:#1F4E79">strictness</td></tr>
+</table>
+<p class="small" style="margin-top:24px">D: so với <b>bản đúng gần nhất</b>, ưu tiên bản tự sửa sau đó của chính sinh viên.</p>
+</div>
+</div>
+<div class="foot"><p class="src">Trích xuất tự động trên AST (tree-sitter) và output; 22–48 thuộc tính mỗi bài tập</p><div class="pn"></div></div>
+<aside>Lấy lại bài smallest ở đầu. Mỗi bài sai được mô tả bằng các bộ ba đối tượng, thuộc tính, giá trị chia làm 4 nhóm. Nhóm T là kết quả từng test. Nhóm O là kiểu sai của output, ví dụ không in đáp án, trượt các test có số bằng nhau. Nhóm A là cấu trúc code trên cây cú pháp, ví dụ điều kiện if chỉ dùng so sánh chặt. Nhóm D là điểm mới của em: so bài sai với bản đúng gần nhất, ưu tiên chính bản tự sửa của sinh viên, để biết đã đổi cái gì, ở đây là đổi phép so sánh trong if từ chặt sang không chặt. (Khoảng 1 phút 15 giây.)</aside>
+</section>

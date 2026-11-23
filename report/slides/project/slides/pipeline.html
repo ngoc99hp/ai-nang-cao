@@ -1,0 +1,23 @@
+<section id="pipeline">
+<div class="bar"></div>
+<p class="eyebrow">04 · PHƯƠNG PHÁP</p>
+<h2 class="t">Quy trình 5 bước biến bài làm sai thành báo cáo lỗi phổ biến cho giảng viên</h2>
+<hr class="rule">
+<div style="display:flex;align-items:flex-start;gap:12px;margin-top:16px">
+<div class="card in" style="--i:1"><p class="num">01</p><h3 style="font-size:30px">Chấm an toàn</h3><p class="desc">Biên dịch, chạy test trong sandbox; 6 trạng thái PASS … TIMEOUT</p></div>
+<x-connector head="end" style="width:40px;height:0;margin-top:96px;color:#1F4E79;border-width:3px"></x-connector>
+<div class="card in" style="--i:2"><p class="num">02</p><h3 style="font-size:30px">Trích OAV</h3><p class="desc">Bộ ba Đối tượng – Thuộc tính – Giá trị, 4 nhóm T / O / A / D</p></div>
+<x-connector head="end" style="width:40px;height:0;margin-top:96px;color:#1F4E79;border-width:3px"></x-connector>
+<div class="card in" style="--i:3"><p class="num">03</p><h3 style="font-size:30px">Gom cụm</h3><p class="desc">K-modes trên Hamming có trọng số, từng bài tập</p></div>
+<x-connector head="end" style="width:40px;height:0;margin-top:96px;color:#1F4E79;border-width:3px"></x-connector>
+<div class="card in" style="--i:4"><p class="num">04</p><h3 style="font-size:30px">Quy nạp luật</h3><p class="desc">ILA tự cài đặt, nhãn lớp = mã cụm</p></div>
+<x-connector head="end" style="width:40px;height:0;margin-top:96px;color:#1F4E79;border-width:3px"></x-connector>
+<div class="card in" style="--i:5"><p class="num">05</p><h3 style="font-size:30px">Macro-feedback</h3><p class="desc">Tên lỗi, số SV, luật, bài minh họa</p></div>
+</div>
+<div class="in" style="--i:6;margin-top:48px;display:flex;gap:48px">
+<div style="flex:1;background:var(--tint);padding:28px 32px"><p class="small" style="color:var(--navy);font-weight:700">Đầu vào</p><p class="body">Bài nộp C + bộ test của bài tập</p></div>
+<div style="flex:1;background:var(--tint);padding:28px 32px"><p class="small" style="color:var(--navy);font-weight:700">Đầu ra</p><p class="body">Bảng nhóm lỗi cho giảng viên, chẩn đoán cho bài nộp mới</p></div>
+</div>
+<div class="foot"><p class="src">Bước 01 chạy trong container không mạng, giới hạn CPU / RAM / số tiến trình</p><div class="pn"></div></div>
+<aside>Quy trình gồm 5 bước. Một: chấm an toàn, vì phải chạy code của người khác nên mọi bài đều chạy trong container cách ly. Hai: trích thuộc tính OAV. Ba: gom cụm bằng K-modes. Bốn: dùng mã cụm làm nhãn để thuật toán ILA quy nạp luật. Năm: tổng hợp thành bảng macro-feedback cho giảng viên. (Khoảng 1 phút 15 giây.)</aside>
+</section>

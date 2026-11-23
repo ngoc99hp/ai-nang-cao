@@ -91,22 +91,23 @@ def build(dataset, p, subs, tr, extra_flags=None, own=None):
                 n_const=len(const), n_triples=len(L))
 
 
-stats = []
-for p in config.PROBLEMS:                                   # dữ liệu thật
-    fl = schema.load(config.INTERIM / 'flags' / f'{p}.parquet', schema.SUB_FLAGS)
-    keep = fl[fl.keep]
-    sub = schema.load(config.INTERIM / 'submissions' / f'{p}.parquet', schema.SUBMISSIONS)
-    sub = sub[sub.sub_id.isin(keep.sub_id)].merge(keep[['sub_id', 'repo']], on='sub_id')
-    tr = schema.load(config.INTERIM / 'test_results' / f'{p}.parquet', schema.TEST_RESULTS)
-    flags = {r.sub_id: {'uninit_dependent': r.uninit_dependent, 'nondet_dataset': r.nondet_dataset,
-                        'format_only_any': r.format_only_any} for r in keep.itertuples()}
-    stats.append(build('real', p, sub, tr, flags, own_fix(p)))
-    print(stats[-1], flush=True)
-for p in bench.SYNTH_PROBLEMS:                              # synthetic
-    d = config.INTERIM / 'synthetic'
-    sub = schema.load(d / 'submissions' / f'{p}.parquet', schema.SUBMISSIONS)
-    tr = schema.load(d / 'test_results' / f'{p}.parquet', schema.TEST_RESULTS)
-    stats.append(build('synthetic', p, sub, tr))
-    print(stats[-1], flush=True)
-pd.DataFrame(stats).to_csv(config.TABLES / 'p3_features.csv', index=False)
-print(pd.DataFrame(stats).to_string(index=False))
+if __name__ == '__main__':
+    stats = []
+    for p in config.PROBLEMS:                                   # dữ liệu thật
+        fl = schema.load(config.INTERIM / 'flags' / f'{p}.parquet', schema.SUB_FLAGS)
+        keep = fl[fl.keep]
+        sub = schema.load(config.INTERIM / 'submissions' / f'{p}.parquet', schema.SUBMISSIONS)
+        sub = sub[sub.sub_id.isin(keep.sub_id)].merge(keep[['sub_id', 'repo']], on='sub_id')
+        tr = schema.load(config.INTERIM / 'test_results' / f'{p}.parquet', schema.TEST_RESULTS)
+        flags = {r.sub_id: {'uninit_dependent': r.uninit_dependent, 'nondet_dataset': r.nondet_dataset,
+                            'format_only_any': r.format_only_any} for r in keep.itertuples()}
+        stats.append(build('real', p, sub, tr, flags, own_fix(p)))
+        print(stats[-1], flush=True)
+    for p in bench.SYNTH_PROBLEMS:                              # synthetic
+        d = config.INTERIM / 'synthetic'
+        sub = schema.load(d / 'submissions' / f'{p}.parquet', schema.SUBMISSIONS)
+        tr = schema.load(d / 'test_results' / f'{p}.parquet', schema.TEST_RESULTS)
+        stats.append(build('synthetic', p, sub, tr))
+        print(stats[-1], flush=True)
+    pd.DataFrame(stats).to_csv(config.TABLES / 'p3_features.csv', index=False)
+    print(pd.DataFrame(stats).to_string(index=False))

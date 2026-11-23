@@ -38,6 +38,7 @@
 | Phase 4 — Clustering | ✅ Xong (DP3, DP4 đã chốt) |
 | Phase 5 — Luật + đánh giá | ✅ Xong (DP5 tạm chốt) |
 | Phase 6 — Trực quan + báo cáo | ✅ Hình + bảng + tên cụm (DP5) + E4b ITSP xong; còn viết báo cáo |
+| Phase 7 — Demo giao diện | ✅ Streamlit (`aai-ui`) + worker trong `aai-lab`; xem mục 12.1 và `demo/README.md` |
 
 ---
 
@@ -1064,6 +1065,20 @@ Xuất `results/tables/E*.csv`.
 **Kết quả (2026-11-19)** — `scripts/p6_figures.py` (matplotlib 3.10.1 thêm vào image; bảng màu theo dataviz skill: thang xanh tuần tự cho heatmap, MDS dạng small multiples vì scatter > 3 màu không đạt ngưỡng CVD):
 - `results/figures/heatmap_real_<p>.png` (hình chính), `confusion_syn_<p>.png`, `mds_{real,synthetic}_<p>.png`, `ksweep_real.png`, `ablation_E3.png`.
 - `results/tables/macro_feedback.{csv,md}`: cụm → tên (DP5), taxonomy, số SV, số bài, luật ILA tiêu biểu, bài minh họa (medoid). Sửa tên trong `p5_cluster_names.csv` rồi chạy lại script là cập nhật.
+
+### 12.1. Demo giao diện (Phase 7, 2026-11-23)
+
+Chạy: `./demo/start.sh` → http://127.0.0.1:8501 (từ máy khác: `ssh -L 8501:127.0.0.1:8501 ...`); dừng: `./demo/stop.sh`. Chi tiết: `demo/README.md`.
+
+| Thành phần | Vai trò |
+|---|---|
+| `scripts/p7_build_demo.py` | dựng `data/processed/demo/model_<p>.pkl` (cột, trọng số, mode cụm, luật ILA, kho bản đúng) + `results/demo/dashboard.json` |
+| `src/classify.py` | bài mới → runner → OAV (T/O/A + D so với bản đúng gần nhất) → cụm có mode gần nhất (bước gán của K-modes) + luật ILA khớp + láng giềng |
+| `scripts/demo_worker.py` | chạy trong `aai-lab` (không mạng), đọc `work/queue/in/*.json`, ghi `work/queue/out/` |
+| `ui/app.py`, `docker/Dockerfile.ui`, service `ui` trong `compose.yaml` | Streamlit 1.41.1, container `aai-ui`: **không có gcc, không chạy code**, root fs read-only, cap_drop ALL, 0.5 CPU / 512 MB, cổng chỉ `127.0.0.1:8501` |
+| `demo/samples/*.c` | 6 bài mẫu tự viết (5 sai, 1 đúng) |
+
+Kiểm thử: `tests/test_classify.py` + AppTest toàn bộ bài mẫu. Bài mẫu tự viết 5/6 đúng cụm (`digits_quen_so_0` → nhầm cụm log10); bài minh họa thật gán lại đúng cụm 16/18 (lệch vì demo không có bản tự sửa của SV → D so với bản gần nhất).
 
 **Hướng mở rộng (bài báo):** kết hợp embedding mã nguồn (CodeBERT/UniXcoder) với vector OAV (hybrid clustering), dùng LLM đặt tên + giải thích cụm; so sánh OAV-only vs hybrid.
 

@@ -20,3 +20,28 @@ services:
     cap_drop: [ALL]
     security_opt: ["no-new-privileges:true"]
     restart: "no"
+
+  # Giao diện demo (Streamlit). Không chạy code sinh viên: chỉ đọc results/, demo/ và ghi job vào work/queue;
+  # worker trong 'lab' (không mạng) mới compile/chạy. Cổng chỉ mở trên 127.0.0.1 → truy cập qua SSH tunnel.
+  ui:
+    build: { context: ., dockerfile: docker/Dockerfile.ui }
+    image: aai-ui:1
+    container_name: aai-ui
+    command: streamlit run /app/app.py
+    init: true
+    ports: ["127.0.0.1:8501:8501"]
+    working_dir: /app
+    volumes:
+      - ./ui:/app:ro
+      - ./results:/data/results:ro
+      - ./demo:/data/demo:ro
+      - ./work/queue:/data/queue
+    read_only: true
+    tmpfs: ["/tmp:size=64m"]
+    cpus: 0.5
+    mem_limit: 512m
+    memswap_limit: 512m
+    pids_limit: 128
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: "no"

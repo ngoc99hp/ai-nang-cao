@@ -1,0 +1,10 @@
+# Giao diện demo: chỉ hiển thị kết quả + ghi job vào hàng đợi. KHÔNG có gcc, không chạy code sinh viên.
+FROM python:3.12-slim
+ARG UID=1000
+ARG GID=1000
+ENV PYTHONDONTWRITEBYTECODE=1 PIP_NO_CACHE_DIR=1 HOME=/tmp
+RUN groupadd -g ${GID} aai && useradd -m -u ${UID} -g ${GID} -s /usr/sbin/nologin aai
+COPY ui/requirements.txt /tmp/req-ui.txt
+RUN pip install -r /tmp/req-ui.txt
+USER aai
+WORKDIR /app
